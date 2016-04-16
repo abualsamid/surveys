@@ -1,5 +1,5 @@
 {
-  "name": "www.botengine.io",
+  "name": "surveys",
   "version": "1.0.0",
   "description": "botengine website",
   "main": "index.js",
@@ -7,19 +7,19 @@
     "start": "env NODE_ENV=development node server.js",
     "build": "env NODE_ENV=production webpack --config webpack.config.js --progress --colors -p",
     "serve": "env NODE_ENV=production node server.js",
-    "deploy": "npm run build && cd public && aws --profile=abualsamid --region us-west-2 s3 sync . s3://botengine.io --exclude '.git' --exclude '.DS_Store' --exclude  'g' --exclude '.gitignore'"
+    "deploy": "npm run build && cd public && echo you need to config this"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/abualsamid/www.botengine.io.git"
+    "url": "git+https://github.com/abualsamid/surveys.git"
   },
   "keywords": [],
   "author": "born2code",
   "license": "UNLICENSED",
   "bugs": {
-    "url": "https://github.com/abualsamid/www.botengine.io/issues"
+    "url": "https://github.com/abualsamid/surveys/issues"
   },
-  "homepage": "https://github.com/abualsamid/www.botengine.io#readme",
+  "homepage": "https://github.com/abualsamid/surveys#readme",
   "devDependencies": {
     "babel": "^6.5.2",
     "babel-cli": "^6.6.5",

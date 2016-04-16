@@ -40,7 +40,7 @@ class App extends Component {
   }
 
   render() {
-    var year = new Date().getFullYear() || 2015 
+    var year = new Date().getFullYear() || 2015
 
     const { children, inputValue } = this.props
     return (
@@ -49,9 +49,6 @@ class App extends Component {
         {this.renderErrorMessage()}
         {children}
 
-        <footer className="text-center">
-          <span className="fa fa-copyright"></span> {year}. botengine.io All Rights Reserved.
-        </footer>
 
       </div>
     )

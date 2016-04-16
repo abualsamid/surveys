@@ -22,10 +22,7 @@ class Nav extends Component {
       return (
         <ul className="nav navbar-nav navbar-right">
           <li>
-            <Link to="/signup">Sign Up</Link>
-          </li>
-          <li>
-            <Link to="/login">Log In</Link>
+            <Link to="/login">Admin</Link>
           </li>
         </ul>
 
@@ -43,16 +40,10 @@ class Nav extends Component {
               <span className="icon-bar"></span>
               <span className="icon-bar"></span>
             </button>
-            <Link to='/' activeClassName='active' className="navbar-brand">botengine.io</Link>
+            <Link to='/' activeClassName='active' className="navbar-brand">leye</Link>
           </div>
           <div id="navbar" className="navbar-collapse collapse">
             <ul className="nav navbar-nav">
-              <li>
-                <Link to='/' activeClassName='active' className="navbar-brand">Home</Link>
-              </li>
-              <li><a href="#about">About</a></li>
-              <li><a href="#contact">Contact</a></li>
-
 
             </ul>
             {this.renderLoginSnippet()}

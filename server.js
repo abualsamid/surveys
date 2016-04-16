@@ -8,7 +8,7 @@ var express = require('express')
 var app = new (express)()
 
 const isDeveloping = process.env.NODE_ENV !== 'production';
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3456;
 
 var compiler = webpack(config)
 app.use(webpackDevMiddleware(compiler,

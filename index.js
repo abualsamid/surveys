@@ -10,7 +10,7 @@ const store = configureStore()
 const history = syncHistoryWithStore(browserHistory, store)
 
 require('es6-promise').polyfill();
-require("font-awesome-webpack");
+// require("font-awesome-webpack");
 require("./css/style.css");
 
 

@@ -6,12 +6,12 @@ const whatWeDo = require("../templates/whatwedo.html");
 const styles = require("../css/home.css");
 
 const languageText = {
-  "0" : {
+  "This is an anonymous survey. All questions are optional." : {
     "en": "This is an anonymous survey. All questions are optional.",
     "es": "Esta es una encuesta anónima . Todas las preguntas son opcionales ."
   },
 
-  "1": {
+  "Please enter the code assigned to you": {
     "en": "Please enter the code assigned to you",
     "es":"Por favor, introduzca el código asignado a usted"
   },
@@ -23,7 +23,7 @@ const languageText = {
   "3": {
     "en": "Please take a moment to fill this out. Your feedback is important to us. We welcome both positive feedback and areas where we can improve. Your response to this survey will be kept anonymous and confidential.",
     "es": "Por favor, tome un momento para liener este documento. Su opinion es importante para nosotros. Queremos saber donde estamon bien y done podemos mejorar. La participacion en esta encuesta es anonima y confidential.",
-    "sep": "\n"
+    "sep": "\n \n"
   },
   "4": {
     "en": "Continue",
@@ -64,41 +64,231 @@ const languageText = {
     "es": "En caso de que tenga algun problema o asunto que quiera que sea discutido especificamente, por favor " +
     "llame a Susie Southgate-Fox a 773-878-7698.  " +
     "Gracias por su atencion en completar la encuesta. Agradecemos su compromiso con nuestro crecimiento."
+  },
+  "Friendly and easy to approach": {
+    "en": "Friendly and easy to approach",
+    "es": "Cordial y fácil de acercarse"
+  },
+  "Treats all employees equally and fairly" : {
+    "en": "Treats all employees equally and fairly",
+    "es": "Trata a todos los empleados de forma igual y justa"
+  },
+  "Listens to what we have to say" : {
+    "en": "Listens to what we have to say",
+    "es": "Escucha lo que tenemos que decir"
+  },
+  "Cares about us personally and professionally appreciates us" : {
+    "en": "Cares about us personally and professionally appreciates us",
+    "es": "Le improto como persona y empleado, nos aprecia"
+  },
+  "Backs and supports us" : {
+    "en": "Backs and supports us",
+    "es": "Nos apoya"
+  },
+  "Treats us with dignity and respect" : {
+    "en": "Treats us with dignity and respect",
+    "es": "Nos trata con dignidad y respeto"
+  },
+  "Is an effective teacher, coach and manager" : {
+    "en": "Is an effective teacher, coach and manager",
+    "es": "Es us buen instructor, motivador y gerente"
+  },
+  "Gives clear directions" : {
+    "en": "Gives clear directions",
+    "es": "Da instrucciones claras"
+  },
+  "Keeps us informed" : {
+    "en": "Keeps us informed",
+    "es": "Nos mantiene informados"
+  },
+  "Handles issues and people well" : {
+    "en": "Handles issues and people well",
+    "es": "Sabe enfrentar situaciones y trabajar bien con personas"
+  },
+  "Motivates us to go good job" : {
+    "en": "Motivates us to go good job",
+    "es": "Nos motiva a hacer un buen trabajo"
+  },
+  "Rewards good performance" : {
+    "en": "Rewards good performance",
+    "es": "Sabe reconocer un trabajo bien hecho"
+  },
+  "Follows through on promises" : {
+    "en": "Follows through on promises",
+    "es": "Cumple con sus promesas"
+  },
+  "In General" : {
+    "en": "In General...",
+    "es": "Por Lo General..."
+  },
+  "Our work environment is positive": {
+    "en": "Our work environment is positive",
+    "es": "Nuestro ambiente do trabajo es positivo"
+  },
+  "The communication is clear and effective": {
+    "en": "The communication is clear and effective",
+    "es": "La comunicacion es clara y efectiva"
+  },
+  "We have the tools/supplies we need to do our job": {
+    "en": "We have the tools/supplies we need to do our job",
+    "es": "Tenemos los materiales necesarios para hacer nuestro trabajo"
+  },
+  "My training was thorough and effective": {
+    "en": "My training was thorough and effective",
+    "es": "Mi entrenamiento fue suficiente para prepararme para trabajar en mi posición"
+  },
+  "I have opportunities to learn and grow at work": {
+    "en": "I have opportunities to learn and grow at work",
+    "es": "Trengo oportunidades de aprender y avanzer en mi trabajo"
+  },
+  "What do you like most about working for LEYE?": {
+    "en": "What do you like most about working for LEYE?",
+    "es": "¿Qué es lo que le gusta más de trabajar para Lettuce?"
+  },
+  "What do you like least about working for LEYE?": {
+    "en": "What do you like least about working for LEYE?",
+    "es": "¿Qué es lo que le gusta menos de trabajar para Lettuce?"
+  },
+  "If you need something, who is the person you are most comfortable going to?": {
+    "en": "If you need something, who is the person you are most comfortable going to?",
+    "es": "Si necesita algo, ¿con quién se siente más comodo en ir a hablar?"
+  },
+  "Have you noticed any improvements over the past 6 months to one year? Explain your answer.": {
+    "en": "Have you noticed any improvements over the past 6 months to one year? Explain your answer.",
+    "es": "¿Ha notado alguna mejora en los ultimos 6 meses un ano? Explique por que."
+  },
+  "Submit - I am done": {
+    "en": "Submit - I am done",
+    "es": "Enviar - he terminado"
+  },
+  "Cancel": {
+    "en": "Cancel",
+    "es": "Cancelar"
+  },
+  "Submit - and review another manager": {
+    "en": "Submit - and review another manager",
+    "es": "Enviar - y revisar otro gestor"
   }
+
 };
 
+function trOne(code, language) {
+  try {
+    if (!languageText[code]) {
+      return code;
+    }
+    if (Array.isArray(languageText[code][language])) {
+      return languageText[code][language].join(languageText[code].sep || "")
+    } else {
+      return  languageText[code][language]
+    }
 
+  } catch(x) {
+    return "n/a!";
+  }
+}
 
+function tr(code, language) {
+  if (!code) {
+    return "";
+  }
+  if(!language) {
+    language=""
+  }
+  try {
+    return language=="" ?
+      languageText[code]["en"] + ( languageText[code].sep || " / " ) + languageText[code]["es"]
+      :
+      trOne(code, language)
 
+  } catch(x) {
+    return "n/a.";
+  }
+}
+
+class EnterCode extends Component {
+  constructor(props) {
+    super(props)
+  }
+  handleClick(e) {
+    e.preventDefault();
+    this.props.callBack(this.storeCode.value)
+  }
+  render() {
+    var language = this.props.language
+    console.log("enter code with language ", language);
+    return (
+      <div className="col-md-12 text-center">
+        <div>
+          {tr("This is an anonymous survey. All questions are optional.",language)}
+          <br/>
+          <br/>
+        </div>
+        <div>
+          <br/>
+          <span style={{fontWeight: "bold", fontSize: "large"}}> { tr("Please enter the code assigned to you",language)} </span>
+          <br/>
+          <br/>
+          <input type="text"  ref={(ref) => this.storeCode = ref } ></input>
+        </div>
+        <div>
+          <br/>
+          <br/>
+          <button className="btn btn-primary btn-lg" onClick={this.handleClick.bind(this)}>
+            { tr("4",language)}
+          </button>
+        </div>
+      </div>
+    )
+  }
+}
 
 export default class Home extends Component {
 
   constructor(props) {
     super(props)
-    this.state = { step: 1, language: "" , answers: {}};
+    this.state = { step: 1, language: "" , answers: {}, storeCode: ""};
   }
 
-    trOne(code, language) {
-      try {
-        return languageText[code] ? languageText[code][language]  : code
 
-      } catch(x) {
-        return "n/a!";
+  trOne(code, language) {
+    try {
+      if (!languageText[code]) {
+        return code;
       }
-    }
-
-    tr(code) {
-      try {
-        return this.state.language=="" ?
-          languageText[code].en + ( languageText[code].sep || " / " ) + languageText[code].es
-          :
-          this.trOne(code, this.state.language)
-
-      } catch(x) {
-        return "n/a.";
+      if (Array.isArray(languageText[code][language])) {
+        return languageText[code][language].join(languageText[code].sep || "")
+      } else {
+        return  languageText[code][language]
       }
 
+    } catch(x) {
+      return "n/a!";
     }
+  }
+
+  tr(code, language) {
+    if (!code) {
+      return "";
+    }
+    if(!language) {
+      language=""
+      try {
+        language = this.state.language;
+      } catch(x){
+        console.log("setting language ", x)
+      }
+    }
+    try {
+      return language=="" ?
+        languageText[code]["en"] + ( languageText[code].sep || " / " ) + languageText[code]["es"]
+        :
+        trOne(code, language)
+
+    } catch(x) {
+      return "n/a.";
+    }
+  }
 
 
   chooseLanguage(language) {
@@ -133,7 +323,7 @@ export default class Home extends Component {
     }
     return (
       <div className="form-group">
-        <label>{Q}</label>
+        <label>{this.tr(Q)}</label>
           <select className="form-control" name={id} id={id} value={v.bind(this,id)()} onChange={selectAnswer.bind(this)}>
             <option value="0"> ({this.tr("Please Select")})</option>
             <option value="5">5 - {ex}</option>
@@ -158,7 +348,7 @@ export default class Home extends Component {
     return(
       <div className="checkbox">
         <label>
-          <input type="checkbox" name={id} id={id} key={id} checked={v.bind(this,id)()} onChange={flipBox.bind(this)} />{q}
+          <input type="checkbox" name={id} id={id} key={id} checked={v.bind(this,id)()} onChange={flipBox.bind(this)} />{this.tr(q)}
         </label>
       </div>
     )
@@ -171,11 +361,12 @@ export default class Home extends Component {
       a[event.target.id] = event.target.value==undefined ? "" : event.target.value;
       this.setState({answers: a})
     }
+
     return (
       <div className="form-group">
-        <label><strong>{i}. </strong> {q}</label>
+        <label><strong>{i}. </strong> {this.tr(q)}</label>
         <textarea className="form-control" name={id} id={id}
-          defaultValue="" value={this.state.answers[id]||""}
+          defaultValue="" value={this.state.answers[id] || ""}
           onChange={change.bind(this)}></textarea>
       </div>
     )
@@ -185,7 +376,7 @@ export default class Home extends Component {
     return (
       <div className="col-md-12">
         <div>
-          <h3>In General</h3>
+          <h3>{this.tr("In General")}</h3>
           <form>
             {this.CheckBoxQuestion("g1","Our work environment is positive")}
             {this.CheckBoxQuestion("g2","The communication is clear and effective")}
@@ -236,44 +427,14 @@ export default class Home extends Component {
           {this.dropDownQuestion("m12","Handles issues and people well")}
           {this.dropDownQuestion("m13","Follows through on promises")}
 
-
-
         </form>
-
       </div>
     )
   }
 
-  validateCode() {
-    this.setState({step:3})
-  }
 
-  EnterCode() {
-    return (
-      <div className="col-md-12 text-center">
-        <div>
-          {this.tr.bind(this,0)()}
-          <br/>
-          <br/>
-        </div>
-        <div>
-          <br/>
-          <span style={{fontWeight: "bold", fontSize: "large"}}> { this.tr.bind(this,1)()} </span>
-          <br/>
-          <br/>
-          <input type="text"></input>
-        </div>
-        <div>
-          <br/>
-          <br/>
-          <button className="btn btn-primary btn-lg" onClick={this.validateCode.bind(this)}>
-            { this.tr.bind(this,4)()}
-          </button>
-        </div>
-      </div>
 
-    )
-  }
+
 
   footer() {
     return(
@@ -297,9 +458,39 @@ export default class Home extends Component {
     )
   }
   Done(next) {
+    console.log("Submitting ", this.state)
+    fetch("http://localhost:5000/api/v1/survey/saveAnswers",{
+      method: "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(this.state)
+    }).then(function(response) {
+      return response.json()
+    }).then(function(json) {
+      console.log("received back: ", json)
+    }).catch(function(ex) {
+      console.log("failed to post: ", ex)
+    })
     this.setState({step: next})
   }
+  OneMore(next) {
+    this.setState({step: next, answers: {}})
+  }
+  Cancel(next) {
+    this.setState({step: next, answers: {}, language:""})
+  }
+
+  validateCode(storeCode) {
+    console.log("picked... stored code ", storeCode, this.state)
+    this.setState({storeCode: storeCode, step: 3})
+    console.log("setting state for store code. ", storeCode, this.state)
+  }
+
   TheBody() {
+
+
     switch(this.state.step) {
       case 1:
           return  (
@@ -311,7 +502,9 @@ export default class Home extends Component {
       case 2:
           return  (
             <div className="container text-center">
-              <div className="row">{this.EnterCode()}</div>
+              <div className="row">
+                <EnterCode language={this.state.language} callBack={this.validateCode.bind(this)} />
+              </div>
             </div>
           )
         break;
@@ -329,12 +522,12 @@ export default class Home extends Component {
                 <br/>
               <hr/>
               <div className="container text-center">
-                <button type="submit" className="btn btn-success btn-lg" onClick={this.Done.bind(this,99)}>Submit - I am done</button>
+                <button type="submit" className="btn btn-success btn-lg" onClick={this.Done.bind(this,99)}>{this.tr("Submit - I am done")}</button>
                   <span>&nbsp; &nbsp; &nbsp;</span>
-                <button type="submit" className="btn btn-Info btn-lg" onClick={this.Done.bind(this,1)}>Submit - and review another manager</button>
+                <button type="submit" className="btn btn-Info btn-lg" onClick={this.OneMore.bind(this,1)}>{this.tr("Submit - and review another manager")}</button>
                 <span>&nbsp; &nbsp; &nbsp;</span>
-                <button type="submit" className="btn btn-danger btn-lg" onClick={this.Done.bind(this,1)}>
-                  Cancel
+                <button type="submit" className="btn btn-danger btn-lg" onClick={this.Cancel.bind(this,1)}>
+                {this.tr("Cancel")}
                 </button>
               </div>
               <br/>
@@ -376,23 +569,26 @@ export default class Home extends Component {
       <header className="hero-section container {styles.topStyle}" visible={this.state.step!=4} >
         <div className="row">
           <div className="col-md-12">
-            <h1>
+            <h2>
               {
                 this.tr.bind(this,2)()
               }
-
-            </h1>
-            <div>
+            </h2>
+            <br/>
+            <br/>
+            <div style={{whiteSpace: "pre-line"}}>
               {
                 this.tr.bind(this,3)()
               }
             </div>
             <div>
-
+              <br/>
             </div>
           </div>
         </div>
         <hr/>
+        <br/>
+
       </header>
     )
   }

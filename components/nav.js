@@ -22,7 +22,7 @@ class Nav extends Component {
       return (
         <ul className="nav navbar-nav navbar-right">
           <li>
-            <Link to="/login">Admin</Link>
+              <Link to="/login" className="glyphicon glyphicon-log-in"> Admin </Link>
           </li>
         </ul>
 
@@ -42,11 +42,8 @@ class Nav extends Component {
             </button>
             <Link to='/' activeClassName='active' className="navbar-brand">leye</Link>
           </div>
-          <div id="navbar" className="navbar-collapse collapse">
-            <ul className="nav navbar-nav">
-
-            </ul>
-            {this.renderLoginSnippet()}
+          <div id="navbar" className="collapse navbar-collapse">
+              {this.renderLoginSnippet()}
           </div>
         </div>
       </nav>

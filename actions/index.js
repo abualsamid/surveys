@@ -33,7 +33,7 @@ function failedPets() {
 
 export function successfulLogin(token, profile) {
 
-  console.log('in successfulLogin , token is: ', token)
+  console.log('in successfulLogin , token is: ', token, ' profile is ', profile)
   try {
     return {
       type: SUCCESS_LOGIN,

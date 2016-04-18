@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { Link } from 'react-router'
+import { API_ROOT } from '../middleware/botengine'
 
 const rawFaq = require("../templates/faq.html");
 const whatWeDo = require("../templates/whatwedo.html");
@@ -247,7 +248,7 @@ export default class Home extends Component {
 
   constructor(props) {
     super(props)
-    this.state = { step: 1, language: "" , answers: {}, storeCode: ""};
+    this.state = { step: 1, language: "" , answers: {}, storeCode: "", manager: "", client: "LEYE", period: "2016"};
   }
 
 
@@ -295,6 +296,7 @@ export default class Home extends Component {
       console.log("choosing ", language );
       this.setState({step: 2, language: language})
   }
+
   dropDownQuestion(id, Q) {
     const ex = this.tr("5")
     const g = this.tr("6")
@@ -331,6 +333,41 @@ export default class Home extends Component {
             <option value="3">3 - {f} </option>
             <option value="2">2 - {n} </option>
             <option value="1">1 - {ns} </option>
+          </select>
+      </div>
+    )
+  }
+
+  dropDownManager(Q,managers) {
+
+    function v() {
+        try {
+          return this.state.manager || ""
+        } catch(x) {
+          console.log(x);
+          return "0";
+        }
+    }
+    function selectAnswer(event) {
+      try {
+        this.setState({manager: event.target.value})
+        console.log("select manager: ", event.target.value)
+      } catch(x) {
+        console.log('doh! selecting manager: ', x)
+      }
+    }
+    console.log("Managers are ", managers)
+    let options=[]
+    for(var i=0;i<managers.length;i++) {
+      var o = managers[i]
+      options.push(<option key={i} value={o.key}>{o.value}</option>)
+    }
+    return (
+      <div className="form-group">
+        <label>{this.tr(Q)}</label>
+          <select required defaultValue="" className="form-control"  value={v.bind(this)()} onChange={selectAnswer.bind(this)}>
+            <option value="" >({this.tr("Please Select")})</option>
+            {options}
           </select>
       </div>
     )
@@ -396,6 +433,8 @@ export default class Home extends Component {
     )
   }
   TakeManagerSurvey() {
+    let managers = [ {key: "Manager 1", value:"Manager 1"},{key: "Manager 2", value:"Manager 2"}, {key: "Manager 3", value:"Manager 3"} ]
+
     return (
       <div className="col-md-12">
         <div className="text-center">
@@ -403,14 +442,8 @@ export default class Home extends Component {
 
         </div>
         <form>
-          <div className="form-group">
-            <label>{this.tr("Manager's Name")}</label>
-            <select className="form-control">
-              <option>Manager 1</option>
-                <option>Manager 2</option>
-              <option>Manager 3</option>
-            </select>
-          </div>
+          {this.dropDownManager("Manager's Name", managers)}
+
           {this.dropDownQuestion("m1","Friendly and easy to approach")}
 
           {this.dropDownQuestion("m2","Treats all employees equally and fairly")}
@@ -459,7 +492,7 @@ export default class Home extends Component {
   }
   Done(next) {
     console.log("Submitting ", this.state)
-    fetch("http://localhost:5000/api/v1/survey/saveAnswers",{
+    fetch(API_ROOT + "api/v1/survey/saveAnswers",{
       method: "POST",
       headers: {
         'Accept': 'application/json',

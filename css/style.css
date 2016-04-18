@@ -22,7 +22,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 
 html, body {
   height: 100%;
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Roboto', sans-serif !important;
   font-size: 14px;
   font-weight: normal;
   line-height: 18px;

@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import GoogleLogin from 'react-google-login'
 import { triggerLogin } from '../actions'
 import { API_ROOT } from '../middleware/botengine'
-import { successfulLogin, failedLogin } from '../actions'
 
 import * as actionCreators from '../actions'
 // https://developers.google.com/identity/sign-in/web/server-side-flow
@@ -37,36 +36,77 @@ function responseGoogle(googleUser) {
   // }
 }
 
+class LoginForm extends Component{
+  constructor(props) {
+    super(props)
+    this.handleClick = this.handleClick.bind(this)
+  }
+  handleClick() {
+    const token = "test"
+    if (this.email !== null ) {
+      const profile = {email: this.email.value}
+      console.log("in handle click ", token, profile, this.email.value)
+      this.props.success(token, profile)
+    }
+
+  }
+
+  render() {
+    const { isLoggedIn, email } = this.props
+    if (isLoggedIn) {
+      return (
+        <div>
+          You are authenticated as { email }
+        </div>
+      )
+    } else {
+      if (false) {
+        return (
+          <div>
+            <GoogleLogin
+              clientId="789684712804-nr7p56u4grev55ct6lkujc7ih3pfpmeq.apps.googleusercontent.com"
+              callback={this.gooleResponse} />
+
+          </div>
+        )
+      } else {
+        return (
+          <div className='form'>
+            <div className="form-group">
+              <label>email</label>
+              <input className="form-control" type="text" ref={(ref) => this.email = ref}></input>
+            </div>
+            <div className="form-group">
+              <label>password</label>
+              <input className="form-control" type="password"></input>
+            </div>
+            <button className="btn btn-primary btn-lg" onClick={this.handleClick}>Submit</button>
+          </div>
+        )
+      }
+    }
+  }
+}
 
 class LoginPage extends Component {
   constructor(props) {
     super(props);
     this.gooleResponse = this.gooleResponse.bind(this)
     this.processLogin = this.processLogin.bind(this)
-    this.renderLoginOptions = this.renderLoginOptions.bind(this)
+    this.onSuccess = this.onSuccess.bind(this)
+    this.state = { email: this.props.email, isLoggedIn: this.props.isLoggedIn};
   }
 
   componentWillMount() {
   }
 
   componentWillReceiveProps(nextProps) {
-
   }
-  debugInfo(profile) {
-
-    console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-    console.log('Name: ' + profile.getName());
-    console.log('Image URL: ' + profile.getImageUrl());
-    console.log('Email: ' + profile.getEmail());
-    console.log("The id_token is: " + id_token);
-    console.log("The Auth Response is : " + googleUser.getAuthResponse());
-  }
-
 
   processLogin(profile) {
 
     console.log("In process login ...\n ");
-    const { successfulLogin, failedLogin, history } = this.props
+    const { successfulLogin, failedLogin } = this.props
     const { router } = this.context
     try {
       // console.log(JSON.stringify(profile));
@@ -123,29 +163,20 @@ class LoginPage extends Component {
       console.log(x);
     }
   }
-  renderLoginOptions() {
-    const { isLoggedIn, email } = this.props
-    if (isLoggedIn) {
-      return (
-        <div>
-          You are authenticated as { email }
-        </div>
-      )
-    } else {
-      return (
-        <div>
-          <GoogleLogin
-            clientId="789684712804-nr7p56u4grev55ct6lkujc7ih3pfpmeq.apps.googleusercontent.com"
-            callback={this.gooleResponse} />
 
-        </div>
-      )
-    }
+  onSuccess(token, profile ) {
+    const { successfulLogin, failedLogin } = this.props
+
+    this.setState({isLoggedIn: true, email: profile.email})
+    successfulLogin(token, profile)
+    const { router } = this.context
+    router.push('/Dashboard');
   }
+
   render() {
     return (
-      <div className="container text-center">
-        {this.renderLoginOptions()}
+      <div className="container">
+        <LoginForm email={this.state.email} isLoggedIn={this.state.isLoggedIn} success={this.onSuccess} />
       </div>
     )
   }

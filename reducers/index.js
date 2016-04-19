@@ -54,11 +54,18 @@ function login(state = { isLoggedIn: false, email: "", token: ""}, action) {
   switch(action.type) {
     case ActionTypes.SUCCESS_LOGIN:
       let g =  Object.assign({}, state, { isLoggedIn: true, email: action.profile.email, token: action.token })
-      console.log("reducing state to ", g );
       return g
     case ActionTypes.LOGOUT:
-      console.log("reducing lotout");
       return Object.assign({}, state, {isLoggedIn: false, email: "", token: "", profile:{}})
+    default:
+      return state;
+  }
+}
+function admin(state = {areas: [], locations: []}, action) {
+  console.log("reduced area : ", action.area)
+  switch(action.type) {
+    case "ADD_AREA":
+      return Object.assign({}, state, { areas: state.areas.concat([action.area]) } )
     default:
       return state;
   }
@@ -80,7 +87,8 @@ function errorMessage(state = null, action) {
 const rootReducer = combineReducers({
   errorMessage,
   routing,
-  login
+  login,
+  admin
 })
 
 export default rootReducer

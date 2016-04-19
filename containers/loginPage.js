@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import GoogleLogin from 'react-google-login'
-import { triggerLogin } from '../actions'
 import { API_ROOT } from '../middleware/botengine'
 
 import * as actionCreators from '../actions'
@@ -45,7 +44,6 @@ class LoginForm extends Component{
     const token = "test"
     if (this.email !== null ) {
       const profile = {email: this.email.value}
-      console.log("in handle click ", token, profile, this.email.value)
       this.props.success(token, profile)
     }
 

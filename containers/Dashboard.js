@@ -3,6 +3,8 @@ import { API_ROOT } from '../middleware/botengine'
 import { connect } from 'react-redux'
 import rd3 from 'rd3'
 
+import Areas from '../components/dashboard/areas'
+
 const PieChart = rd3.PieChart;
 class Chart extends Component {
   constructor(props) {
@@ -40,6 +42,9 @@ class Dashboard extends Component {
     constructor(props) {
       super(props)
       this.state = { DashboarData: {}};
+    }
+    addArea(areaName) {
+      console.log("adding area ", areaName)
     }
     componentDidMount() {
       let self = this
@@ -112,8 +117,10 @@ class Dashboard extends Component {
               </span>
             </div>
           </div>
-
-
+          <hr/>
+          <div>
+            <Areas areas={this.props.areas} callBack={this.addArea} language={this.props.language} />
+          </div>
         </div>
 
       )
@@ -124,7 +131,10 @@ export default connect(
   (state) => (
     {
       token: state.login.token,
-      email: state.login.email
+      email: state.login.email,
+      language: state.login.language || "en",
+      areas: state.admin.areas,
+      locations: state.admin.locations
     }
 
   )

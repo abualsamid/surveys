@@ -62,10 +62,17 @@ function login(state = { isLoggedIn: false, email: "", token: ""}, action) {
   }
 }
 function admin(state = {areas: [], locations: []}, action) {
-  console.log("reduced area : ", action.area)
+  console.log("reducing admin : ", action)
   switch(action.type) {
     case "ADD_AREA":
-      return Object.assign({}, state, { areas: state.areas.concat([action.area]) } )
+      return Object.assign({}, state, { areas: state.areas.concat([action.item]) } )
+    case "ADD_LOCATION":
+    return Object.assign({}, state, { locations: state.locations.concat([action.item]) } )
+
+    case "LOADED_AREAS":
+      return Object.assign({}, state, {areas: action.areas})
+    case "LOADED_LOCATIONS":
+      return Object.assign({}, state, {locations: action.locations})
     default:
       return state;
   }

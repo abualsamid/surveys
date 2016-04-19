@@ -61,7 +61,6 @@ class Dashboard extends Component {
         credentials: true
       })
       .then(function(res) {
-        console.log(res)
         if (res.ok) {
           return res.json();
         } else {
@@ -69,7 +68,6 @@ class Dashboard extends Component {
         }
       })
       .then(function(data) {
-        console.log("Data from server ", data)
         self.setState({DashboarData: data})
         // localStorage.setItem('token',token.token)
         // successfulLogin(token.token, profile)
@@ -119,7 +117,7 @@ class Dashboard extends Component {
           </div>
           <hr/>
           <div>
-            <Areas areas={this.props.areas} callBack={this.addArea} language={this.props.language} />
+            <Areas  language={this.props.language} />
           </div>
         </div>
 

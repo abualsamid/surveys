@@ -32,7 +32,7 @@ export function addArea(client, period, newArea) {
     });
 }
 
-export function getAreas(client, period) {
+export function getAreas(client) {
   return fetch(API_ROOT + "api/v1/admin/getAreas",{
       method: "POST",
       mode: "cors",
@@ -41,12 +41,56 @@ export function getAreas(client, period) {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({client: client, period: period, data: ""})
+      body: JSON.stringify({client: client, period: "", data: ""})
     }).then(function(response) {
       return response.json()
     }).then(function(json) {
       console.log("received back: ", json)
       return(json)
+    }).catch(function(ex) {
+      console.log("failed to post: ", ex)
+      return []
+    });
+}
+
+
+export function getLocations(client) {
+  return fetch(API_ROOT + "api/v1/admin/getLocations",{
+      method: "POST",
+      mode: "cors",
+      redirect: "follow",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({client: client,  area: "", location:""})
+    }).then(function(response) {
+      return response.json()
+    }).then(function(json) {
+      console.log("received back: ", json)
+      return(json)
+    }).catch(function(ex) {
+      console.log("failed to post: ", ex)
+      return []
+    });
+}
+
+export function addLocation(client, area, location) {
+
+  console.log("Adding location: ", {client: client, area: area, location: location})
+  return fetch(API_ROOT + "api/v1/admin/addLocation",{
+      method: "POST",
+      mode: "cors",
+      redirect: "follow",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({client: client, area: area, location: location})
+    }).then(function(response) {
+      return response.json()
+    }).then(function(json) {
+      console.log("received back: ", json)
     }).catch(function(ex) {
       console.log("failed to post: ", ex)
     });

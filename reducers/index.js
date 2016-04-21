@@ -70,9 +70,9 @@ function admin(state = {areas: [], locations: []}, action) {
     return Object.assign({}, state, { locations: state.locations.concat([action.item]) } )
 
     case "LOADED_AREAS":
-      return Object.assign({}, state, {areas: action.areas})
+      return Object.assign({}, state, {areas: action.areas ||[]})
     case "LOADED_LOCATIONS":
-      return Object.assign({}, state, {locations: action.locations})
+      return Object.assign({}, state, {locations: action.locations || []})
     default:
       return state;
   }

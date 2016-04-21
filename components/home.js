@@ -1,9 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { Link } from 'react-router'
-import { API_ROOT } from '../middleware/botengine'
+import * as api from '../middleware/botengine'
 
-const rawFaq = require("../templates/faq.html");
-const whatWeDo = require("../templates/whatwedo.html");
 const styles = require("../css/home.css");
 
 import * as languageHelper  from '../helpers/language'
@@ -316,23 +314,15 @@ export default class Home extends Component {
   }
   Done(next) {
     console.log("Submitting ", this.state)
-    fetch(API_ROOT + "api/v1/survey/saveAnswers",{
-      method: "POST",
-      mode: "cors",
-      redirect: "follow",
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(this.state)
-    }).then(function(response) {
-      return response.json()
-    }).then(function(json) {
-      console.log("received back: ", json)
-    }).catch(function(ex) {
-      console.log("failed to post: ", ex)
-    })
-    this.setState({step: next})
+    const self = this
+
+    api
+    .saveAnswers(this.state)
+    .then(
+      self.setState({step:next})
+    )
+
+
   }
   OneMore(next) {
     this.setState({step: next, answers: {}})

@@ -40,7 +40,7 @@ class App extends Component {
   }
 
   render() {
-    var year = new Date().getFullYear() || 2015
+    var year = new Date().getFullYear() || 2016
 
     const { children, inputValue } = this.props
     return (

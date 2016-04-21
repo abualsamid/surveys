@@ -1,7 +1,8 @@
 import React, { Component, PropTypes } from 'react'
-import { API_ROOT } from '../middleware/botengine'
 import { connect } from 'react-redux'
 import rd3 from 'rd3'
+
+import * as api from '../middleware/botengine'
 
 import Areas from '../components/dashboard/areas'
 
@@ -46,36 +47,17 @@ class Dashboard extends Component {
     addArea(areaName) {
       console.log("adding area ", areaName)
     }
-    componentDidMount() {
+    refresh() {
       let self = this
       const {email, token} = this.props
-      fetch(API_ROOT  + "api/v1/survey/getAnswers", {
-        headers: {
-         'Accept': 'application/json',
-         'Content-Type': 'application/json' ,
-         'Authorization' : 'Bearer ' + token
-        },
-        method:"GET",
-        mode: "cors",
-        cache: "default",
-        credentials: true
-      })
-      .then(function(res) {
-        if (res.ok) {
-          return res.json();
-        } else {
-          console.log("Network error in response.")
-        }
-      })
+      api.getAnswers(token)
       .then(function(data) {
+        console.log("Dashboard data ", data)
         self.setState({DashboarData: data})
-        // localStorage.setItem('token',token.token)
-        // successfulLogin(token.token, profile)
-        // router.push('/Dashboard');
       })
-      .catch(function(err) {
-        console.log("Error in dashboard render:", err)
-      })
+    }
+    componentDidMount() {
+      this.refresh.bind(this)()
     }
     render() {
       const {email, token} = this.props
@@ -103,7 +85,10 @@ class Dashboard extends Component {
 
       return (
         <div>
-          <h2>Dashboard</h2>
+          <h2>
+            Dashboard <a href="#" onClick={this.refresh.bind(this)}><span className="glyphicon glyphicon-refresh"></span></a>
+          </h2>
+
           <br/>
           <br/>
           <div>

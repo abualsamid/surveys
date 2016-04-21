@@ -6,16 +6,17 @@ class Nav extends Component {
   constructor(props) {
     super(props)
   }
-
+  
   renderLoginSnippet() {
     const { isLoggedIn, email }  = this.props
     if(isLoggedIn) {
       return (
         <ul className="nav navbar-nav navbar-right">
-                <li>
-                  <Link to="/logout">Log Out {email}</Link>
-                </li>
-              </ul>
+          <li><Link to="/Dashboard">Dashboard</Link></li>
+          <li>
+            <Link to="/logout">Log Out {email}</Link>
+          </li>
+        </ul>
 
       )
     } else {

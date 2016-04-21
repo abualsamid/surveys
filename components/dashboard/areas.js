@@ -12,10 +12,10 @@ function addItem(w, v, parent) {
   switch(w) {
     case "area":
       return api
-          .addArea("leye", "2016", v);
+          .addArea(v);
     case "location":
       return api
-          .addLocation("leye",parent, v)
+          .addLocation(parent, v)
   }
 
 }
@@ -40,6 +40,30 @@ function loadedLocations(locations){
   }
 }
 
+class LocationsDropDown extends Component {
+  constructor(props) {
+    super(props)
+  }
+  render() {
+    const {areas, locations} = this.props
+    return (
+      <select className="form-control"  >
+        {
+          areas.map( one => (
+            <optgroup label={one} key={one}>
+              {
+                locations
+                .filter( l => l.area==one)
+                .map( l => <option key={one + ':' + l.lcation}>{l.location} </option>  )
+              }
+            </optgroup>
+          ))
+        }
+      </select>
+    )
+
+  }
+}
 class Areas extends Component {
   constructor(props) {
     super(props)
@@ -57,8 +81,14 @@ class Areas extends Component {
         )
         break;
       case "location":
-        addItem(w,v,this.state.selectedArea)
-        .then(addedItem("ADD_LOCATION",{client:"leye", area: this.state.selectedArea, location: v} ))
+        try {
+          let parent = this.state.selectedArea || this.areaList.options[0].value
+          addItem(w,v,this.state.selectedArea)
+          .then(addedItem("ADD_LOCATION",{client:"leye", area: this.state.selectedArea, location: v} ))
+
+        } catch(x) {
+          alert("could not add location, please select an area and try again.");
+        }
         break;
     }
 
@@ -70,6 +100,10 @@ class Areas extends Component {
     } catch(x) {
       console.log(x, ' in select area');
     }
+  }
+  componentWillReceiveProps(nextProps) {
+      const {areas} = nextProps
+
   }
   componentDidMount() {
     var self = this;
@@ -109,23 +143,11 @@ class Areas extends Component {
 
             <div className="form-group">
               <select className="form-control" value={this.state.selectedArea} ref={ a => this.areaList = a}  onChange={this.selectArea.bind(this)}>
-              {this.props.areas.map( (one) =>  <option>{one}</option> )}
+              {this.props.areas.map( (one) =>  <option key={one}>{one}</option> )}
               </select>
             </div>
             <div className="form-group">
-              <select className="form-control"  >
-                {
-                  this.props.areas.map( one => (
-                    <optgroup label={one}>
-                      {
-                        this.props.locations
-                        .filter( l => l.area==one)
-                        .map( l => <option>{l.location} </option>  )
-                      }
-                    </optgroup>
-                  ))
-                }
-              </select>
+              <LocationsDropDown areas={this.props.areas} locations={this.props.locations} />
             </div>
             <div className="form-group">
               <input type="text" className="form-control" ref={(area) => this.area = area} placeholder="Add Area or Location" />

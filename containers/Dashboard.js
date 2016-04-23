@@ -50,7 +50,7 @@ class Dashboard extends Component {
     refresh() {
       let self = this
       const {email, token} = this.props
-      api.getAnswers(token)
+      api.getStoreReview(token)
       .then(function(data) {
         console.log("Dashboard data ", data)
         self.setState({DashboarData: data})

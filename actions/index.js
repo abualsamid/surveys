@@ -1,35 +1,37 @@
 import 'whatwg-fetch'
+import * as api from '../middleware/botengine'
 
-// pets
-export const REQUEST_PETS = 'REQUEST_PETS'
-export const RECEIVED_PETS = 'RECEIVED_PETS'
-export const FAILED_PETS = 'FAILED_PETS'
 export const SUCCESS_LOGIN = 'SUCCESS_LOGIN'
 export const FAILED_LOGIN = 'FAILED_LOGIN'
 export const LOGOUT = "LOGOUT"
 
-function requestPets() {
-  return {
-    type: REQUEST_PETS
+
+
+export function submitStoreAnswers(storeId, answers) {
+  return (dispatch, getState) => {
+    return api.saveStoreReview(storeId, answers)
+              .then(
+                result => dispatch(savedStoreAnswers(result))
+              )
   }
 }
 
-function receivedPets(json) {
-
-  console.log('in receive pets, json is: ', json)
-  return {
-    type: RECEIVED_PETS,
-    pets: json,
-    receivedAt: Date.now()
+export function submitManagerAnswers(answers) {
+  return (dispatch, getState) => {
+    return api.saveManagerReview(answers)
+              .then(
+                result => console.log("yahoo ... ", result )
+              )
   }
 }
 
-function failedPets() {
+export function savedStoreAnswers(result) {
+  console.log("in saved store answers: ", result)
   return {
-    type: FAILED_PETS
+    type: "SAVED_STORE_ANSWERS",
+    result
   }
 }
-
 
 export function successfulLogin(token, profile) {
 
@@ -44,7 +46,6 @@ export function successfulLogin(token, profile) {
   } catch(x) {
     console.log("in successfulLogin: ", x )
   }
-
 }
 
 export function logout() {
@@ -61,7 +62,6 @@ export function logout() {
   } catch(x) {
     console.log("in logout: ", x)
   }
-
 }
 
 export function failedLogin() {
@@ -70,83 +70,7 @@ export function failedLogin() {
   }
 }
 
-export function fetchPets(endpoint="") {
-  const fullUrl = endpoint === "" ? GATEWAY_ROOT : GATEWAY_ROOT +'/' + endpoint
-  console.log('fetching...');
-  return function(dispatch) {
-    // First dispatch: the app state is updated to inform
-    // that the API call is starting.
-    dispatch(requestPets())
 
-    // The function called by the thunk middleware can return a value,
-    // that is passed on as the return value of the dispatch method.
-
-    // In this case, we return a promise to wait for.
-    // This is not required by thunk middleware, but it is convenient for us.
-    console.log('calling out to ', fullUrl)
-
-    window.apigClient = window.apigClient || apigClientFactory.newClient();
-    var params= {};
-    var body = {};
-    var additionalParams = {};
-
-    return window.apigClient.petsGet(params, body, additionalParams)
-      .then(function(result){
-          console.log('from api gateway: ', result);
-          if (!result) {
-            console.log("failed on network.");
-            return dispatch(failedPets("network down!"))
-          }
-          if (result.status!==200) {
-            console.log("failed on network call: ", result.statusText);
-            return dispatch(failedPets(result.statusText))
-          }
-          return dispatch(receivedPets(result.data))
-      }).catch( function(result){
-        console.log('error in api gateway call: ', result);
-        dispatch(failedPets("wtf?"))
-        // Let the calling code know there's nothing to wait for.
-        return Promise.resolve()
-
-      });
-
-    // return fetch(fullUrl)
-    //   .then(response =>response.json().then(json => ({json,response})))
-    //   .then( ({json,response}) => {
-    //     if (!response.ok) {
-    //       console.log('failed on network fetch ', response.statusText);
-    //       return dispatch(failedPets(response.statusText))
-    //     }
-    //     console.log('received json ', json)
-    //     dispatch(receivedPets(json))
-    //   })
-    //   .catch( (err) => {
-    //     console.log('Network error on request: ', err);
-    //     dispatch(failedPets("wtf?"))
-    //     // Let the calling code know there's nothing to wait for.
-    //     return Promise.resolve()
-    //   })
-  }
-}
-
-function shouldFetchPets(state) {
-
-  try {
-    console.log('resolving should fetch pets: ', state)
-  } catch(x) {}
-  try {
-    if (!state.pets) {
-      return true
-    } else if (state.pets.isFetching) {
-      return false
-    } else {
-      return state.pets.didInvalidate
-    }
-  } catch(x) {
-    return true;
-  }
-
-}
 
 export function fetchPetsIfNeeded(endpoint="") {
 
@@ -168,7 +92,27 @@ export function fetchPetsIfNeeded(endpoint="") {
   }
 }
 
-// pets
+
+export function addedItem(type, item) {
+  return {
+    type: type,
+    item: item
+  }
+}
+
+export function loadedAreas(areas) {
+  return {
+    type:"LOADED_AREAS",
+    areas: areas
+  }
+}
+
+export function loadedStores(stores){
+  return {
+    type: "LOADED_STORES",
+    stores: stores
+  }
+}
 
 
 

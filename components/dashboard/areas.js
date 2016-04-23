@@ -4,90 +4,52 @@ import { connect } from 'react-redux'
 import * as languageHelper  from '../../helpers/language'
 import * as api from '../../middleware/botengine'
 
-function addItem(w, v, parent) {
-  v = v.trim()
+import StoresDropDown from '../StoresDropDown'
+
+import addedItem from '../../actions'
+import loadedAreas from '../../actions'
+import loadedStores from '../../actions'
 
 
+function addItem(what, newItem, parent) {
+  newItem = newItem.trim()
   // optimistic caching. push to server, fire and forget.
-  switch(w) {
+  switch(what) {
     case "area":
       return api
-          .addArea(v);
-    case "location":
+          .addArea(newItem);
+    case "store":
       return api
-          .addLocation(parent, v)
-  }
-
-}
-
-function addedItem(type, item) {
-  return {
-    type: type,
-    item: item
+          .addStore(parent, newItem)
   }
 }
 
-function loadedAreas(areas) {
-  return {
-    type:"LOADED_AREAS",
-    areas: areas
-  }
-}
-function loadedLocations(locations){
-  return {
-    type: "LOADED_LOCATIONS",
-    locations: locations
-  }
-}
 
-class LocationsDropDown extends Component {
-  constructor(props) {
-    super(props)
-  }
-  render() {
-    const {areas, locations} = this.props
-    return (
-      <select className="form-control"  >
-        {
-          areas.map( one => (
-            <optgroup label={one} key={one}>
-              {
-                locations
-                .filter( l => l.area==one)
-                .map( l => <option key={one + ':' + l.lcation}>{l.location} </option>  )
-              }
-            </optgroup>
-          ))
-        }
-      </select>
-    )
-
-  }
-}
 class Areas extends Component {
   constructor(props) {
     super(props)
     this.state = {selectedArea: ""}
   }
-  handleClick(w) {
+  handleClick(what) {
     const { addedItem } = this.props
-    var v = this.area.value.trim()
+    const newItem = this.area.value.trim()
     this.area.value=""
-    switch(w) {
+    switch(what) {
       case "area":
-        addItem(w,v)
+        addItem(what,newItem)
         .then(
-          addedItem("ADD_AREA",v)
+          addedItem("ADD_AREA",newItem)
         )
         break;
-      case "location":
+      case "store":
         try {
-          let parent = this.state.selectedArea || this.areaList.options[0].value
-          addItem(w,v,this.state.selectedArea)
-          .then(addedItem("ADD_LOCATION",{client:"leye", area: this.state.selectedArea, location: v} ))
+          let parentId = this.state.selectedArea || this.areaList.options[0].value
+          addItem(what,newItem,parentId)
+          .then(addedItem("ADD_STORE",{client:"leye", areaId: parentId, name: newItem} ))
 
         } catch(x) {
-          alert("could not add location, please select an area and try again.");
+          console.log(x)
+          alert("could not add store, please select an area and try again.");
         }
         break;
     }
@@ -109,9 +71,10 @@ class Areas extends Component {
     var self = this;
     api.getAreas("leye")
     .then(function(areas) {
+      console.log("received areas from api ", areas)
       try {
         if(areas.length>0) {
-          self.setState({selectedArea: areas[0]})
+          self.setState({selectedArea: areas[0].id})
         }
 
       } catch(x) {
@@ -123,34 +86,35 @@ class Areas extends Component {
       self.props.loadedAreas([])
     })
 
-    api.getLocations("leye")
-    .then(function(locations) {
-      self.props.loadedLocations(locations)
+    api.getStores("leye")
+    .then(function(stores) {
+      self.props.loadedStores(stores)
     })
     .catch(function(doh) {
-      self.props.loadedLocations([])
+      self.props.loadedStores([])
     })
 
   }
+
   render() {
     const {language} = this.props
     return (
       <div className="col-md-12">
         <div>
-          <div><h3>{languageHelper.tr("Locations", language)}</h3></div>
+          <div><h3>{languageHelper.tr("stores", language)}</h3></div>
 
           <form className="form-horizontal" onSubmit={(e) => e.preventDefault()}>
 
             <div className="form-group">
               <select className="form-control" value={this.state.selectedArea} ref={ a => this.areaList = a}  onChange={this.selectArea.bind(this)}>
-              {this.props.areas.map( (one) =>  <option key={one}>{one}</option> )}
+              {this.props.areas.map( (one) =>  <option key={one.id} value={one.id}> {one.name} </option> )}
               </select>
             </div>
             <div className="form-group">
-              <LocationsDropDown areas={this.props.areas} locations={this.props.locations} />
+              <StoresDropDown areas={this.props.areas} stores={this.props.stores} />
             </div>
             <div className="form-group">
-              <input type="text" className="form-control" ref={(area) => this.area = area} placeholder="Add Area or Location" />
+              <input type="text" className="form-control" ref={(area) => this.area = area} placeholder="Add Area or Store" />
             </div>
 
             <span style={{padding:"1em"}}>
@@ -160,8 +124,8 @@ class Areas extends Component {
 
             </span>
             <span style={{padding:"1em"}}>
-              <button type="submit"  className="btn btn-primary" onClick={this.handleClick.bind(this,"location")}>
-                {languageHelper.tr("Add Location",language)}
+              <button type="submit"  className="btn btn-primary" onClick={this.handleClick.bind(this,"store")}>
+                {languageHelper.tr("Add Store",language)}
               </button>
 
             </span>
@@ -185,13 +149,13 @@ export default connect(
       email: state.login.email,
       language: state.login.language || "en",
       areas: state.admin.areas || [],
-      locations: state.admin.locations
+      stores: state.admin.stores
     }
 
   ),
   {
     addedItem,
     loadedAreas,
-    loadedLocations
+    loadedStores
   }
 )(Areas)

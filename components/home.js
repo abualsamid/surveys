@@ -1,125 +1,139 @@
 import React, { Component, PropTypes } from 'react'
+import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import * as api from '../middleware/botengine'
-
+import StoresDropDown from './StoresDropDown'
+import ChooseLanguage from './home/chooseLanguage'
+import Footer from './home/footer'
 const styles = require("../css/home.css");
 
 import * as languageHelper  from '../helpers/language'
 
+import * as actionCreators from '../actions/index.js'
 
-class EnterCode extends Component {
+
+
+
+
+class Body extends Component {
   constructor(props) {
     super(props)
   }
-  handleClick(e) {
-    e.preventDefault();
-    this.props.callBack(this.storeCode.value, this.location.value)
-  }
   render() {
-    var language = this.props.language
-    return (
-      <div className="col-md-12 text-center">
-        <div>
-          <br/>
-          <span style={{fontWeight: "bold", fontSize: "large"}}> { languageHelper.tr("Please select your location",language)} </span>
-          <br/>
-          <br/>
-          <select ref={(location) => this.location = location?location.value:""} >
-            <option value="">{ languageHelper.tr("Please select your location",language)}</option>
-            <optgroup label="Chicago Area - IL">
-              <option>
-                Antico Posto
-              </option>
-              <option>
-                Big Bowl
-              </option>
-            </optgroup>
+    const {step, language} = this.props
 
-            <optgroup label="Minneapolis - St. Paul Area, MN">
-              <option>
-                Big Bowl
-              </option>
-              <option>
-                Magic Pan Crepe Stand
-              </option>
-              <option>
-                Tucci Italian
-              </option>
-            </optgroup>
-          </select>
-          <br/>
-        </div>
-        <div>
-          <br/>
-          <span style={{fontWeight: "bold", fontSize: "large"}}> { languageHelper.tr("Please enter the code assigned to you",language)} </span>
-          <br/>
-          <br/>
-          <input type="text"  ref={(ref) => this.storeCode = ref } ></input>
-        </div>
-        <div>
-          <br/>
-          <br/>
-          <button className="btn btn-primary btn-lg" onClick={this.handleClick.bind(this)}>
-            { languageHelper.tr("4",language)}
-          </button>
-        </div>
-      </div>
-    )
+    switch(step) {
+      case 1:
+          return  (
+            <div className="container text-center">
+              <div className="row"><ChooseLanguage /></div>
+            </div>
+          )
+        break;
+      case 2:
+          return  (
+            <div className="container text-center">
+              <div className="row">
+                <div className="col-md-12">
+                  {languageHelper.tr("This is an anonymous survey. All questions are optional.",language)}
+                  <br/>
+                  <br/>
+                </div>
+              </div>
+              <div className="row">
+              </div>
+            </div>
+          )
+        break;
+      case 3:
+          return (
+            <div>
+              <div className="container">
+                <div className="row">{this.TakeManagerSurvey()}</div>
+              </div>
+              <hr/>
+              <div className="container">
+                <div className="row">{this.TakeGeneralSurvey()}</div>
+              </div>
+              <br/>
+                <br/>
+              <hr/>
+              <div className="container text-center">
+                <button type="submit" className="btn btn-success btn-lg" onClick={this.Done.bind(this,99)}>
+                  {languageHelper.tr("Submit - I am done", language)}</button>
+                  <span>&nbsp; &nbsp; &nbsp;</span>
+                <button type="submit" className="btn btn-Info btn-lg" onClick={this.OneMore.bind(this,1)}>
+                  {languageHelper.tr("Submit - and review another manager", language)}</button>
+                <span>&nbsp; &nbsp; &nbsp;</span>
+                <button type="submit" className="btn btn-danger btn-lg" onClick={this.Cancel.bind(this,1)}>
+                {languageHelper.tr("Cancel", language)}
+                </button>
+              </div>
+              <br/>
+              <hr/>
+              <div className="container text-center">
+                <br/>
+                <div className="row">
+                  <Footer language={language} />
+                </div>
+              </div>
+            </div>
+
+          )
+        break;
+      case 99:
+        return (
+          <div className="container">
+            <div className="row">
+              <div className="col-md-12">
+                languageHelper.tr("Thank you for submitting the survey. You may now close this window.", languae)
+              </div>
+            </div>
+          </div>
+        )
+      default:
+          return  (
+            <div className="container text-center">
+              <div className="row"><ChooseLanguage/></div>
+            </div>
+          )
+        break;
+    }
   }
 }
 
-export default class Home extends Component {
+
+class Home extends Component {
 
   constructor(props) {
     super(props)
-    this.state = { step: 1, language: "" , answers: {}, storeCode: "", manager: "", client: "LEYE", period: "2016"};
+    this.state = { step: 1, language: "" , answers: {}, storeCode: "", manager: "", period: "2016"}
   }
 
 
-  trOne(code, language) {
-    try {
-      if (!languageHelper.languageText[code]) {
-        return code;
-      }
-      if (Array.isArray(languageHelper.languageText[code][language])) {
-        return languageHelper.languageText[code][language].join(languageHelper.languageText[code].sep || "")
-      } else {
-        return  languageHelper.languageText[code][language]
-      }
+  componentDidMount() {
+    const self = this;
+    console.log("props are: ", this.props)
+    const {loadedAreas, loadedStores} = this.props;
+    api.getAreas("")
+    .then(function(areas) {
+      loadedAreas(areas)
+    })
+    .catch(function(doh) {
+      console.log(doh)
+      loadedAreas([])
+    })
 
-    } catch(x) {
-      return "n/a!";
-    }
+    api.getStores("leye")
+    .then(function(stores) {
+      loadedStores(stores)
+    })
+    .catch(function(doh) {
+      console.log(doh)
+      loadedStores([])
+    })
   }
 
-  tr(code, language) {
-    if (!code) {
-      return "";
-    }
-    if(!language) {
-      language=""
-      try {
-        language = this.state.language;
-      } catch(x){
-        console.log("setting language ", x)
-      }
-    }
-    try {
-      return language=="" ?
-        languageHelper.languageText[code]["en"] + ( languageHelper.languageText[code].sep || " / " ) + languageHelper.languageText[code]["es"]
-        :
-        languageHelper.trOne(code, language)
-
-    } catch(x) {
-      console.log(x)
-      return "n/a." + " " + x;
-    }
-  }
-
-
-  chooseLanguage(language) {
-      this.setState({step: 2, language: language})
-  }
 
   dropDownQuestion(id, Q) {
     const ex = languageHelper.tr("5")
@@ -287,31 +301,6 @@ export default class Home extends Component {
     )
   }
 
-
-
-
-
-  footer() {
-    return(
-      <div className="col-md-12 text-center">
-        {this.tr("disclaimer")}
-      </div>
-    )
-  }
-
-  Logo() {
-    return (
-
-      <div className="col-md-12 text-center">
-        <div>
-          <button className="btn btn-primary btn-lg" onClick={this.chooseLanguage.bind(this,"en")}> English </button>
-          <span>&nbsp; &nbsp; &nbsp;</span>
-          <button className="btn btn-primary btn-lg" onClick={this.chooseLanguage.bind(this,"es")}> Español </button>
-
-        </div>
-      </div>
-    )
-  }
   Done(next) {
     console.log("Submitting ", this.state)
     const self = this
@@ -335,134 +324,24 @@ export default class Home extends Component {
     this.setState({storeCode: storeCode, step: 3})
   }
 
-  TheBody() {
 
-
-    switch(this.state.step) {
-      case 1:
-          return  (
-            <div className="container text-center">
-              <div className="row">{this.Logo()}</div>
-            </div>
-          )
-        break;
-      case 2:
-          return  (
-            <div className="container text-center">
-              <div className="row">
-                <div className="col-md-12">
-                  {languageHelper.tr("This is an anonymous survey. All questions are optional.",this.state.language)}
-                  <br/>
-                  <br/>
-                </div>
-              </div>
-              <div className="row">
-                <EnterCode language={this.state.language} callBack={this.validateCode.bind(this)} />
-              </div>
-            </div>
-          )
-        break;
-      case 3:
-          return (
-            <div>
-              <div className="container">
-                <div className="row">{this.TakeManagerSurvey()}</div>
-              </div>
-              <hr/>
-              <div className="container">
-                <div className="row">{this.TakeGeneralSurvey()}</div>
-              </div>
-              <br/>
-                <br/>
-              <hr/>
-              <div className="container text-center">
-                <button type="submit" className="btn btn-success btn-lg" onClick={this.Done.bind(this,99)}>{this.tr("Submit - I am done")}</button>
-                  <span>&nbsp; &nbsp; &nbsp;</span>
-                <button type="submit" className="btn btn-Info btn-lg" onClick={this.OneMore.bind(this,1)}>{this.tr("Submit - and review another manager")}</button>
-                <span>&nbsp; &nbsp; &nbsp;</span>
-                <button type="submit" className="btn btn-danger btn-lg" onClick={this.Cancel.bind(this,1)}>
-                {this.tr("Cancel")}
-                </button>
-              </div>
-              <br/>
-              <hr/>
-              <div className="container text-center">
-                <br/>
-                <div className="row">{this.footer()}</div>
-              </div>
-            </div>
-
-          )
-        break;
-      case 99:
-        return (
-          <div className="container">
-            <div className="row">
-              <div className="col-md-12">
-                Thank you for submitting the survey. You may now close this window.
-              </div>
-            </div>
-          </div>
-        )
-      default:
-          return  (
-            <div className="container text-center">
-              <div className="row">{this.Logo()}</div>
-            </div>
-          )
-        break;
-    }
-
-  }
-
-  header() {
-    if (this.state.step > 10 ) {
-      return null
-    }
-    return (
-      <header className="hero-section container {styles.topStyle}" visible={this.state.step!=4} >
-        <div className="row">
-          <div className="col-md-12">
-            <h2>
-              {
-                this.tr.bind(this,2)()
-              }
-            </h2>
-            <br/>
-            <br/>
-            <div style={{whiteSpace: "pre-line"}}>
-              {
-                this.tr.bind(this,3)()
-              }
-            </div>
-            <div>
-              <br/>
-            </div>
-          </div>
-        </div>
-        <hr/>
-        <br/>
-
-      </header>
-    )
-  }
-  display() {
-    return (
-      <div>
-        {this.header()}
-        <section className="container">
-          {this.TheBody()}
-        </section>
-      </div>
-
-    )
-  }
   render() {
     return (
       <div>
-        {this.display()}
-        <br/>
+        <ChooseLanguage />
       </div>
     )
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    token: state.login.token,
+    email: state.login.email,
+    language: state.login.language || "en",
+    areas: state.admin.areas || [],
+    storesList: state.admin.stores || []
+  }
+}
+
+export default connect(mapStateToProps,actionCreators)(Home)

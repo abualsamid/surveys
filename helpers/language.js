@@ -11,8 +11,8 @@ export function trOne(code, language) {
     }
 
   } catch(x) {
-    console.log(x);
-    return "n/a!";
+    console.log(x + " " + code + " " + language);
+    return code;
   }
 }
 
@@ -30,8 +30,8 @@ export function tr(code, language) {
       trOne(code, language)
 
   } catch(x) {
-    console.log(x);
-    return "n/a. " + x;
+    console.log(x + " " + code + " " + language);
+    return code;
   }
 }
 
@@ -46,8 +46,11 @@ export const languageText = {
     "en": "Please enter the code assigned to you",
     "es":"Por favor, introduzca el código asignado a usted"
   },
-
-  "2": {
+  "Please select your store": {
+    "en":"Please select your store",
+    "es":"Por favor seleccione su tienda"
+  },
+  "EMPLOYEE SUREY FOR LEYE EMPLOYEES": {
     "en": "EMPLOYEE SUREY FOR LEYE EMPLOYEES",
     "es":  "ENCUESTA PARA EMPLEADOS LEYE"
   },
@@ -191,6 +194,19 @@ export const languageText = {
   "Submit - I am done": {
     "en": "Submit - I am done",
     "es": "Enviar - he terminado"
+  },
+  "Submit Answers": {
+    "en": "Submit Answers",
+    "es": "Presentar respuestas"
+  },
+  "Skip - Go to Manager Review": {
+    "en": "Skip - Go to Manager Review",
+    "es": "Saltar - Ir a Review Manager"
+  },
+
+  "Submit - I want to review another manager": {
+    "en": "Submit - I want to review another manager",
+    "es": "Enviar - Quiero repasar otro gestor"
   },
   "Cancel": {
     "en": "Cancel",

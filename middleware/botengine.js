@@ -4,6 +4,10 @@ const API_ROOT  = settings.API_ROOT
 
 const customerId = "571851a9f21eea564f30f3a3"
 
+const customer = {
+  customerId: customerId,
+  name: "leye"
+}
 export function addArea(name) {
   console.log("From settings: ", settings)
   return fetch(API_ROOT + "api/v1/admin/areas",{
@@ -14,7 +18,7 @@ export function addArea(name) {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({customerId: customerId, name: name})
+      body: JSON.stringify({customerId: customer.customerId, name: name})
     }).then(function(response) {
       if (!response.ok) {
         throw Error(response.statusText)
@@ -29,7 +33,7 @@ export function addArea(name) {
 }
 
 export function getAreas(client) {
-  return fetch(API_ROOT + "api/v1/admin/areas",{
+  return fetch(API_ROOT + "api/v1/admin/areas/" + customer.customerId,{
       method: "GET",
       mode: "cors",
       redirect: "follow",
@@ -37,7 +41,6 @@ export function getAreas(client) {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({customerId: customerId})
     }).then(function(response) {
       return response.json()
     }).then(function(json) {
@@ -54,16 +57,15 @@ export function getAreas(client) {
 }
 
 
-export function getLocations(client) {
-  return fetch(API_ROOT + "api/v1/admin/getLocations",{
-      method: "POST",
+export function getStores(client) {
+  return fetch(API_ROOT + "api/v1/admin/stores/" + customer.customerId,{
+      method: "GET",
       mode: "cors",
       redirect: "follow",
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({client: client,  area: "", location:""})
+      }
     }).then(function(response) {
       return response.json()
     }).then(function(json) {
@@ -73,15 +75,16 @@ export function getLocations(client) {
       json.sort()
       return(json)
     }).catch(function(ex) {
-      console.log("failed to post: ", ex)
+      console.log("failed to get: ", ex)
       return []
     });
 }
 
-export function addLocation(client, area, location) {
+export function addStore(areaId, name) {
 
-  console.log("Adding location: ", {client: client, area: area, location: location})
-  return fetch(API_ROOT + "api/v1/admin/addLocation",{
+  var store = { customerId: customer.customerId, areaId: areaId, name: name}
+  console.log("Adding store: ", store)
+  return fetch(API_ROOT + "api/v1/admin/stores/" + customer.customerId + "/" + areaId,{
       method: "POST",
       mode: "cors",
       redirect: "follow",
@@ -89,7 +92,7 @@ export function addLocation(client, area, location) {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({client: client, area: area, location: location})
+      body: JSON.stringify(store)
     }).then(function(response) {
       return response.json()
     }).then(function(json) {
@@ -129,7 +132,30 @@ export function getStoreReview(token) {
 }
 
 export function saveManagerReview(data) {
+  console.log("posting to saveManagerReview : ", data)
   return fetch(API_ROOT + "api/v1/survey/managerReview",{
+      method: "POST",
+      mode: "cors",
+      redirect: "follow",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    }).then(function(response) {
+      return response.json()
+    }).then(function(json) {
+      console.log("received back: ", json)
+      return json
+    }).catch(function(ex) {
+      console.log("failed to post: ", ex)
+    })
+}
+
+
+export function saveStoreReview(storeId,data) {
+  console.log("in saveStoreReview ", data)
+  return fetch(API_ROOT + "api/v1/survey/storeReview/" + customer.customerId + "/" + storeId ,{
       method: "POST",
       mode: "cors",
       redirect: "follow",

@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { browserHistory } from 'react-router'
-import Explore from '../components/Explore'
 import Nav from '../components/nav'
 import { resetErrorMessage } from '../actions'
 

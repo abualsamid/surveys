@@ -30,11 +30,14 @@ class Container extends Component {
 
   render() {
 
-    const {language, handleSubmit, handleSkip} = this.props
+    const {language, handleSubmit, handleSkip, storeId, storeCaption} = this.props
     return(
       <div>
         <StoreSurvey language={language} handleSubmit={this.handleSubmit.bind(this)}
-          handleSkip={this.handleSkip.bind(this)} handleCancel={this.handleCancel.bind(this)} />
+          handleSkip={this.handleSkip.bind(this)} handleCancel={this.handleCancel.bind(this)}
+          storeId={storeId}
+          storeCaption={storeCaption}
+        />
       </div>
     )
   }
@@ -44,6 +47,8 @@ class Container extends Component {
 export default connect(
   (state) => ({
     language: state.login.language,
-    reviewId: state.admin.reviewId
+    reviewId: state.admin.reviewId,
+    storeId: state.survey.storeId || "",
+    storeCaption: state.survey.storeCaption || "hmmm"
   })
 )(Container)

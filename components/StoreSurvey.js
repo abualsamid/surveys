@@ -19,11 +19,14 @@ export default class StoreSurvey extends Component {
 
   render() {
 
-    const {language, handleSkip, handleSubmit, handleCancel }  = this.props
-    
+    const {language, handleSkip, handleSubmit, handleCancel,storeId, storeCaption }  = this.props
+
 
     return (
       <div className="col-md-12">
+        <div className="text-center">
+          <h2>{storeCaption}</h2>
+        </div>
         <div>
           <h3>{languageHelper.tr("In General", language)}</h3>
           <form onSubmit={(e)=> e.preventDefault()}>
@@ -76,7 +79,7 @@ export default class StoreSurvey extends Component {
           </span>
           <span>
             <button type="submit" className="btn btn-lg btn-danger" onClick={handleCancel}>
-              languageHelper.tr("Cancel", language)
+              {languageHelper.tr("Cancel", language)}
             </button>
           </span>
         </div>

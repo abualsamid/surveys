@@ -30,6 +30,7 @@ const customer = {
   customerId: customerId,
   name: "leye"
 }
+
 export function addArea(name) {
   console.log("From settings: ", settings)
   return fetch(API_ROOT + "api/v1/admin/areas",{
@@ -128,10 +129,50 @@ export function getStores(client) {
     });
 }
 
-export function addStore(areaId, name) {
+export function addManager(storeId, name) {
+  var manager = { customerId: customer.customerId, storeId: storeId, name: name}
+  console.log("posting to manager, ", manager);
+  
+  return fetch(V1 + "admin/manager/" + customer.customerId + "/" + storeId, {
+    method: "POST",
+    mode: "cors",
+    redirect: "follow",
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(manager)
+  }).then(function(response) {
+    return response.json()
+  }).then(function(result) {
+    return result
+  }).catch(function(doh) {
+    console.log("error adding manager... ", doh)
+  });
+}
 
+export function getManagers() {
+  return fetch(V1 + "admin/manager/" + customer.customerId ,
+    {
+     method: "GET",
+     mode: "cors",
+     redirect: "follow",
+     headers: {
+       'Accept': 'application/json',
+       'Content-Type': 'application/json'
+     }
+    }
+  ).then(function(response) {
+    return response.json()
+  }).then(function(managers) {
+    return managers
+  }).catch(function(doh) {
+    console.log("error getting managers.")
+  })
+}
+
+export function addStore(areaId, name) {
   var store = { customerId: customer.customerId, areaId: areaId, name: name}
-  console.log("Adding store: ", store)
   return fetch(API_ROOT + "api/v1/admin/stores/" + customer.customerId + "/" + areaId,{
       method: "POST",
       mode: "cors",
@@ -145,6 +186,7 @@ export function addStore(areaId, name) {
       return response.json()
     }).then(function(json) {
       console.log("received back: ", json)
+      return json
     }).catch(function(ex) {
       console.log("failed to post: ", ex)
     });

@@ -19,20 +19,32 @@ function login(state = { isLoggedIn: false, language: "en", email: "", token: ""
       return state;
   }
 }
-function admin(state = {areas: [], stores: [], reviewId:""}, action) {
+function survey(state={storeId:"", storeCaption:""}, action) {
+  switch(action.type) {
+    case "SELECT_STORE":
+      return Object.assign({},state, {storeId: action.storeId, storeCaption: action.storeCaption})
+    default:
+      return state
+  }
+}
+function admin(state = {areas: [], stores: [], managers:[], reviewId:""}, action) {
   try {
     switch(action.type) {
       case "ADD_AREA":
         return Object.assign({}, state, { areas: state.areas.concat([action.item]) } )
       case "ADD_STORE":
-      return Object.assign({}, state, { stores: state.stores.concat([action.item]) } )
-
+        return Object.assign({}, state, { stores: state.stores.concat([action.item]) } )
+      case "ADD_MANAGER":
+        return Object.assign({}, state, { managers: state.managers.concat([action.item])})
       case "LOADED_AREAS":
         return Object.assign({}, state, {areas: action.areas ||[]})
       case "LOADED_STORES":
         return Object.assign({}, state, {stores: action.stores || []})
       case "SET_REVIEW_ID":
         return Object.assign({}, state, {reviewId: action.id})
+      case "LOADED_MANAGERS":
+      return Object.assign({}, state, {managers: action.managers ||[]})
+
       default:
         return state;
     }
@@ -60,7 +72,8 @@ const rootReducer = combineReducers({
   errorMessage,
   routing,
   login,
-  admin
+  admin,
+  survey
 })
 
 export default rootReducer

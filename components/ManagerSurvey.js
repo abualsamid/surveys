@@ -3,6 +3,7 @@ import { browserHistory } from 'react-router'
 import Checkbox from './questions/checkbox'
 import TextQuestion from './questions/text'
 import DropDown from './questions/dropDown.js'
+import ManagerDropDown from './ManagerDropDown'
 import * as languageHelper  from '../helpers/language'
 
 export default class ManagerSurvey extends Component {
@@ -13,6 +14,7 @@ export default class ManagerSurvey extends Component {
   componentDidMount() {
     const {language} = this.props
     this.answers = {}
+    this.managerId = ""
     const dropDownOptions = [
       { key: "5", value: languageHelper.tr("5",language)},
       { key: "4", value: languageHelper.tr("6",language)},
@@ -54,21 +56,20 @@ export default class ManagerSurvey extends Component {
 
 
   render() {
-    const {language, handleCancel, handleDone }  = this.props
-    let managers = [ {key: "Manager 1", value:"Manager 1"},{key: "Manager 2", value:"Manager 2"}, {key: "Manager 3", value:"Manager 3"} ]
+    const {language, handleCancel, handleDone, storeId, managers,storeCaption }  = this.props
+    console.log(managers)
     console.log(this.questions)
 
     return (
       <div className="col-md-12">
         <div className="text-center">
-          <h2>Big Bowl - Downtown Chicago</h2>
+          <h2>{storeCaption}</h2>
 
         </div>
         <form onSubmit={(e)=> e.preventDefault()} >
-          <DropDown id="managerId" question={languageHelper.tr("Manager's Name",language)}
-          pleaseSelect={languageHelper.tr("Select Manager", language)}
-          options = {managers}
-          onChange={this.handleAnswer.bind(this)} />
+          <ManagerDropDown storeId={storeId}  managers={managers}
+                setManagerId={id=>this.managerId=id}
+                 />
 
           {
             this.state.questions.map(

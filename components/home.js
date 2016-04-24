@@ -9,7 +9,7 @@ const styles = require("../css/home.css");
 
 import * as languageHelper  from '../helpers/language'
 
-import * as actionCreators from '../actions/index.js'
+import * as actionCreators from '../actions/dashboard.js'
 
 
 
@@ -79,7 +79,7 @@ class Home extends Component {
   componentDidMount() {
     const self = this;
     console.log("props are: ", this.props)
-    const {loadedAreas, loadedStores, setReviewId} = this.props;
+    const {loadedAreas, loadedStores, loadedManagers, setReviewId} = this.props;
 
     api.ensureReview("Manager Review","2016")
     .then(function(reviewId) {
@@ -107,6 +107,16 @@ class Home extends Component {
     .catch(function(doh) {
       console.log(doh)
       loadedStores([])
+    })
+
+    api.getManagers()
+    .then(function(managers) {
+      console.log("received managers ", managers)
+      loadedManagers(managers)
+    })
+    .catch(function(doh) {
+      console.log(doh)
+      loadedManagers([])
     })
   }
 

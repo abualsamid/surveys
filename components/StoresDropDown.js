@@ -10,12 +10,11 @@ export default class StoresDropDown extends Component {
   }
   handleChange(e) {
     const {setStoreId} = this.props
-    setStoreId(e.target.value ||this.storeId||"")
+    setStoreId(e.target.value ||this.storeId||"", e.target.text)
 
   }
   render() {
     const {areas, stores} = this.props
-    console.log("rendering ", stores )
     return (
       <select className="form-control" ref={(ref)=>this.storeId= (ref?ref.value:"")} onChange={this.handleChange.bind(this)}  >
         {
@@ -24,7 +23,7 @@ export default class StoresDropDown extends Component {
               {
                 stores
                 .filter( l => l.areaId==one.id)
-                .map( l => <option key={l.id} value={l.id}>{l.name} </option>  )
+                .map( l => <option key={l.id} value={l.id}>{l.name}</option>  )
               }
             </optgroup>
           ))

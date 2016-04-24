@@ -22,15 +22,20 @@ class Container extends Component {
   handleSubmit(answers) {
     const {dispatch} = this.props
     dispatch(submitManagerAnswers(answers))
-    
+
   }
 
   render() {
-    const {language} = this.props
     return(
       <div>
         <h2>Manager Survey </h2>
-        <ManagerSurvey language={language} handleCancel={this.handleCancel.bind(this)} handleDone={this.handleDone} />
+        <ManagerSurvey
+          handleCancel={this.handleCancel.bind(this)}
+          handleDone={this.handleDone}
+          managers = {this.props.managers}
+          storeId = {this.props.storeId}
+          storeCaption = {this.props.storeCaption}
+           />
       </div>
     )
   }
@@ -38,6 +43,9 @@ class Container extends Component {
 
 export default connect(
   (state) => ({
-    language: state.login.language
+    language: state.login.language,
+    managers: state.admin.managers ||[],
+    storeId : state.survey.storeId ||"",
+    storeCaption: state.survey.storeCaption ||""
   })
 )(Container)

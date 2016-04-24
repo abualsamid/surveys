@@ -93,33 +93,7 @@ export function fetchPetsIfNeeded(endpoint="") {
 }
 
 
-export function addedItem(type, item) {
-  return {
-    type: type,
-    item: item
-  }
-}
 
-export function loadedAreas(areas) {
-  return {
-    type:"LOADED_AREAS",
-    areas: areas
-  }
-}
-
-export function setReviewId(id) {
-  console.log("setting review id to " , id)
-  return {
-    type:"SET_REVIEW_ID",
-    id: id
-  }
-}
-export function loadedStores(stores){
-  return {
-    type: "LOADED_STORES",
-    stores: stores
-  }
-}
 
 
 

@@ -19,7 +19,7 @@ function login(state = { isLoggedIn: false, language: "en", email: "", token: ""
       return state;
   }
 }
-function admin(state = {areas: [], stores: []}, action) {
+function admin(state = {areas: [], stores: [], reviewId:""}, action) {
   try {
     switch(action.type) {
       case "ADD_AREA":
@@ -31,6 +31,8 @@ function admin(state = {areas: [], stores: []}, action) {
         return Object.assign({}, state, {areas: action.areas ||[]})
       case "LOADED_STORES":
         return Object.assign({}, state, {stores: action.stores || []})
+      case "SET_REVIEW_ID":
+        return Object.assign({}, state, {reviewId: action.id})
       default:
         return state;
     }

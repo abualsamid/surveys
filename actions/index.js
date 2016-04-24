@@ -7,18 +7,18 @@ export const LOGOUT = "LOGOUT"
 
 
 
-export function submitStoreAnswers(storeId, answers) {
+export function submitStoreAnswers(reviewId, storeId, answers) {
   return (dispatch, getState) => {
-    return api.saveStoreReview(storeId, answers)
+    return api.saveStoreReview(reviewId, storeId, answers)
               .then(
                 result => dispatch(savedStoreAnswers(result))
               )
   }
 }
 
-export function submitManagerAnswers(answers) {
+export function submitManagerAnswers(reviewId, storeId,answers) {
   return (dispatch, getState) => {
-    return api.saveManagerReview(answers)
+    return api.saveManagerReview(reviewId, storeId,answers)
               .then(
                 result => console.log("yahoo ... ", result )
               )
@@ -107,6 +107,13 @@ export function loadedAreas(areas) {
   }
 }
 
+export function setReviewId(id) {
+  console.log("setting review id to " , id)
+  return {
+    type:"SET_REVIEW_ID",
+    id: id
+  }
+}
 export function loadedStores(stores){
   return {
     type: "LOADED_STORES",

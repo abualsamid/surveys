@@ -15,12 +15,12 @@ class Container extends Component {
     browserHistory.push("/ManagerSurvey")
   }
   handleSubmit(answers) {
-    const { dispatch } = this.props
+    const { dispatch, reviewId } = this.props
     const { storeId } = this.props.params
 
     console.log("submit n next ", answers)
     console.log("this.props ", this.props)
-    dispatch(submitStoreAnswers(storeId, answers))
+    dispatch(submitStoreAnswers(reviewId, storeId, answers))
     this.handleSkip()
   }
 
@@ -43,6 +43,7 @@ class Container extends Component {
 
 export default connect(
   (state) => ({
-    language: state.login.language
+    language: state.login.language,
+    reviewId: state.admin.reviewId
   })
 )(Container)

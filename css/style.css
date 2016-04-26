@@ -31,8 +31,50 @@ html, body {
 
 body {
   padding-top: 70px;
+  background-color: #ecedef;
 }
 
 span.btn {
   padding: 1em;
+}
+
+div.card {
+  background-color: #eee;
+  border: 1px solid grey;
+  padding: 2em;
+}
+
+div.minorcard {
+  background-color: #ddd;
+  border: 1px solid grey;
+  padding: 2em;
+  margin: 2em;
+}
+
+div.minorcard textarea {
+  background-color: #eee;
+}
+
+div.minorcard select {
+  background-color: #eee;
+}
+
+div.minorcard input {
+  background-color: #eee;
+}
+
+div.card textarea {
+  background-color: #eee;
+}
+
+div.card select {
+  background-color: #eee;
+}
+
+div.card input {
+  background-color: #eee;
+}
+
+h2 {
+  font-weight: bold;
 }

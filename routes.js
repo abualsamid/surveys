@@ -8,7 +8,9 @@ import SignupPage from './containers/SignupPage'
 import LogoutPage from './containers/LogoutPage'
 import Home from './components/home'
 import EnterStore from './components/EnterStore'
+import Admin from './containers/Admin'
 import Dashboard from './containers/Dashboard'
+
 export default (
   <Route path="/" component={App}>
     <IndexRoute component={Home}/>
@@ -18,6 +20,7 @@ export default (
     <Route path="/login" component={LoginPage} />
     <Route path="/signup" component={SignupPage} />
     <Route path="/logout" component={LogoutPage} />
-    <Route path="/dashboard" component={Dashboard}  />
+    <Route path="/admin" component={Admin}  />
+    <Route path="/dashboard" component={Dashboard} />
   </Route>
 )

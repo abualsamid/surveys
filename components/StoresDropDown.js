@@ -5,18 +5,23 @@ export default class StoresDropDown extends Component {
     super(props)
   }
   componentDidMount() {
-    const {setStoreId} = this.props
-    setStoreId(this.storeId||"")
+    const {setStoreId, stores } = this.props
+    if (this.storeId) {
+      setStoreId(this.storeId.value||   "", this.storeId.options[this.storeId.selectedIndex || 0].text)
+    } else {
+      if (stores && stores.length) {
+        setStoreId(stores[0].id, stores[0].name)
+      }
+    }
   }
   handleChange(e) {
     const {setStoreId} = this.props
-    setStoreId(e.target.value ||this.storeId||"", e.target.text)
-
+    setStoreId(e.target.value || this.storeId.value ||"", e.target.options[e.target.selectedIndex].text )
   }
   render() {
     const {areas, stores} = this.props
     return (
-      <select className="form-control" ref={(ref)=>this.storeId= (ref?ref.value:"")} onChange={this.handleChange.bind(this)}  >
+      <select className="form-control" ref={(ref)=>this.storeId=ref} onChange={this.handleChange.bind(this)}  >
         {
           areas.map( one => (
             <optgroup label={one.name} key={one.id}>

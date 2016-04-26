@@ -78,12 +78,10 @@ class Home extends Component {
 
   componentDidMount() {
     const self = this;
-    console.log("props are: ", this.props)
     const {loadedAreas, loadedStores, loadedManagers, setReviewId} = this.props;
 
     api.ensureReview("Manager Review","2016")
     .then(function(reviewId) {
-      console.log("received reviewId ", reviewId)
       setReviewId(reviewId)
     })
     .catch(function(doh){
@@ -111,7 +109,6 @@ class Home extends Component {
 
     api.getManagers()
     .then(function(managers) {
-      console.log("received managers ", managers)
       loadedManagers(managers)
     })
     .catch(function(doh) {

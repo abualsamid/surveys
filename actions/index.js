@@ -26,7 +26,6 @@ export function submitManagerAnswers(reviewId, storeId,answers) {
 }
 
 export function savedStoreAnswers(result) {
-  console.log("in saved store answers: ", result)
   return {
     type: "SAVED_STORE_ANSWERS",
     result

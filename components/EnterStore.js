@@ -5,7 +5,7 @@ import { browserHistory } from 'react-router'
 import StoresDropDown from './StoresDropDown'
 
 import * as languageHelper  from '../helpers/language'
-import * as actions from '../actions/survey'
+import * as actions  from '../actions/survey'
 
 
 class EnterStore extends Component {
@@ -15,15 +15,18 @@ class EnterStore extends Component {
     this.storeId=""
   }
   handleClick() {
-    actions.selectStore(this.storeId, this.storeCaption)
-    browserHistory.push("/StoreSurvey/" + this.storeId)
+    this.props.selectStore(this.storeId, this.storeCaption)
+    setTimeout(
+      browserHistory.push("/StoreSurvey/" + this.storeId),
+      10
+    )
 
   }
+
   handleCancel() {
     browserHistory.push("/")
   }
   setStoreId(id, caption) {
-    console.log("setting store id to ", id, " ", caption)
     this.storeId = id
     this.storeCaption=caption
   }
@@ -75,5 +78,6 @@ export default connect(
       areas: state.admin.areas,
       stores: state.admin.stores
     }
-  )
+  ),
+  actions
 )(EnterStore)

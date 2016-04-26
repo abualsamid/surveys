@@ -43,12 +43,13 @@ class Areas extends Component {
       case "area":
         addItem(what,newItem)
         .then(
-          addedItem("ADD_AREA",newItem)
+          function(newArea) {
+            addedItem("ADD_AREA",newArea)
+          }
         )
         break;
       case "manager":
-        let parentId = this.state.selectedStore || this.storeList.options[0].value
-        console.log("calling addItem: ", what, ", ", newItem, ", ", parentId)
+        let parentId = this.state.selectedStore || ( this.storeList ? this.storeList.options[0].value : "")
         addItem(what, newItem, parentId)
         .then(
           function(newManager) {
@@ -149,11 +150,9 @@ class Areas extends Component {
             <div className="form-group">
               <StoresDropDown areas={this.props.areas} stores={this.props.stores} setStoreId={this.selectStore.bind(this)} />
             </div>
-            <div className="form-group">
               <ManagerDropDown storeId={this.state.selectedStore}  managers={managers}
                 setManagerId={()=>console.log("...")}
                  />
-            </div>
             <div className="form-group">
               <input type="text" className="form-control" ref={(area) => this.area = area} placeholder="Add Area, Store or Manager" />
             </div>

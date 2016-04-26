@@ -7,19 +7,15 @@ import { submitStoreAnswers } from '../actions'
 class Container extends Component {
   constructor(props) {
     super(props)
-    console.log("Container props: ", props )
   }
 
   handleSkip() {
-    console.log("moving on...")
     browserHistory.push("/ManagerSurvey")
   }
   handleSubmit(answers) {
     const { dispatch, reviewId } = this.props
     const { storeId } = this.props.params
-
-    console.log("submit n next ", answers)
-    console.log("this.props ", this.props)
+    console.log("dispatching to submit store answers ", answers)
     dispatch(submitStoreAnswers(reviewId, storeId, answers))
     this.handleSkip()
   }
@@ -30,7 +26,7 @@ class Container extends Component {
 
   render() {
 
-    const {language, handleSubmit, handleSkip, storeId, storeCaption} = this.props
+    const {language, storeId, storeCaption} = this.props
     return(
       <div>
         <StoreSurvey language={language} handleSubmit={this.handleSubmit.bind(this)}
@@ -49,6 +45,6 @@ export default connect(
     language: state.login.language,
     reviewId: state.admin.reviewId,
     storeId: state.survey.storeId || "",
-    storeCaption: state.survey.storeCaption || "hmmm"
+    storeCaption: state.survey.storeCaption || ("hmmm " + state.survey.storeId)
   })
 )(Container)

@@ -4,61 +4,37 @@ import rd3 from 'rd3'
 
 import * as api from '../middleware/botengine'
 
-import Areas from '../components/dashboard/areas'
 
 const PieChart = rd3.PieChart;
-class Chart extends Component {
-  constructor(props) {
-    super(props)
+const BarChart = rd3.BarChart;
 
-  }
-  componentDidMount() {
-    var el = React.findDOMNode(this);
-    d3Chart.create(el, {
-      width: '100%',
-      height: '300px'
-    }, this.getChartState());
-  }
-  componentDidUpdate() {
-    var el = React.findDOMNode(this);
-    d3Chart.update(el, this.getChartState());
-  }
-  getChartState() {
-    return {
-      data: this.props.data,
-      domain: this.props.domain
-    };
-  }
-  componentWillUnmount() {
-    var el = React.findDOMNode(this);
-    d3Chart.destroy(el);
-  }
-  render() {
-    return (
-      <div className="Chart"></div>
-    );
-  }
-}
 class Dashboard extends Component {
     constructor(props) {
       super(props)
-      this.state = { DashboarData: {}};
+      this.state = { DashboarData: {},
+        CombinedResults: [
+          {name: "CombinedRatings", values: [ {"x": 1, "y":0 },{"x": 2, "y":0 },{"x": 3, "y":0 },{"x": 4, "y":0 },{"x": 5, "y":0 }  ] }
+        ]
+      };
     }
-    addArea(areaName) {
-      console.log("adding area ", areaName)
-    }
+
     refresh() {
       let self = this
-      const {email, token} = this.props
-      api.getStoreReview(token)
+      const { reviewId} = this.props
+      api.getCombinedResults( reviewId)
       .then(function(data) {
+        data.shift()
         console.log("Dashboard data ", data)
-        self.setState({DashboarData: data})
+        let o = data.map(function(a,i) {
+          return {"x": i+1, "y": a}
+        })
+        self.setState({CombinedResults: [ { name:"Combined", values: o } ] })
       })
     }
     componentDidMount() {
       this.refresh.bind(this)()
     }
+
     render() {
       const {email, token} = this.props
       var pieData = this.state.DashboarData.combinedRatings || {}
@@ -92,18 +68,24 @@ class Dashboard extends Component {
           <br/>
           <br/>
           <div>
-            <PieChart data = {renderData} width={400} height={400} radius={125} innerRadius={20} title="Combined Ratings per Store" />
+            <BarChart data = {this.state.CombinedResults} width={500} height={200} fill={'#3182bd'}
+            yAxisLabel='Total'
+            xAxisLabel='Question'
+            title="Combined Ratings for LEYE" />
             <div>
               <span style={{fontWeight: "bold"}}>Legend: </span>
               <span>
-                5: Excellent. 4: Good. 3: Fair. 2: Needs Improvement. 1: Needs Significant Improvement.
+                1: Our work environment is positive.
+                2: The communication is clear and effective.
+                3: We have the tools/supplies we need to do our job.
+                4: My training was thorough and effective.
+                5: I have opportunities to learn and grow at work.
               </span>
             </div>
+
           </div>
           <hr/>
-          <div>
-            <Areas  language={this.props.language} />
-          </div>
+
         </div>
 
       )
@@ -116,8 +98,7 @@ export default connect(
       token: state.login.token,
       email: state.login.email,
       language: state.login.language || "en",
-      areas: state.admin.areas,
-      locations: state.admin.locations
+      reviewId: state.admin.reviewId
     }
 
   )

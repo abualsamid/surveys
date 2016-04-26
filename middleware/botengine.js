@@ -32,8 +32,7 @@ const customer = {
 }
 
 export function addArea(name) {
-  console.log("From settings: ", settings)
-  return fetch(API_ROOT + "api/v1/admin/areas",{
+  return fetch(API_ROOT + "api/v1/admin/areas/" + customer.customerId,{
       method: "POST",
       mode: "cors",
       redirect: "follow",
@@ -49,7 +48,7 @@ export function addArea(name) {
       }
       return response.json()
     }).then(function(json) {
-      console.log("received back: ", json)
+      return json
     }).catch(function(ex) {
       console.log("failed to post: ", ex)
     });
@@ -66,13 +65,11 @@ export function ensureReview(reviewName, reviewPeriod) {
       },
       body: JSON.stringify( { name: reviewName, period: reviewPeriod } )
   }).then(function(response) {
-    console.log(response)
     if(!response.ok) {
       return ""
     }
     return response.json()
   }).then(function(json) {
-    console.log("returning review ", json)
     return json
   }).catch(function(ex){
     console.log("failed to ensureReview: " , reviewName)
@@ -93,7 +90,6 @@ export function getAreas(client) {
     }).then(function(response) {
       return response.json()
     }).then(function(json) {
-      console.log("received back: ", json)
       if (json == null) {
         return []
       }
@@ -131,8 +127,7 @@ export function getStores(client) {
 
 export function addManager(storeId, name) {
   var manager = { customerId: customer.customerId, storeId: storeId, name: name}
-  console.log("posting to manager, ", manager);
-  
+
   return fetch(V1 + "admin/manager/" + customer.customerId + "/" + storeId, {
     method: "POST",
     mode: "cors",
@@ -185,7 +180,6 @@ export function addStore(areaId, name) {
     }).then(function(response) {
       return response.json()
     }).then(function(json) {
-      console.log("received back: ", json)
       return json
     }).catch(function(ex) {
       console.log("failed to post: ", ex)
@@ -222,7 +216,6 @@ export function getStoreReview(token) {
 }
 
 export function saveManagerReview(reviewId, storeId, data) {
-  console.log("posting to saveManagerReview : ", data)
   return fetch(API_ROOT + "api/v1/survey/managerReview/" + customer.customerId
         + "/" + reviewId
         + "/" + storeId
@@ -239,7 +232,6 @@ export function saveManagerReview(reviewId, storeId, data) {
     }).then(function(response) {
       return response.json()
     }).then(function(json) {
-      console.log("received back: ", json)
       return json
     }).catch(function(ex) {
       console.log("failed to post: ", ex)
@@ -248,7 +240,6 @@ export function saveManagerReview(reviewId, storeId, data) {
 
 
 export function saveStoreReview(reviewId,storeId,data) {
-  console.log("in saveStoreReview ", data)
   return fetch(API_ROOT + "api/v1/survey/storeReview/" + customer.customerId
       + "/" + reviewId
       + "/" + storeId
@@ -264,9 +255,28 @@ export function saveStoreReview(reviewId,storeId,data) {
     }).then(function(response) {
       return response.json()
     }).then(function(json) {
-      console.log("received back: ", json)
       return json
     }).catch(function(ex) {
       console.log("failed to post: ", ex)
     })
+}
+
+export function getCombinedResults( reviewId) {
+  return fetch(V1 + "survey/results/" + customer.customerId  + "/" + reviewId ,
+    {
+     method: "GET",
+     mode: "cors",
+     redirect: "follow",
+     headers: {
+       'Accept': 'application/json',
+       'Content-Type': 'application/json'
+     }
+    }
+  ).then(function(response) {
+    return response.json()
+  }).then(function(data) {
+    return data
+  }).catch(function(doh) {
+    console.log("error getting data.")
+  })
 }

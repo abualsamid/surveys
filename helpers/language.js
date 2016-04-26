@@ -30,7 +30,7 @@ export function tr(code, language) {
       trOne(code, language)
 
   } catch(x) {
-    console.log(x + " " + code + " " + language);
+    console.log("need to translate " , code );
     return code;
   }
 }
@@ -130,6 +130,10 @@ export const languageText = {
   "Gives clear directions" : {
     "en": "Gives clear directions",
     "es": "Da instrucciones claras"
+  },
+  "Manager": {
+    "en": "Manager",
+    "es": "Gerente"
   },
   "Keeps us informed" : {
     "en": "Keeps us informed",

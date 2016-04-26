@@ -10,11 +10,17 @@ export default class ManagerSurvey extends Component {
   constructor(props) {
     super(props)
     this.state = {questions:[]}
+    this.managerId = ""
   }
+
+
+  componentWillReceiveProps(nextProps) {
+    this.answers = {}
+  }
+
   componentDidMount() {
     const {language} = this.props
     this.answers = {}
-    this.managerId = ""
     const dropDownOptions = [
       { key: "5", value: languageHelper.tr("5",language)},
       { key: "4", value: languageHelper.tr("6",language)},
@@ -40,76 +46,94 @@ export default class ManagerSurvey extends Component {
         ]
     })
   }
+
   handleAnswer(id, value) {
     this.answers[id]=value
-    console.log(this.answers)
   }
-  handleSubmit() {
-    // Save the answers.
-    this.nextStep.bind(this)()
-  }
+
 
 
   nextStep() {
     browserHistory.push("/ManagerSurvey")
   }
 
+  setManagerId(id) {
+    this.managerId = id
+  }
+
+  handleSubmit(stayInPlace) {
+    this.props.handleDone(this.managerId, this.answers, stayInPlace)
+  }
 
   render() {
-    const {language, handleCancel, handleDone, storeId, managers,storeCaption }  = this.props
-    console.log(managers)
-    console.log(this.questions)
+    const {language, handleCancel, handleDone, handleSubmit, storeId, managers,storeCaption }  = this.props
 
     return (
       <div className="col-md-12">
-        <div className="text-center">
+        <div className="text-center" style={{color: "#B80000", fontWeight: "bold"}}>
           <h2>{storeCaption}</h2>
-
         </div>
-        <form onSubmit={(e)=> e.preventDefault()} >
-          <ManagerDropDown storeId={storeId}  managers={managers}
-                setManagerId={id=>this.managerId=id}
-                 />
 
-          {
-            this.state.questions.map(
-              (one) => {
-                return (<DropDown id={one.id} question={one.question}
-                  key={one.id}
-                  pleaseSelect={languageHelper.tr("Please Select", language)}
-                  options={one.options} onChange={this.handleAnswer.bind(this)} />)
-              }
-            )
-          }
+        <div>
+          <h3>{languageHelper.tr("Manager Survey", language)}</h3>
           <br/>
-          <div>
-            <span style={{padding: "1em"}}>
-              <button type="submit"
-                  onClick={(e) => { e.preventDefault(); handleDone(this.answers) }}
-                  className="btn-lg btn-primary btn">
-                {
-                  languageHelper.tr("Submit - I am done",language)
-                }
-              </button>
-            </span>
-            <span style={{padding: "1em"}}>
-              <button type="submit" className="btn-lg btn-info btn">
-                {
-                  languageHelper.tr("Submit - I want to review another manager", language)
-                }
 
-              </button>
-            </span>
-            <span style={{padding: "1em"}}>
-              <button type="submit" className="btn-lg btn-danger btn"
-                onClick={(e)=>{e.preventDefault();handleCancel()}}>
-                {
-                  languageHelper.tr("Cancel", language)
-                }
-              </button>
-            </span>
-          </div>
-        </form>
+          <form onSubmit={(e)=> e.preventDefault()}>
+
+            <div className="card" >
+              <ManagerDropDown storeId={storeId}  managers={managers}
+                caption={languageHelper.tr("Manager", language)}
+                setManagerId={this.setManagerId.bind(this)} />
+
+            </div>
+
+              {
+                this.state.questions.map(
+                  (one) => {
+                    return (
+                      <div className="minorcard" key={one.id}>
+                        <DropDown id={one.id} question={one.question}
+                        key={one.id}
+                        pleaseSelect={languageHelper.tr("Please Select", language)}
+                        options={one.options} onChange={this.handleAnswer.bind(this)} />
+                      </div>
+                    )
+                  }
+                )
+              }
+
+              <div>
+                <span style={{padding: "1em"}}>
+                  <button type="submit"
+                      onClick={(e) => { e.preventDefault(); this.handleSubmit.bind(this)(false) }}
+                      className="btn-lg btn-primary btn">
+                    {
+                      languageHelper.tr("Submit - I am done",language)
+                    }
+                  </button>
+                </span>
+                <span style={{padding: "1em"}}>
+                  <button type="submit"
+                    onClick={(e) => { e.preventDefault(); this.handleSubmit.bind(this)(true) }}
+                    className="btn-lg btn-info btn">
+                    {
+                      languageHelper.tr("Submit - I want to review another manager", language)
+                    }
+
+                  </button>
+                </span>
+                <span style={{padding: "1em"}}>
+                  <button type="submit" className="btn-lg btn-danger btn"
+                    onClick={(e)=>{e.preventDefault();handleCancel()}}>
+                    {
+                      languageHelper.tr("Cancel", language)
+                    }
+                  </button>
+                </span>
+              </div>
+          </form>
+        </div>
+
       </div>
     )
   }

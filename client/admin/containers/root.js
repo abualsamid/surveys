@@ -1,0 +1,21 @@
+import React from 'react'
+import  { Component, PropTypes } from 'react'
+import { Provider } from 'react-redux'
+import routes from '../routes'
+import { Router } from 'react-router'
+
+export default class Root extends Component {
+  render() {
+    const { store, history } = this.props
+    return (
+      <Provider store={store}>
+        <Router history={history} routes={routes} onUpdate={() => window.scrollTo(0, 0)} />
+      </Provider>
+    )
+  }
+}
+
+Root.propTypes = {
+  store: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired
+}

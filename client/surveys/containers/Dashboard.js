@@ -28,6 +28,29 @@ class Dashboard extends Component {
       this.refresh.bind(this)()
     }
 
+    saveAs(uri, filename) {
+      var link = document.createElement('a');
+      if (typeof link.download === 'string') {
+        document.body.appendChild(link); //Firefox requires the link to be in the body
+        link.download = filename;
+        link.href = uri;
+        link.click();
+        document.body.removeChild(link); //remove the link when done
+      } else {
+        location.replace(uri);
+      }
+    }
+    _downloadData() {
+      const self = this
+      api.getSurveyResults(1, 1,1, 0,0)
+      .then(function(data) {
+        var mime="text/csv"
+        var blob = new Blob([data], {type: mime})
+        , url = URL.createObjectURL(blob)
+        self.saveAs(url, "results.csv")
+      })
+
+    }
     render() {
       const {email, token} = this.props
       return (
@@ -37,6 +60,7 @@ class Dashboard extends Component {
           </h2>
 
           <br/>
+          <button className="btn btn-primary" onClick={this._downloadData.bind(this)}>Download Results</button>
           <br/>
 
           <div>

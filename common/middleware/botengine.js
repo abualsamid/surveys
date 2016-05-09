@@ -287,8 +287,27 @@ export function saveManagerReview(reviewId, storeId, data) {
 }
 
 
+export function getSurveyResults(customerId, campaignId,surveyId, storeId,managerId) {
+  return fetch(API_ROOT + "api/v1/admin/surveyresults/" +
+    customerId + "/" + campaignId + "/" + storeId + "/" + managerId,
+    {
+      method: "GET",
+      mode: "cors",
+      redirect: "follow",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    }).then(function(response) {
+      return response.text()
+    }).then(function(txt) {
+      return txt
+    }).catch(function(ex) {
+      console.log("failed to download csv ", ex)
+      return "failed. " + ex
+    })
+}
 export function saveStoreReview(customerId, campaignId,surveyId, storeId,managerId, data) {
-  console.log("in saveStoreReview...")
   return fetch(API_ROOT + "api/v1/survey/storeReview/" + customerId
       + "/" + campaignId
       + "/" + surveyId

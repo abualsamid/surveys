@@ -8,7 +8,12 @@ import * as languageHelper  from '../../../common/helpers/language'
 export default class StoreSurvey extends Component {
   constructor(props) {
     super(props)
-    this.answers = {}
+    let a = {}
+    for (var i=1;i<15;i++) {
+      a[i]={ customerId:0, surveyId: 0, choice: 0, checked: false, value: ""}
+    }
+    this.answers = a
+
     this.handleCheckboxChange=this.handleCheckboxChange.bind(this)
     this.handleTextChange=this.handleTextChange.bind(this)
     this.handleRadio=this.handleRadio.bind(this)

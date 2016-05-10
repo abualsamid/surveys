@@ -5,6 +5,11 @@ import * as api from '../../../common/middleware/botengine'
 import ChooseLanguage from './home/chooseLanguage'
 
 
+if ( 'undefined' !== typeof window ) {
+  const styles=require('../../assets/css/style.css');
+}
+
+
 import * as languageHelper  from '../../../common/helpers/language'
 
 import * as actionCreators from '../actions'

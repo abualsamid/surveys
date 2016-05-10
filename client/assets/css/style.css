@@ -12,6 +12,11 @@ table {
   border-spacing: 0;
 }
 
+table td, table th
+{
+    padding: 1em; /* 'cellpadding' equivalent */
+}
+
 a img {
   border: none;
 }
@@ -26,7 +31,7 @@ html, body {
   font-size: 14px;
   font-weight: normal;
   line-height: 18px;
-  color: #000000;
+  color: #333333;
 }
 
 body {
@@ -41,13 +46,13 @@ span.btn {
 
 div.card {
   background-color: #eee;
-  border: 1px solid grey;
+  border: 2px solid grey;
   padding: 2em;
 }
 
 div.minorcard {
   background-color: #ddd;
-  border: 1px solid grey;
+  border: 2px solid grey;
   padding: 2em;
   margin: 2em;
 }
@@ -79,3 +84,7 @@ div.card input {
 h2 {
   font-weight: bold;
 }
+
+.topStyle { backgroundColor: '#EEE'; border: 'solid 1px black'; }
+.boldStyle = { fontWeight: 'bold'; }
+.italicStyle = { fontStyle : 'italic'; }

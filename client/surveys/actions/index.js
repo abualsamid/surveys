@@ -83,6 +83,7 @@ export function submitStoreAnswers(storeId,managerId, answers) {
   return (dispatch, getState) => {
     try {
       const {customerId, campaignId, surveyId } = getState().admin
+      console.log("calling api.saveStoreReview ",customerId, campaignId, surveyId, storeId,managerId, answers)
       return api.saveStoreReview(customerId, campaignId, surveyId, storeId,managerId, answers)
                 .then(
                   result => dispatch(savedStoreAnswers(result))

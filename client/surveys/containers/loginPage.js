@@ -54,7 +54,17 @@ class LoginForm extends Component{
     }
 
   }
+  renderGoogle() {
+    return (
+      <div>
+        <GoogleLogin
+          clientId="789684712804-nr7p56u4grev55ct6lkujc7ih3pfpmeq.apps.googleusercontent.com"
+          callback={this.googleResponse} />
 
+      </div>
+
+    )
+  }
   render() {
     const { isLoggedIn, email } = this.props
     if (isLoggedIn) {
@@ -66,12 +76,6 @@ class LoginForm extends Component{
     } else {
         return (
           <div>
-            <div>
-              <GoogleLogin
-                clientId="789684712804-nr7p56u4grev55ct6lkujc7ih3pfpmeq.apps.googleusercontent.com"
-                callback={this.googleResponse} />
-
-            </div>
 
             <div className='form'>
               <div className="form-group">

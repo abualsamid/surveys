@@ -28,7 +28,7 @@ class Nav extends Component {
               <span className="icon-bar"></span>
               <span className="icon-bar"></span>
             </button>
-            <a href='/surveys' className="navbar-brand">Home</a>
+            <a href='/surveys'><img src="/img/leye-logo-white.png"></img></a>
           </div>
           { this.renderLoginSnippet() }
         </div>

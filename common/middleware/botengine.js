@@ -1,7 +1,8 @@
 import settings from '../settings/configureSettings'
 
 const API_ROOT  = settings.API_ROOT
-const V1 = API_ROOT + "api/v1/"
+// const V1 = API_ROOT + "api/v1/"
+const V1 =  "/api/v1/"
 
 // const customerId = "571851a9f21eea564f30f3a3"
 const customerId=1
@@ -185,8 +186,13 @@ export function bootSurvey(storeCode) {
      }
     }
   ).then(function(response) {
+    if (response.status==404) {
+      console.log("got back 404 ", response)
+      return ""
+    }
     return response.json()
   }).then(function(vars) {
+    console.log("got back from bootSurvey: ", vars )
     return vars
   }).catch(function(doh) {
     console.log("doh... getting vars.")
@@ -287,9 +293,9 @@ export function saveManagerReview(reviewId, storeId, data) {
 }
 
 
-export function getSurveyResults(customerId, campaignId,surveyId, storeId,managerId) {
-  return fetch(API_ROOT + "api/v1/admin/surveyresults/" +
-    customerId + "/" + campaignId + "/" + storeId + "/" + managerId,
+export function downloadSurveyResults(customerId, campaignId,surveyId, storeId,managerId) {
+  return fetch(API_ROOT + "api/v1/admin/download_surveyresults/" +
+    customerId + "/" + campaignId + "/" + surveyId + "/" + storeId + "/" + managerId,
     {
       method: "GET",
       mode: "cors",
@@ -307,6 +313,29 @@ export function getSurveyResults(customerId, campaignId,surveyId, storeId,manage
       return "failed. " + ex
     })
 }
+
+
+export function getSurveyResults(customerId, campaignId,surveyId, storeId,managerId) {
+  return fetch(API_ROOT + "api/v1/admin/surveyresults/" +
+    customerId + "/" + campaignId + "/" + surveyId + "/" + storeId + "/" + managerId,
+    {
+      method: "GET",
+      mode: "cors",
+      redirect: "follow",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    }).then(function(response) {
+      return response.json()
+    }).then(function(json) {
+      return json
+    }).catch(function(ex) {
+      console.log("failed to download csv ", ex)
+      return "failed. " + ex
+    })
+}
+
 export function saveStoreReview(customerId, campaignId,surveyId, storeId,managerId, data) {
   return fetch(API_ROOT + "api/v1/survey/storeReview/" + customerId
       + "/" + campaignId

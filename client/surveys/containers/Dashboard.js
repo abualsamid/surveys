@@ -1,28 +1,128 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import rd3 from 'rd3'
 import * as api from '../../../common/middleware/botengine'
+import StoresDropDown from './StoresDropDown'
+import ManagerDropDown from './ManagerDropDown'
 
 
-const BarChart = rd3.BarChart;
+class Choices extends Component {
+  render() {
+    const v = this.props.v || {}
+    let total = 0
+    for(var o in v) {
+      total+= v[o]
+    }
+    console.log("processing choices: ", v)
+    return (
+      <div>
+        <table>
+          <thead>
+            <tr>
+              <th>Assessment</th>
+              <th>Count</th>
+            </tr>
+          </thead>
+          <tbody>
 
+            {
+              Object.keys(v).map(function(value,index) {
+                return (
+                  <tr key={value}>
+                    <th>
+                      {value || "No Answer"}
+                    </th>
+                    <td>
+                      {v[value]}
+                    </td>
+                  </tr>
+                )
+              })
+            }
+          </tbody>
+          <tfoot>
+            <tr>
+              <th>
+                Total
+              </th>
+              <th>
+                {total}
+              </th>
+            </tr>
+          </tfoot>
+        </table>
+
+      </div>
+    )
+  }
+}
+class Values extends Component {
+  render() {
+    const v = this.props.v || []
+    return (
+      <div>
+        {
+          v.map( (one,i) => <div key={i}>{one}</div>)
+
+        }
+      </div>
+    )
+  }
+}
+class Checkboxes extends Component {
+  render() {
+    const checked = this.props.checked ||0
+    return (
+      <div>Yes: {checked}</div>
+    )
+  }
+}
+class StoreDash extends Component {
+
+  render() {
+    const {data} = this.props
+    return (
+      <div>
+        {
+          data.map(function(r,i) {
+            return (
+              <div key={i} className="minorcard" style={{margin:"2em"}}>
+                <h3 key={i}>
+                  {r.Question}
+                  <br/>
+                </h3>
+                { r.QuestionTypeId == 1 && <Checkboxes v={r.Checked} /> }
+
+                { r.QuestionTypeId == 2 && <Choices v={r.Choice} /> }
+                { r.QuestionTypeId == 3 && <Choices v={r.Choice} /> }
+
+                { r.QuestionTypeId == 4 && <Values v={r.Value} /> }
+                { r.QuestionTypeId == 5 && <Values v={r.Value} /> }
+                { r.QuestionTypeId == 6 && <Values v={r.Value}/> }
+              </div>
+            )
+
+          })
+        }
+
+      </div>
+    )
+  }
+}
 class Dashboard extends Component {
     constructor(props) {
       super(props)
-      this.state = { DashboarData: {},
-        CombinedResults: [
-          {name: "CombinedRatings", values: [ {"x": 1, "y":0 },{"x": 2, "y":0 },{"x": 3, "y":0 },{"x": 4, "y":0 },{"x": 5, "y":0 }  ] }
-        ]
+      this.state = {
+        DashboarData: {},
+        StoreData: [],
+        selectedArea: 0,
+        selectedStore: 0,
       };
     }
 
     refresh() {
       let self = this
       const { reviewId} = this.props
-      api.getCombinedResults( reviewId)
-      .then(function(data) {
-        self.setState({CombinedResults: data })
-      })
+
     }
     componentDidMount() {
       this.refresh.bind(this)()
@@ -42,7 +142,8 @@ class Dashboard extends Component {
     }
     _downloadData() {
       const self = this
-      api.getSurveyResults(1, 1,1, 0,0)
+      const {customerId, campaignId, surveyId } = this.props
+      api.downloadSurveyResults(customerId, campaignId,surveyId, 0,0)
       .then(function(data) {
         var mime="text/csv"
         var blob = new Blob([data], {type: mime})
@@ -51,8 +152,33 @@ class Dashboard extends Component {
       })
 
     }
+
+    selectArea(e) {
+      try {
+        this.setState({selectedArea: e.target.value})
+
+      } catch(x) {
+        console.log(x, ' in select area');
+      }
+    }
+
+    selectStore(id) {
+      const self = this
+      const {customerId, campaignId, surveyId } = this.props
+      try {
+        this.setState({selectedStore: id})
+        api.getSurveyResults(customerId, campaignId,surveyId, id,0)
+        .then(function(data) {
+          console.log(data)
+          self.setState({StoreData:data})
+        })
+      } catch(x) {
+        console.log(x, ' in select store');
+      }
+    }
+
     render() {
-      const {email, token} = this.props
+      const {email, token, areas, stores, managers} = this.props
       return (
         <div>
           <h2>
@@ -60,35 +186,24 @@ class Dashboard extends Component {
           </h2>
 
           <br/>
-          <button className="btn btn-primary" onClick={this._downloadData.bind(this)}>Download Results</button>
+          <button className="btn btn-primary" onClick={this._downloadData.bind(this)}>Download All Results - CSV </button>
           <br/>
-
-          <div>
-              <span style={{fontWeight: "bold"}}>Legend: </span>
-              <span>
-                1: Our work environment is positive.
-                2: The communication is clear and effective.
-                3: We have the tools/supplies we need to do our job.
-                4: My training was thorough and effective.
-                5: I have opportunities to learn and grow at work.
-              </span>
-          </div>
           <br/>
-          {
+          <br/>
+            <br/>
+              <div className="form-group">
+                <select className="form-control" value={this.state.selectedArea} ref={ a => this.areaList = a}  onChange={this.selectArea.bind(this)}>
+                {this.props.areas.map( (one) =>  <option key={one.id} value={one.id}> {one.name} </option> )}
+                </select>
+              </div>
+              <div className="form-group">
+                <StoresDropDown areas={this.props.areas} stores={this.props.stores} setStoreId={this.selectStore.bind(this)} />
+              </div>
 
-            this.state.CombinedResults.map(function(one,i) {
-              return (
-                <div>
-                  <br/>
-                  <BarChart data = {[one]} width={500} height={200} fill={'#3182bd'} key={i}
-                  yAxisLabel='Total'
-                  xAxisLabel='Question'
-                  title={one.name} />
-                  <br/>
-                </div>
-              )
-            })
-          }
+            <br/>
+
+          <br/>
+            <StoreDash data={this.state.StoreData} />
           <hr/>
           <div>
             <br/>
@@ -106,9 +221,15 @@ export default connect(
       token: state.login.token,
       email: state.login.email,
       language: state.login.language || "en",
-      reviewId: state.admin.reviewId
-    }
+      reviewId: state.admin.reviewId,
+      areas: state.admin.areas,
+      stores: state.admin.stores,
+      managers: state.admin.managers ||[],
+      customerId: state.admin.customerId || 1,
+      campaignId: state.admin.campaignId || 1,
+      surveyId: state.admin.surveyId || 1,
 
+    }
   )
 
 )(Dashboard)

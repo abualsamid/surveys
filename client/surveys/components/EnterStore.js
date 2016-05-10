@@ -23,7 +23,13 @@ class EnterStore extends Component {
     if (this.storeCode.value) {
       api.bootSurvey(this.storeCode.value)
       .then(function(variables) {
-        self.props.setupSurveyVariables(variables)
+        if (variables) {
+          self.props.setupSurveyVariables(variables)
+
+        } else {
+          browserHistory.push("/SurveyNotFound")
+          
+        }
       })
       .catch(function(doh) {
         console.log("error getting system variables.", doh)

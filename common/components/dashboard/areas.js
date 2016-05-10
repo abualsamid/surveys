@@ -78,6 +78,7 @@ class Areas extends Component {
     }
 
   }
+
   selectArea(e) {
     try {
       this.setState({selectedArea: e.target.value})

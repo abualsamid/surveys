@@ -10,7 +10,14 @@ export default class ManagerSurvey extends Component {
   constructor(props) {
     super(props)
     this.state = {questions:[], managerId:"", managerCaption:"" }
+
     this.answers = {}
+    let a = {}
+    for (var i=19;i<30;i++) {
+      a[i]={ customerId:0, surveyId: 0, choice: 0, checked: false, value: ""}
+    }
+    this.answers = a
+
     this.handleCheckboxChange=this.handleCheckboxChange.bind(this)
     this.handleTextChange=this.handleTextChange.bind(this)
     this.handleRadio=this.handleRadio.bind(this)

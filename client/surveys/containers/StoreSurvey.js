@@ -13,6 +13,7 @@ class Container extends Component {
     browserHistory.push("/ManagerSurvey")
   }
   handleSubmit(answers) {
+    console.log('about to dispatch submitting ... ', answers)
     const { dispatch, storeId } = this.props
     dispatch(submitStoreAnswers( storeId,0, answers))
     this.handleSkip()
@@ -42,7 +43,10 @@ export default connect(
   (state) => ({
     language: state.login.language,
     campaignId: state.admin.campaignId,
-    storeId: state.survey.storeId || 0,
-    storeCaption: state.survey.storeCaption || ("hmmm " + state.survey.storeId)
+    customerId: state.admin.customerId,
+    storeId: state.admin.locationId || state.survey.storeId || 0,
+    storeCaption: state.survey.storeCaption || ("hmmm " + state.survey.storeId), 
+    code: state.admin.Code,
+    surveyId: state.admin.surveyId
   })
 )(Container)

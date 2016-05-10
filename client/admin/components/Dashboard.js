@@ -1,8 +1,8 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import rd3 from 'rd3'
 import * as api from '../../../common/middleware/botengine'
-
+import StoresDropDown from './StoresDropDown'
+import ManagerDropDown from './ManagerDropDown'
 
 const BarChart = rd3.BarChart;
 
@@ -10,19 +10,14 @@ class Dashboard extends Component {
     constructor(props) {
       super(props)
       this.state = { DashboarData: {},
-        CombinedResults: [
-          {name: "CombinedRatings", values: [ {"x": 1, "y":0 },{"x": 2, "y":0 },{"x": 3, "y":0 },{"x": 4, "y":0 },{"x": 5, "y":0 }  ] }
-        ]
+
       };
     }
 
     refresh() {
       let self = this
       const { reviewId} = this.props
-      api.getCombinedResults( reviewId)
-      .then(function(data) {
-        self.setState({CombinedResults: data })
-      })
+
     }
     componentDidMount() {
       this.refresh.bind(this)()
@@ -38,7 +33,20 @@ class Dashboard extends Component {
 
           <br/>
           <br/>
-
+            <div className="form-group">
+              <select className="form-control" value={this.state.selectedArea} ref={ a => this.areaList = a}  onChange={this.selectArea.bind(this)}>
+              {this.props.areas.map( (one) =>  <option key={one.id} value={one.id}> {one.name} </option> )}
+              </select>
+            </div>
+            <div className="form-group">
+              <StoresDropDown areas={this.props.areas} stores={this.props.stores} setStoreId={this.selectStore.bind(this)} />
+            </div>
+            <div>
+              <ManagerDropDown storeId={this.state.selectedStore}  managers={managers}
+                setManagerId={()=>console.log("...")}
+                 />
+            </div>
+          <br/>
           <div>
               <span style={{fontWeight: "bold"}}>Legend: </span>
               <span>
@@ -50,21 +58,7 @@ class Dashboard extends Component {
               </span>
           </div>
           <br/>
-          {
 
-            this.state.CombinedResults.map(function(one,i) {
-              return (
-                <div>
-                  <br/>
-                  <BarChart data = {[one]} width={500} height={200} fill={'#3182bd'} key={i}
-                  yAxisLabel='Total'
-                  xAxisLabel='Question'
-                  title={one.name} />
-                  <br/>
-                </div>
-              )
-            })
-          }
           <hr/>
           <div>
             <br/>

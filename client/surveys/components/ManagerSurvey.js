@@ -174,7 +174,7 @@ export default class ManagerSurvey extends Component {
               <div className="card" >
                 <ManagerDropDown storeId={storeId}  managers={managers}
                   caption={languageHelper.tr("Manager", language)}
-                  setManagerId={this.setManagerId.bind(this)} />
+                  setManagerId={this.setManagerId.bind(this)} showButton={true} />
               </div>
 
                 <div><br/></div>

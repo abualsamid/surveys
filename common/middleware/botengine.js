@@ -198,9 +198,9 @@ export function bootSurvey(storeCode) {
     console.log("doh... getting vars.")
   })
 }
-export function getManagers(locationId) {
+export function getManagers(customerId, locationId) {
   return fetch(V1 + "admin/manager/"
-    + customer.customerId
+    + customerId
     + "/" + locationId
   , {
      method: "GET",

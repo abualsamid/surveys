@@ -8,10 +8,13 @@ class Nav extends Component {
   }
 
   renderLoginSnippet() {
+    const {isLoggedIn, email } = this.props
     return (
       <ul className="nav navbar-nav navbar-right">
         <li>
-            <Link to="/login" className="glyphicon glyphicon-log-in"> Admin </Link>
+            { isLoggedIn && <Link to="/Dashboard"> {email} </Link> }
+            { !isLoggedIn && <Link to="/login" className="glyphicon glyphicon-log-in"> Admin </Link> }
+
         </li>
       </ul>
 
@@ -30,7 +33,7 @@ class Nav extends Component {
             </button>
             <a href='/surveys'><img src="/img/leye-logo-white.png"></img></a>
           </div>
-          { this.renderLoginSnippet() }
+          { this.renderLoginSnippet.bind(this)() }
         </div>
       </nav>
     )
@@ -43,8 +46,8 @@ Nav.defaultProps = {
 }
 function mapStateToProps(state, ownProps) {
   return {
-    isLoggedIn: false,
-    email: "",
+    isLoggedIn: state.login.isLoggedIn,
+    email: state.login.email,
   }
 }
 

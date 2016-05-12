@@ -3,16 +3,17 @@ import { connect } from 'react-redux'
 import * as api from '../../../common/middleware/botengine'
 import StoresDropDown from './StoresDropDown'
 import ManagerDropDown from './ManagerDropDown'
+import * as actions  from '../actions'
 
 
 class Choices extends Component {
   render() {
     const v = this.props.v || {}
+    const c = this.props.c || {}
     let total = 0
     for(var o in v) {
       total+= v[o]
     }
-    console.log("processing choices: ", v)
     return (
       <div>
         <table>
@@ -20,6 +21,8 @@ class Choices extends Component {
             <tr>
               <th>Assessment</th>
               <th>Count</th>
+              <th>Percent</th>
+              <th>Company</th>
             </tr>
           </thead>
           <tbody>
@@ -32,7 +35,13 @@ class Choices extends Component {
                       {value || "No Answer"}
                     </th>
                     <td>
-                      {v[value]}
+                      { v[value] }
+                    </td>
+                    <td>
+                      { ( 100* (v[value] || 0) / total).toFixed(2) }
+                    </td>
+                    <td>
+                      { c[value] }
                     </td>
                   </tr>
                 )
@@ -46,6 +55,9 @@ class Choices extends Component {
               </th>
               <th>
                 {total}
+              </th>
+              <th>
+                100%
               </th>
             </tr>
           </tfoot>
@@ -79,11 +91,13 @@ class Checkboxes extends Component {
 class StoreDash extends Component {
 
   render() {
-    const {data} = this.props
+    const {data, managerId } = this.props
+    console.log(managerId, data)
     return (
       <div>
         {
-          data.map(function(r,i) {
+          data.filter(a => a.ManagerId==0)
+              .map(function(r,i) {
             return (
               <div key={i} className="minorcard" style={{margin:"2em"}}>
                 <h3 key={i}>
@@ -92,8 +106,8 @@ class StoreDash extends Component {
                 </h3>
                 { r.QuestionTypeId == 1 && <Checkboxes v={r.Checked} /> }
 
-                { r.QuestionTypeId == 2 && <Choices v={r.Choice} /> }
-                { r.QuestionTypeId == 3 && <Choices v={r.Choice} /> }
+                { r.QuestionTypeId == 2 && <Choices v={r.Choice} c={r.CompanyChoice} /> }
+                { r.QuestionTypeId == 3 && <Choices v={r.Choice} c={r.CompanyChoice} /> }
 
                 { r.QuestionTypeId == 4 && <Values v={r.Value} /> }
                 { r.QuestionTypeId == 5 && <Values v={r.Value} /> }
@@ -103,7 +117,30 @@ class StoreDash extends Component {
 
           })
         }
+        <hr/>
+        <h3>Manager Review</h3>
+          {
+            data.filter(a => a.ManagerId==managerId)
+                .map(function(r,i) {
+              return (
+                <div key={i} className="minorcard" style={{margin:"2em"}}>
+                  <h3 key={i}>
+                    {r.Question}
+                    <br/>
+                  </h3>
+                  { r.QuestionTypeId == 1 && <Checkboxes v={r.Checked} /> }
 
+                  { r.QuestionTypeId == 2 && <Choices v={r.Choice}  c={r.CompanyChoice} /> }
+                  { r.QuestionTypeId == 3 && <Choices v={r.Choice} c={r.CompanyChoice} /> }
+
+                  { r.QuestionTypeId == 4 && <Values v={r.Value} /> }
+                  { r.QuestionTypeId == 5 && <Values v={r.Value} /> }
+                  { r.QuestionTypeId == 6 && <Values v={r.Value}/> }
+                </div>
+              )
+
+            })
+          }
       </div>
     )
   }
@@ -116,6 +153,7 @@ class Dashboard extends Component {
         StoreData: [],
         selectedArea: 0,
         selectedStore: 0,
+        managerId: 0
       };
     }
 
@@ -125,7 +163,18 @@ class Dashboard extends Component {
 
     }
     componentDidMount() {
+      const self = this
+      let {managers} = this.props
       this.refresh.bind(this)()
+      const {customerId, locationId} = this.props
+      console.log("current managers list, ", managers)
+      if (managers.length==0) {
+        console.log("getting new managers list.")
+        api.getManagers(customerId, 0)
+        .then(function(managers) {
+          self.props.loadedManagers(managers)
+        })
+      }
     }
 
     saveAs(uri, filename) {
@@ -169,14 +218,16 @@ class Dashboard extends Component {
         this.setState({selectedStore: id})
         api.getSurveyResults(customerId, campaignId,surveyId, id,0)
         .then(function(data) {
-          console.log(data)
           self.setState({StoreData:data})
         })
       } catch(x) {
         console.log(x, ' in select store');
       }
     }
-
+    selectManager(id) {
+      console.log("setting manager id to ", id)
+      this.setState({managerId: id})
+    }
     render() {
       const {email, token, areas, stores, managers} = this.props
       return (
@@ -192,18 +243,15 @@ class Dashboard extends Component {
           <br/>
             <br/>
               <div className="form-group">
-                <select className="form-control" value={this.state.selectedArea} ref={ a => this.areaList = a}  onChange={this.selectArea.bind(this)}>
-                {this.props.areas.map( (one) =>  <option key={one.id} value={one.id}> {one.name} </option> )}
-                </select>
-              </div>
-              <div className="form-group">
                 <StoresDropDown areas={this.props.areas} stores={this.props.stores} setStoreId={this.selectStore.bind(this)} />
               </div>
-
+              <div className="form-group">
+                <ManagerDropDown managers={this.props.managers} stores={this.props.stores} setManagerId={ this.selectManager.bind(this) } storeId={this.state.selectedStore} showButton={false} />
+              </div>
             <br/>
 
           <br/>
-            <StoreDash data={this.state.StoreData} />
+            <StoreDash data={this.state.StoreData} managerId={this.state.managerId} />
           <hr/>
           <div>
             <br/>
@@ -230,6 +278,7 @@ export default connect(
       surveyId: state.admin.surveyId || 1,
 
     }
-  )
+  ),
+  actions
 
 )(Dashboard)

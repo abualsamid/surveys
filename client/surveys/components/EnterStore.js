@@ -28,7 +28,7 @@ class EnterStore extends Component {
 
         } else {
           browserHistory.push("/SurveyNotFound")
-          
+
         }
       })
       .catch(function(doh) {
@@ -44,7 +44,7 @@ class EnterStore extends Component {
     self = this
     this.props.selectStore(this.storeId, this.storeCaption)
 
-    api.getManagers(this.storeId)
+    api.getManagers(this.props.customerId, this.storeId)
     .then(function(managers) {
       self.props.loadedManagers(managers)
     })
@@ -154,7 +154,8 @@ export default connect(
       language: state.login.language,
       areas: state.admin.areas,
       stores: state.admin.stores,
-      code: state.admin.code
+      code: state.admin.code,
+      customerId: state.admin.customerId ||1
     }
   ),
   actions

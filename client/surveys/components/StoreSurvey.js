@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react'
-import { browserHistory } from 'react-router'
 import Checkbox from './questions/checkbox'
 import TextQuestion from './questions/text'
 import Radio from './questions/radio'
@@ -56,62 +55,78 @@ export default class StoreSurvey extends Component {
         <div className="text-center" style={{color: "#B80000", fontWeight: "bold"}}>
           <h2>{storeCaption}</h2>
         </div>
-        <div>
-          <h3>{languageHelper.tr("In General", language)}</h3>
-          <br/>
+        <br/>
+        <article className="survey-page survey-page-white">
 
-              <div className="card">
+          <header className="survey-page-header">
+            <div className="survey-title-container clearfix survey-title-align-left has-survey-title">
+              <div className="survey-title-table-wrapper text-center">
+                <h3>{languageHelper.tr("In General", language)}</h3>
+              </div>
+
+            </div>
+          </header>
+          <section className="survey-page-body">
+            <div>
+              <br/>
+
+                  <div className="card">
+                    {
+                      RadioQuestions.map(function(v,index,arr){
+                        return (
+                          <Radio id={v.id} key={v.id} onChange={this.handleRadio}
+                            question={languageHelper.tr(v.code,language)} />
+                        )
+                      },this)
+                    }
+                  </div>
+            </div>
+            <hr/>
+            <div>
+              <div>
+                Please use appropriate language when answering the following questions.
+                <br/>
+                <br/>
+
+              </div>
+              <div>
                 {
-                  RadioQuestions.map(function(v,index,arr){
+                  TextQuestions.map(function(v, index, arr){
                     return (
-                      <Radio id={v.id} key={v.id} onChange={this.handleRadio}
-                        question={languageHelper.tr(v.code,language)} />
+                      <div className="minorcard" key={v.id}>
+                        <TextQuestion id={v.id} key={v.id} i={counter++} onChange={this.handleTextChange}
+                          question={languageHelper.tr(v.code, language)} />
+                      </div>
                     )
                   },this)
                 }
               </div>
 
-        </div>
-        <hr/>
-        <div>
-          <div>
-            Please use appropriate language when answering the following questions.
-            <br/>
-            <br/>
+            </div>
 
-          </div>
-          <div>
-            {
-              TextQuestions.map(function(v, index, arr){
-                return (
-                  <div className="minorcard" key={v.id}>
-                    <TextQuestion id={v.id} key={v.id} i={counter++} onChange={this.handleTextChange}
-                      question={languageHelper.tr(v.code, language)} />
-                  </div>
-                )
-              },this)
-            }
-          </div>
-
-        </div>
-        <div>
-          <span style={{padding:'2em'}}>
-            <button type="submit" className="btn btn-primary btn-lg"
-              onClick={ (e) => { e.preventDefault(); handleSubmit(this.answers)} }>
-              {languageHelper.tr("Submit Answers", language)}
-
-            </button>
-          </span>
-          {    }
-          <span>
-            <button type="submit" className="btn btn-lg btn-danger" onClick={handleCancel}>
-              {languageHelper.tr("Cancel", language)}
-            </button>
-          </span>
-        </div>
-        <div><br/></div>
-          <div><br/></div>
+          </section>
+          <footer className="survey-footer">
+            <div className="clearfix">
+              <span style={{padding:'2em'}}>
+                <button type="submit" className="btn btn-primary btn-lg"
+                  onClick={ (e) => { e.preventDefault(); handleSubmit(this.answers)} }>
+                  {languageHelper.tr("Submit Answers", language)}
+                </button>
+              </span>
+              {    }
+              <span>
+                <button type="submit" className="btn btn-lg btn-danger" onClick={handleCancel}>
+                  {languageHelper.tr("Cancel", language)}
+                </button>
+              </span>
+            </div>
             <div><br/></div>
+            <div><br/></div>
+
+          </footer>
+        </article>
+
+        <div><br/></div>
         <div><br/></div>
       </div>
 

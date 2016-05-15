@@ -6,14 +6,96 @@ import ManagerDropDown from './ManagerDropDown'
 import * as actions  from '../actions'
 
 
-class Choices extends Component {
+class ManagerChoices extends Component {
+
   render() {
+    function percentage(v,total) {
+      return !total||!v ? 0: (100*v / total).toFixed(2)
+    }
+    const v = this.props.v || {}
+    const c = this.props.c || {}
+    const others = this.props.others
+    let total = 0
+    for(var o in v) {
+      total+= (v[o] || 0)
+    }
+    console.log("others are ", others)
+    return (
+      <div>
+        <table>
+          <thead>
+            <tr>
+              <th>Assessment</th>
+              <th>Count</th>
+              <th>Percent</th>
+              <th>Store - All</th>
+              <th>Store - Others</th>
+              <th>Company</th>
+            </tr>
+          </thead>
+          <tbody>
+
+            {
+              Object.keys(v).map(function(value,index) {
+                return (
+                  <tr key={value}>
+                    <th>
+                      {value || "No Answer"}
+                    </th>
+                    <td>
+                      { v[value] }
+                    </td>
+                    <td>
+                      { percentage(v[value]|| 0, total )}
+                    </td>
+                    <td>
+                      { others.everyone[value] }
+                    </td>
+                    <td>
+                      { others.butme[value] }
+                    </td>
+                    <td>
+                      { c[value] }
+                    </td>
+                  </tr>
+                )
+              })
+            }
+          </tbody>
+          <tfoot>
+            <tr>
+              <th>
+                Total
+              </th>
+              <th>
+                {total}
+              </th>
+              <th>
+                100%
+              </th>
+            </tr>
+          </tfoot>
+        </table>
+
+      </div>
+    )
+  }
+}
+
+
+class Choices extends Component {
+
+  render() {
+    function percentage(v,total) {
+      return !total||!v ? 0: (100*v / total).toFixed(2)
+    }
     const v = this.props.v || {}
     const c = this.props.c || {}
     let total = 0
     for(var o in v) {
-      total+= v[o]
+      total+= (v[o] || 0)
     }
+
     return (
       <div>
         <table>
@@ -38,7 +120,7 @@ class Choices extends Component {
                       { v[value] }
                     </td>
                     <td>
-                      { ( 100* (v[value] || 0) / total).toFixed(2) }
+                      { percentage(v[value]|| 0, total )}
                     </td>
                     <td>
                       { c[value] }
@@ -88,11 +170,71 @@ class Checkboxes extends Component {
     )
   }
 }
+class ManagerDash extends Component {
+  render() {
+    const {data, managerId } = this.props
+    if (!managerId) {
+      return (
+        <div/>
+      )
+    }
+    function others(data, questionId) {
+      let everyone={}
+      let butme = {}
+      data.map(function(r,i) {
+        if (r.QuestionId==questionId) {
+          Object.keys(r.Choice).map(function(value,index) {
+            everyone[value] = (everyone[value]||0) + (r.Choice[value]||0)
+            if (!butme[value]) {
+              butme[value]=0
+            }
+            if (r.ManagerId!=managerId) {
+              butme[value] = (butme[value]||0) + (r.Choice[value]||0)
+            }
+          })
+        }
+      })
+      return {
+        everyone: everyone,
+        butme: butme
+      }
+    }
+    return (
+      <div>
+          {
+            data.filter(a => a.ManagerId==managerId && a.ManagerId && managerId)
+                .map(function(r,i) {
+                    return (
+                      <div key={i} className="minorcard" style={{margin:"2em"}}>
+                        <h3 key={i}>
+                          {r.Question}
+                          <br/>
+                        </h3>
+                        { r.QuestionTypeId == 1 && <Checkboxes v={r.Checked} /> }
+                        {
+                          r.QuestionTypeId == 2 && <ManagerChoices v={r.Choice}  c={r.CompanyChoice}
+                            others={others(data,r.QuestionId)} />
+                        }
+                        {
+                          r.QuestionTypeId == 3 && <ManagerChoices v={r.Choice} c={r.CompanyChoice}
+                            others={others(data,r.QuestionId)} />
+                        }
+                        { r.QuestionTypeId == 4 && <Values v={r.Value} /> }
+                        { r.QuestionTypeId == 5 && <Values v={r.Value} /> }
+                        { r.QuestionTypeId == 6 && <Values v={r.Value}/> }
+                      </div>
+                    )
+                })
+          }
+      </div>
+    )
+  }
+}
 class StoreDash extends Component {
 
   render() {
     const {data, managerId } = this.props
-    console.log(managerId, data)
+    console.log('rendering sotre dash for manager: ', managerId, ' and data: ', data)
     return (
       <div>
         {
@@ -118,29 +260,7 @@ class StoreDash extends Component {
           })
         }
         <hr/>
-        <h3>Manager Review</h3>
-          {
-            data.filter(a => a.ManagerId==managerId)
-                .map(function(r,i) {
-              return (
-                <div key={i} className="minorcard" style={{margin:"2em"}}>
-                  <h3 key={i}>
-                    {r.Question}
-                    <br/>
-                  </h3>
-                  { r.QuestionTypeId == 1 && <Checkboxes v={r.Checked} /> }
 
-                  { r.QuestionTypeId == 2 && <Choices v={r.Choice}  c={r.CompanyChoice} /> }
-                  { r.QuestionTypeId == 3 && <Choices v={r.Choice} c={r.CompanyChoice} /> }
-
-                  { r.QuestionTypeId == 4 && <Values v={r.Value} /> }
-                  { r.QuestionTypeId == 5 && <Values v={r.Value} /> }
-                  { r.QuestionTypeId == 6 && <Values v={r.Value}/> }
-                </div>
-              )
-
-            })
-          }
       </div>
     )
   }
@@ -154,22 +274,26 @@ class Dashboard extends Component {
         selectedArea: 0,
         selectedStore: 0,
         managerId: 0
-      };
+      }
+      this.getData = this.getData.bind(this)
     }
 
     refresh() {
       let self = this
-      const { reviewId} = this.props
-
+      try {
+        console.debug("refreshin...")
+        this.getData(this.state.selectedStore)
+        console.debug("refreshed...")
+      } catch(x) {
+        console.error("doh ", x)
+      }
     }
     componentDidMount() {
       const self = this
       let {managers} = this.props
       this.refresh.bind(this)()
       const {customerId, locationId} = this.props
-      console.log("current managers list, ", managers)
       if (managers.length==0) {
-        console.log("getting new managers list.")
         api.getManagers(customerId, 0)
         .then(function(managers) {
           self.props.loadedManagers(managers)
@@ -211,21 +335,42 @@ class Dashboard extends Component {
       }
     }
 
-    selectStore(id) {
+    selectStore(locationId) {
       const self = this
       const {customerId, campaignId, surveyId } = this.props
       try {
-        this.setState({selectedStore: id})
-        api.getSurveyResults(customerId, campaignId,surveyId, id,0)
+        this.setState({selectedStore: locationId})
+        if (locationId) {
+          this.getData(locationId)
+
+        } else {
+          self.setState({StoreData: []})
+        }
+      } catch(x) {
+        console.error(x, ' in select store');
+      }
+    }
+    getData(locationId) {
+
+      const self = this
+      const {customerId, campaignId, surveyId } = this.props
+
+      if (!locationId) {
+        self.setState({StoreData: []})
+        return
+      }
+      try {
+        api.getSurveyResults(customerId, campaignId,surveyId, locationId,0)
         .then(function(data) {
           self.setState({StoreData:data})
         })
       } catch(x) {
-        console.log(x, ' in select store');
+        console.error(x, ' in select store');
       }
     }
+
     selectManager(id) {
-      console.log("setting manager id to ", id)
+      console.debug("setting manager id to ", id)
       this.setState({managerId: id})
     }
     render() {
@@ -245,13 +390,16 @@ class Dashboard extends Component {
               <div className="form-group">
                 <StoresDropDown areas={this.props.areas} stores={this.props.stores} setStoreId={this.selectStore.bind(this)} />
               </div>
-              <div className="form-group">
-                <ManagerDropDown managers={this.props.managers} stores={this.props.stores} setManagerId={ this.selectManager.bind(this) } storeId={this.state.selectedStore} showButton={false} />
-              </div>
             <br/>
-
-          <br/>
+            <br/>
             <StoreDash data={this.state.StoreData} managerId={this.state.managerId} />
+            <hr/>
+            <h3>Manager Review</h3>
+
+            <div className="form-group">
+                <ManagerDropDown managers={this.props.managers} stores={this.props.stores} setManagerId={ this.selectManager.bind(this) } storeId={this.state.selectedStore} showButton={false} addEmpty={true} />
+              </div>
+            <ManagerDash data={this.state.StoreData} managerId={this.state.managerId} />
           <hr/>
           <div>
             <br/>

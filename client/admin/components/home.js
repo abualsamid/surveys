@@ -19,6 +19,7 @@ class Home extends Component {
     const self = this;
     const {loadedAreas, loadedStores, loadedManagers, setReviewId} = this.props;
 
+    console.log("loading admin state")
     api.ensureReview("Manager Review","2016")
     .then(function(reviewId) {
       setReviewId(reviewId)

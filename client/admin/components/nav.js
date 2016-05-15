@@ -12,7 +12,6 @@ class Nav extends Component {
     if(isLoggedIn) {
       return (
         <ul className="nav navbar-nav navbar-right">
-          <li><Link to="/admin">Admin</Link></li>
           <li><Link to="/dashboard">Dashboard</Link></li>
 
           <li>
@@ -43,7 +42,7 @@ class Nav extends Component {
               <span className="icon-bar"></span>
               <span className="icon-bar"></span>
             </button>
-            <Link to='/' activeClassName='active' className="navbar-brand">leye</Link>
+            <Link to='/admin' activeClassName='active' className="navbar-brand">8o</Link>
           </div>
           <div id="navbar" className="collapse navbar-collapse">
               {this.renderLoginSnippet()}

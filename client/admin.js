@@ -11,10 +11,13 @@ import { routerMiddleware } from 'react-router-redux'
 import thunk from 'redux-thunk'
 import rootReducer from './admin/reducers'
 
+import * as api from '../common/middleware/botengine'
+
+const styles = require( './assets/css/home.css' );
+
 const store = createStore(
   rootReducer,
-  applyMiddleware(thunk,  routerMiddleware(browserHistory)),
-  window.devToolsExtension ? window.devToolsExtension() : f => f
+  applyMiddleware(thunk.withExtraArgument(api),  routerMiddleware(browserHistory))
 )
 
 

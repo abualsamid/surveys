@@ -45,7 +45,7 @@ export default connect(
     campaignId: state.admin.campaignId,
     customerId: state.admin.customerId,
     storeId: state.admin.locationId || state.survey.storeId || 0,
-    storeCaption: state.survey.storeCaption || ("hmmm " + state.survey.storeId), 
+    storeCaption: state.survey.storeCaption || ("hmmm " + state.survey.storeId),
     code: state.admin.Code,
     surveyId: state.admin.surveyId
   })

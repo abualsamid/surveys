@@ -4,7 +4,6 @@ import { browserHistory } from 'react-router'
 import { connect } from 'react-redux'
 import * as languageHelper  from '../../../../common/helpers/language'
 
-const styles = require( '../../../../client/assets/css/home.css' );
 
 function pickLanguage(w) {
   return {

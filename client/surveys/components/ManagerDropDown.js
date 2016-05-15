@@ -15,14 +15,17 @@ export default class ManagerDropDown extends Component {
   handleChange() {
     try {
       const { setManagerId} = this.props
-      console.log('sup o ', this.managerId.value || this.managerId.options[0].value, this.managerId.options[this.managerId.selectedIndex||0].text)
-      setManagerId(this.managerId.value || this.managerId.options[0].value, this.managerId.options[this.managerId.selectedIndex||0].text)
+      const m = this.managerId.value || this.managerId.options[0].value
+      const c = this.managerId.options[this.managerId.selectedIndex||0].text
+      console.log('sup o ', m, c)
+
+      setManagerId(m, c)
       console.log('sup yo yo ', this.managerId)
 
     } catch(x) {
       console.log(x)
     }
-
+    return false; // do not submit the form.
   }
 
   render() {
@@ -45,7 +48,7 @@ export default class ManagerDropDown extends Component {
           </select>
           <br/>
           <button type="submit" className="btn btn-primary"
-            onClick={ (e) => {  this.handleChange(); }} >Select Manager</button>
+            onClick={ (e) => {  e.preventDefault(); this.handleChange(); }} >Select Manager</button>
         </div>
 
     )

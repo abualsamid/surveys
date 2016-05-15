@@ -3,15 +3,19 @@ import { connect } from 'react-redux'
 import * as api from '../../../common/middleware/botengine'
 import StoresDropDown from './StoresDropDown'
 import ManagerDropDown from './ManagerDropDown'
+import * as actions from '../actions'
 
-const BarChart = rd3.BarChart;
 
 class Dashboard extends Component {
     constructor(props) {
       super(props)
-      this.state = { DashboarData: {},
-
-      };
+      this.state = {
+        DashboarData: {},
+      }
+      this.selectArea= this.selectArea.bind(this)
+      this.refresh = this.refresh.bind(this)
+      this.selectStore = this.selectStore.bind(this)
+      this.addManager  = this.addManager.bind(this)
     }
 
     refresh() {
@@ -19,32 +23,62 @@ class Dashboard extends Component {
       const { reviewId} = this.props
 
     }
+    addManager() {
+      const {addedItem, customerId} = this.props
+      const self = this
+      console.debug("adding manager %s", this.manager.value)
+      try {
+        api
+          .addManager(customerId, self.state.selectedStore, self.managerLastName.value,self.managerFirstName)
+          .then(function(newManager) {
+            addedItem("ADD_MANAGER", newManager)
+            self.manager.value=""
+          })
+
+      } catch(x) {
+        console.log(x)
+      }
+    }
     componentDidMount() {
       this.refresh.bind(this)()
     }
+    selectArea() {
 
+    }
+    selectStore(storeId) {
+      this.setState({selectedStore: storeId})
+    }
     render() {
-      const {email, token} = this.props
+      const {email, token, managers} = this.props
       return (
         <div>
           <h2>
-            Dashboard <a href="#" onClick={this.refresh.bind(this)}><span className="glyphicon glyphicon-refresh"></span></a>
+            Dashboard <a href="#" onClick={this.refresh}><span className="glyphicon glyphicon-refresh"></span></a>
           </h2>
 
           <br/>
           <br/>
             <div className="form-group">
-              <select className="form-control" value={this.state.selectedArea} ref={ a => this.areaList = a}  onChange={this.selectArea.bind(this)}>
+              <select className="form-control" value={this.state.selectedArea} ref={ a => this.areaList = a}  onChange={this.selectArea}>
               {this.props.areas.map( (one) =>  <option key={one.id} value={one.id}> {one.name} </option> )}
               </select>
             </div>
             <div className="form-group">
-              <StoresDropDown areas={this.props.areas} stores={this.props.stores} setStoreId={this.selectStore.bind(this)} />
+              <StoresDropDown areas={this.props.areas} stores={this.props.stores} setStoreId={this.selectStore} />
             </div>
             <div>
               <ManagerDropDown storeId={this.state.selectedStore}  managers={managers}
-                setManagerId={()=>console.log("...")}
+                setManagerId={(managerId)=> this.setState({selectedManager: managerId})}
                  />
+            </div>
+            <div className="form-group">
+              <input type="text" className="form-control" placeholder="manager first name" ref={m=>this.managerFirstName=m} />
+            </div>
+            <div className="form-group">
+              <input type="text" className="form-control" placeholder="manager last name" ref={m=>this.managerLastName=m} />
+            </div>
+            <div>
+              <button className="btn btn-primary btn-lg" onClick={this.addManager}>Add Manager</button>
             </div>
           <br/>
           <div>
@@ -76,9 +110,13 @@ export default connect(
       token: state.login.token,
       email: state.login.email,
       language: state.login.language || "en",
-      reviewId: state.admin.reviewId
+      reviewId: state.admin.reviewId,
+      areas: state.admin.areas ||[],
+      stores: state.admin.stores ||[],
+      managers: state.admin.managers || [],
+      customerId: 1 // this needs todo
     }
 
-  )
-
+  ),
+  actions
 )(Dashboard)

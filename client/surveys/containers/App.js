@@ -1,13 +1,11 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { browserHistory } from 'react-router'
 import Nav from '../components/nav'
 import { resetErrorMessage } from '../actions'
 
 class App extends Component {
   constructor(props) {
     super(props)
-    this.handleChange = this.handleChange.bind(this)
     this.handleDismissClick = this.handleDismissClick.bind(this)
   }
 
@@ -16,9 +14,6 @@ class App extends Component {
     e.preventDefault()
   }
 
-  handleChange(nextValue) {
-    browserHistory.push(`/${nextValue}`)
-  }
 
   renderErrorMessage() {
     const { errorMessage } = this.props

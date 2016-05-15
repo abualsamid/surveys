@@ -64,6 +64,13 @@ export function loadedManagers(managers){
   }
 }
 
+export function addedItem(type, item) {
+  return {
+    type: type,
+    item: item
+  }
+}
+
 export function setReviewId(id) {
   return {
     type:"SET_REVIEW_ID",

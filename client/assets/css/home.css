@@ -1,90 +1,306 @@
-
 html {
-  line-height: 1;
+    line-height: 1;
 }
-
 ol, ul {
-  list-style: none;
+    list-style: none;
 }
-
 table {
-  border-collapse: collapse;
-  border-spacing: 0;
+    border-collapse: collapse;
+    border-spacing: 0;
 }
-
-table td, table th
-{
-    padding: 1em; /* 'cellpadding' equivalent */
+table td, table th {
+    padding: 1em;
+    /* 'cellpadding' equivalent */
 }
-
 a img {
-  border: none;
+    border: none;
 }
-
 article, aside, details, figcaption, figure, footer, header, hgroup, main, menu, nav, section, summary {
-  display: block;
+    display: block;
 }
-
 html, body {
-  height: 100%;
-  font-family: 'Roboto', sans-serif !important;
-  font-size: 14px;
-  font-weight: normal;
-  line-height: 18px;
-  color: #333333;
+    height: 100%;
+    font-family: 'Roboto', sans-serif !important;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 18px;
+    color: #333333;
 }
-
 body {
-  padding-top: 80px;
-  margin-top: 80px;
-  background-color: #ecedef;
+    /*padding-top: 80px;*/
+    margin-top: 80px;
+    /*background-color: #ecedef;*/
+    padding: 0 0 150px 0;
+    background-image: url(/img/background.png);
+    background-color: #EFEFEF;
+    background-attachment: fixed;
+    min-height: 100%;
 }
-
 span.btn {
-  padding: 1em;
+    padding: 1em;
 }
-
 div.card {
-  background-color: #eee;
-  border: 1px solid grey;
-  padding: 2em;
+    background-color: #eee;
+    border: 1px solid grey;
+    padding: 2em;
 }
-
 div.minorcard {
-  background-color: #ddd;
-  border: 1px solid grey;
-  padding: 2em;
-  margin: 2em;
+    background-color: #ddd;
+    border: 1px solid grey;
+    padding: 2em;
+    margin: 2em;
 }
-
 div.minorcard textarea {
-  background-color: #eee;
+    background-color: #eee;
 }
-
 div.minorcard select {
-  background-color: #eee;
+    background-color: #eee;
 }
-
 div.minorcard input {
-  background-color: #eee;
+    background-color: #eee;
 }
-
 div.card textarea {
-  background-color: #eee;
+    background-color: #eee;
 }
-
 div.card select {
-  background-color: #eee;
+    background-color: #eee;
 }
-
 div.card input {
-  background-color: #eee;
+    background-color: #eee;
 }
-
 h2 {
-  font-weight: bold;
+    font-weight: bold;
+}
+.topStyle {
+    backgroundColor: '#EEE';
+    border: 'solid 1px black';
+}
+.boldStyle= {
+    fontWeight: 'bold';
+}
+.italicStyle= {
+    fontStyle: 'italic';
 }
 
-.topStyle { backgroundColor: '#EEE'; border: 'solid 1px black'; }
-.boldStyle = { fontWeight: 'bold'; }
-.italicStyle = { fontStyle : 'italic'; }
+/*shamelessly copied from https://www.surveymonkey.com/r/Employee-Evaluation-Template?sm=xOcKEJYL8iVkdeSGwFJJQg6x5yBZRIOr8Mokilu9L%2fM%3d*/
+.survey-page .question-pre-set-icon {
+    color: #FFFFFF;
+    font-size: 12px
+}
+.report-problem-container {
+    background-color: #FFFFFF;
+}
+.survey-page .question-preset-theme {
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 300;
+    outline: none;
+    text-decoration: none;
+}
+.survey-page .question-validation-icon {
+    background-color: #CC0000;
+    color: #FFFFFF;
+    font-size: 12px;
+}
+.survey-page {
+    border-radius: 12px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    margin-top: 30px;
+}
+.survey-page-white {
+  background-color: #FFF;
+}
+.survey-page .survey-page-header .survey-title-container {
+    background-color: #2c7db7;
+}
+.survey-page .survey-page-header .page-title-container {
+    background-color: #60B1DB;
+}
+.survey-page .question-matrix-row-even td, .survey-page .question-matrix-row-even .matrix-row-label-cell {
+    background-color: #F5F5F5;
+}
+.survey-page .checkbox-button-label.no-touch:hover, .survey-page .checkbox-button-label.touch-sensitive.touchdown, .survey-page .radio-button-label.no-touch:hover, .survey-page .radio-button-label.touch-sensitive.touchdown {
+    background-color: #F5F5F5;
+    border-left-color: #2c7db7;
+}
+.survey-page [data-preset-question] .checkbox-button-label.no-touch:hover, .survey-page [data-preset-question] .checkbox-button-label.touch-sensitive.touchdown, .survey-page [data-preset-question] .radio-button-label.no-touch:hover, .survey-page [data-preset-question] .radio-button-label.touch-sensitive.touchdown {
+    background-color: #2c7db7;
+    border-left-color: #2c7db7;
+}
+.question-ranking-rank-hover {
+    background-color: #F5F5F5;
+}
+.radio-button-label.focus .radio-button-display, .checkbox-button-label.focus .checkbox-button-display {
+    outline-color: #4a4a4a;
+}
+.modern-browser .radio-button-label.focus .radio-button-display, .modern-browser .checkbox-button-label.focus .checkbox-button-display {
+    border-color: #2c7db7;
+    box-shadow: 0 0 4px #2c7db7;
+}
+.survey-page .progress-bar-container {
+    width: 60%;
+    margin: 0 auto 32px auto;
+}
+.survey-page .progress-bar-section {
+    background-color: #FFFFFF;
+    color: #000000;
+    font-size: 12px;
+}
+.survey-page .progress-bar-indicator-wrapper {
+    border-color: #CCCCCC;
+    border-width: 1px;
+}
+.survey-page .progress-bar-indicator {
+    background-color: #73C2EB;
+}
+.survey-page .exit-survey {
+    color: white;
+    font-size: 12px;
+    font-weight: 300;
+}
+.survey-page .question-body select {
+    font-size: 12px;
+}
+.survey-page .required-asterisk {
+    color: #2c7db7;
+    font-size: 18px;
+    font-weight: 400;
+    font-weight: 300;
+}
+.survey-body {
+    padding: 0 0 150px 0;
+    height: initial;
+    background-color: #EFEFEF;
+    background-attachment: fixed;
+}
+.survey-page .page-subtitle {
+    font-size: 14px;
+    color: #000000;
+    text-decoration: none;
+    padding: 0 0 40px 0;
+    font-weight: 300;
+    font-style: normal;
+}
+.survey-page .page-title-wrapper {
+    font-size: 18px;
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 300;
+    font-style: normal;
+    background-color: #60B1DB;
+}
+.survey-page .question-body, .survey-page .question-body-font-theme {
+    color: #4a4a4a;
+    font-size: 12px;
+    font-weight: 300;
+    font-style: normal;
+    text-decoration: none;
+}
+.survey-page .question-container {
+    padding-left: 10px;
+}
+.survey-page .question-row {
+    margin: 0 38px 40px 0;
+}
+.survey-page .question-title-container {
+    color: #4DB2EC;
+    font-size: 24px;
+    font-weight: 300;
+    font-style: normal;
+    text-decoration: none;
+}
+.survey-page .question-validation-theme {
+    color: #CC0000;
+    font-size: 12px;
+    font-weight: 300;
+    font-style: normal;
+    text-decoration: none;
+}
+.survey-page .survey-footer {
+    margin: 0;
+    background-color: #FFF;
+    padding: 0;
+}
+.survey-page .survey-page-body {
+    padding: 32px 70px 0 32px;
+    font-family: helvetica neue, helvetica, arial, sans-serif;
+    border-bottom-right-radius: 12px;
+    background-color: #FFFFFF;
+}
+.survey-page .survey-page-button.done-button {
+    color: #FFFFFF;
+    background-color: #2c7db7;
+}
+.survey-page .survey-page-button.next-button {
+    color: #FFFFFF;
+    background-color: #2c7db7;
+}
+.survey-page .survey-title {
+    font-size: 18px;
+    color: #FFFFFF;
+    text-decoration: none;
+    padding: 0px;
+    font-weight: 300;
+    font-style: normal;
+    background-color: #2c7db7;
+}
+.top-logo-section {
+    background-color: #2c7db7;
+}
+.survey-body {
+    background-image: url(//surveymonkey-assets.s3.amazonaws.com/smtheme/stock/7d00e426-ce61-5e7d-9106-a6e4e0311e0f.png);
+}
+@media only screen and (max-width: 480px) {
+    .modern-browser .survey-page .question-matrix-table.reflow .question-matrix-row-odd td, .modern-browser .survey-page .question-matrix-table.reflow .menu-matrix-select-cell td {
+        background-color: #F5F5F5;
+    }
+    .modern-browser .survey-page .question-matrix-table.reflow .other-answer-container {
+        padding: 0;
+    }
+    .modern-browser .survey-page .question-matrix-table.reflow .other-answer-label {
+        background-color: #F5F5F5;
+        padding: 5px;
+        margin: 0;
+    }
+}
+@media only screen and (max-width: 768px) {
+    .survey-body {
+        padding: 0;
+    }
+    .survey-page .survey-footer {
+        margin: 0;
+        padding: 0;
+    }
+    .survey-page .survey-page-body {
+        padding: 32px 44px 0 32px;
+    }
+    .survey-page {
+        border-radius: 0;
+        box-shadow: none;
+        margin-top: 0;
+    }
+}
+@media only screen and (max-width: 480px) {
+    .survey-body .survey-page .survey-page-header .page-title-container {
+        padding: 14px 18px;
+    }
+    .survey-page .page-title-wrapper {
+        font-size: 14px;
+    }
+    .survey-page .question-title-container {
+        font-size: 18px;
+    }
+    .survey-page .survey-page-body {
+        padding: 18px 18px 0 18px;
+    }
+    .survey-page .survey-page-button.prev-button {
+        margin-right: 12px;
+    }
+    .survey-page .survey-title {
+        font-size: 16px;
+    }
+    .survey-title-container .survey-title-table {
+        margin: 16px 18px;
+    }
+}

@@ -10,10 +10,12 @@ import { createStore, applyMiddleware } from 'redux'
 import { routerMiddleware } from 'react-router-redux'
 import thunk from 'redux-thunk'
 import rootReducer from './surveys/reducers'
+import * as api from '../common/middleware/botengine'
+const styles = require( './assets/css/home.css' );
 
 const store = createStore(
   rootReducer,
-  applyMiddleware(thunk,  routerMiddleware(browserHistory))
+  applyMiddleware(thunk.withExtraArgument(api),  routerMiddleware(browserHistory))
 )
 
 

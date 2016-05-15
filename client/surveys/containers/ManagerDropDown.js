@@ -24,24 +24,23 @@ export default class ManagerDropDown extends Component {
   }
 
   render() {
-    const { storeId, managers, caption, showButton } = this.props
+    const { storeId, managers, caption, showButton, addEmpty } = this.props
     return (
         <div className="form-group">
           <label>{caption}</label>
-
           <select className="form-control" ref={(managerId) => this.managerId=managerId}
             onChange={ e => { !showButton && this.handleChange(); } }
             >
+            {
+              addEmpty && <option key="0" value="0"></option>
+            }
             {
               managers
               .filter( m => m.homeLocationId==storeId)
               .map( m => (
                 <option key={m.id} value={m.id}>{m.lastName}, {m.firstName}</option>
               ))
-
             }
-
-
           </select>
           <br/>
           {

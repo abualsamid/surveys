@@ -1,6 +1,6 @@
 import settings from '../settings/configureSettings'
 
-const API_ROOT  = settings.API_ROOT
+const API_ROOT  = "/" // settings.API_ROOT
 // const V1 = API_ROOT + "api/v1/"
 const V1 =  "/api/v1/"
 
@@ -59,7 +59,7 @@ export function login(loginInfo) {
 }
 
 export function addArea(name) {
-  return fetch(API_ROOT + "api/v1/admin/areas/" + customer.customerId,{
+  return fetch(V1+ "admin/areas/" + customer.customerId,{
       method: "POST",
       mode: "cors",
       redirect: "follow",
@@ -106,7 +106,7 @@ export function ensureReview(reviewName, reviewPeriod) {
 
 
 export function getAreas(client) {
-  return fetch(API_ROOT + "api/v1/admin/areas/" + customer.customerId,{
+  return fetch(V1 + "admin/areas/" + customer.customerId,{
       method: "GET",
       mode: "cors",
       redirect: "follow",
@@ -130,7 +130,7 @@ export function getAreas(client) {
 
 
 export function getStores(client) {
-  return fetch(API_ROOT + "api/v1/admin/stores/" + customer.customerId,{
+  return fetch(V1 + "admin/stores/" + customer.customerId,{
       method: "GET",
       mode: "cors",
       redirect: "follow",
@@ -152,10 +152,10 @@ export function getStores(client) {
     });
 }
 
-export function addManager(storeId, name) {
-  var manager = { customerId: customer.customerId, storeId: storeId, name: name}
+export function addManager(customerId, locationId, firstName, lastName) {
+  var manager = { customerId: customerId, homeLocationId: locationId, firstName:firstName,lastName: name}
 
-  return fetch(V1 + "admin/manager/" + customer.customerId + "/" + storeId, {
+  return fetch(V1 + "admin/manager/" + customerId + "/" + locationId, {
     method: "POST",
     mode: "cors",
     redirect: "follow",
@@ -222,7 +222,7 @@ export function getManagers(customerId, locationId) {
 
 export function addStore(areaId, name) {
   var store = { customerId: customer.customerId, areaId: areaId, name: name}
-  return fetch(API_ROOT + "api/v1/admin/stores/" + customer.customerId + "/" + areaId,{
+  return fetch(V1 + "admin/stores/" + customer.customerId + "/" + areaId,{
       method: "POST",
       mode: "cors",
       redirect: "follow",
@@ -241,7 +241,7 @@ export function addStore(areaId, name) {
 }
 
 export function getStoreReview(token) {
-  return fetch(API_ROOT  + "api/v1/survey/storeReview", {
+  return fetch(V1  + "survey/storeReview", {
     headers: {
      'Accept': 'application/json',
      'Content-Type': 'application/json' ,
@@ -270,7 +270,7 @@ export function getStoreReview(token) {
 }
 
 export function saveManagerReview(reviewId, storeId, data) {
-  return fetch(API_ROOT + "api/v1/survey/managerReview/" + customer.customerId
+  return fetch(V1+ "survey/managerReview/" + customer.customerId
         + "/" + reviewId
         + "/" + storeId
 
@@ -294,7 +294,7 @@ export function saveManagerReview(reviewId, storeId, data) {
 
 
 export function downloadSurveyResults(customerId, campaignId,surveyId, storeId,managerId) {
-  return fetch(API_ROOT + "api/v1/admin/download_surveyresults/" +
+  return fetch(V1 + "admin/download_surveyresults/" +
     customerId + "/" + campaignId + "/" + surveyId + "/" + storeId + "/" + managerId,
     {
       method: "GET",
@@ -315,9 +315,9 @@ export function downloadSurveyResults(customerId, campaignId,surveyId, storeId,m
 }
 
 
-export function getSurveyResults(customerId, campaignId,surveyId, storeId,managerId) {
-  return fetch(API_ROOT + "api/v1/admin/surveyresults/" +
-    customerId + "/" + campaignId + "/" + surveyId + "/" + storeId + "/" + managerId,
+export function getSurveyResults(customerId, campaignId,surveyId, locationId,managerId) {
+  return fetch(V1 + "admin/surveyresults/" +
+    customerId + "/" + campaignId + "/" + surveyId + "/" + locationId + "/" + managerId,
     {
       method: "GET",
       mode: "cors",
@@ -328,16 +328,18 @@ export function getSurveyResults(customerId, campaignId,surveyId, storeId,manage
       }
     }).then(function(response) {
       return response.json()
+
     }).then(function(json) {
+      console.log("survey results are ", json)
       return json
     }).catch(function(ex) {
-      console.log("failed to download csv ", ex)
+      console.log("failed to get data ", ex)
       return "failed. " + ex
     })
 }
 
 export function saveStoreReview(customerId, campaignId,surveyId, storeId,managerId, data) {
-  return fetch(API_ROOT + "api/v1/survey/storeReview/" + customerId
+  return fetch(V1 + "survey/storeReview/" + customerId
       + "/" + campaignId
       + "/" + surveyId
       + "/" + storeId

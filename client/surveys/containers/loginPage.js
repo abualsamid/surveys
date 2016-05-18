@@ -48,8 +48,16 @@ class LoginForm extends Component{
       const self = this;
       api.login({email: this.email.value, password: this.password.value})
       .then(function(res) {
-        console.log("successfully logged in. giddy up ", res)
-        self.props.success( res.token || "nocando", profile)
+        if (!res ||   !res.Token || !res.id || !res.email) {
+          console.log("login failed.  ", res)
+          self.props.failure("",null)
+        } else {
+          console.log("successfully logged in. giddy up ", res)
+          self.props.success( res.Token || "nocando", res)
+
+        }
+      }).catch(function(doh) {
+        console.log("login issue: ", doh)
       })
     }
 
@@ -101,6 +109,7 @@ class LoginPage extends Component {
     this.googleResponse = this.googleResponse.bind(this)
     this.processLogin = this.processLogin.bind(this)
     this.onSuccess = this.onSuccess.bind(this)
+    this.onFailure = this.onFailure.bind(this)
     this.state = { email: this.props.email, isLoggedIn: this.props.isLoggedIn};
   }
 
@@ -172,18 +181,23 @@ class LoginPage extends Component {
   }
 
   onSuccess(token, profile ) {
-    const { successfulLogin, failedLogin } = this.props
+    const { successfulLogin } = this.props
     profile.token = token
     this.setState({isLoggedIn: true, email: profile.email})
     successfulLogin(token, profile)
     browserHistory.push('/Dashboard')
 
   }
-
+  onFailure(token, profile) {
+    const {  failedLogin } = this.props
+    this.setState({isLoggedIn: false, email: ""})
+    failedLogin(token, profile)
+    alert("Failed to login")
+  }
   render() {
     return (
       <div className="container">
-        <LoginForm email={this.state.email} isLoggedIn={this.state.isLoggedIn} success={this.onSuccess} />
+        <LoginForm email={this.state.email} isLoggedIn={this.state.isLoggedIn} success={this.onSuccess} failure={this.onFailure} />
       </div>
     )
   }

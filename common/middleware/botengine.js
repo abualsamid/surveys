@@ -152,8 +152,8 @@ export function getStores(client) {
     });
 }
 
-export function addManager(customerId, locationId, firstName, lastName) {
-  var manager = { customerId: customerId, homeLocationId: locationId, firstName:firstName,lastName: name}
+export function addManager(customerId, locationId, lastName, firstName) {
+  var manager = { customerId: customerId, homeLocationId: locationId, firstName:firstName,lastName: lastName}
 
   return fetch(V1 + "admin/manager/" + customerId + "/" + locationId, {
     method: "POST",

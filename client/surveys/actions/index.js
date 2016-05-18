@@ -12,6 +12,14 @@ export function resetErrorMessage() {
   }
 }
 
+export function failedLogin(token, profile) {
+  return {
+    type: FAILED_LOGIN,
+    token: "",
+    profile: {},
+    receivedAt: Date.now()
+  }
+}
 export function successfulLogin(token, profile) {
 
   console.log('in successfulLogin , token is: ', token, ' profile is ', profile)

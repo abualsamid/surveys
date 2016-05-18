@@ -26,13 +26,13 @@ class Dashboard extends Component {
     addManager() {
       const {addedItem, customerId} = this.props
       const self = this
-      console.debug("adding manager %s", this.manager.value)
       try {
         api
-          .addManager(customerId, self.state.selectedStore, self.managerLastName.value,self.managerFirstName)
+          .addManager(customerId, self.state.selectedStore, self.managerLastName.value,self.managerFirstName.value)
           .then(function(newManager) {
             addedItem("ADD_MANAGER", newManager)
-            self.manager.value=""
+            self.managerLastName.value=""
+            self.managerFirstName.value=""
           })
 
       } catch(x) {

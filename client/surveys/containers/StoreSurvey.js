@@ -1,8 +1,8 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { browserHistory } from 'react-router'
 import  StoreSurvey from '../components/StoreSurvey'
 import { submitStoreAnswers } from '../actions'
+import { browserHistory } from 'react-router'
 
 class Container extends Component {
   constructor(props) {
@@ -13,7 +13,6 @@ class Container extends Component {
     browserHistory.push("/ManagerSurvey")
   }
   handleSubmit(answers) {
-    console.log('about to dispatch submitting ... ', answers)
     const { dispatch, storeId } = this.props
     dispatch(submitStoreAnswers( storeId,0, answers))
     this.handleSkip()
@@ -28,10 +27,9 @@ class Container extends Component {
     const {language, storeId, storeCaption} = this.props
     return(
       <div>
-        <StoreSurvey language={language} handleSubmit={this.handleSubmit.bind(this)}
+        <StoreSurvey handleSubmit={this.handleSubmit.bind(this)}
           handleSkip={this.handleSkip.bind(this)} handleCancel={this.handleCancel.bind(this)}
-          storeId={storeId}
-          storeCaption={storeCaption}
+          {...this.props}
         />
       </div>
     )

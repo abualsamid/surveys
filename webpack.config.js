@@ -32,7 +32,7 @@ var plugins= [
   new HtmlWebpackPlugin({
     title: "admin",
     filename: "admin.html",
-    template: "./client/templates/index.ejs",
+    template: "./client/templates/admin.ejs",
     inject: true,
     hash: true,
     chunks: ['common','admin']

@@ -5,7 +5,7 @@ export default class RadioButton extends Component {
     super(props)
   }
   render() {
-    const {id, question, onChange} = this.props
+    const {id, question, onChange, options } = this.props
     return (
       <div className="form-group">
         <label for={id}>
@@ -13,17 +13,14 @@ export default class RadioButton extends Component {
         </label>
         <br/>
         <div className="btn-group" data-toggle="buttons">
-          <label className="radio-inline">
-            <input type='radio' name={id}  value="1" onChange={ (e) => onChange(id, e.target.checked,e.target.value) } /> Yes
-          </label>
-          { }
-          <label className="radio-inline">
-            <input type='radio' name={id}  value="2" onChange={ (e) => onChange(id, e.target.checked,e.target.value) } /> No
-          </label>
-          { }
-          <label className="radio-inline">
-            <input type='radio' name={id}  value="3"  onChange={ (e) => onChange(id, e.target.checked,e.target.value) } /> Sometimes
-          </label>
+          {
+            options.map(item => (
+              <label className="radio-inline">
+                <input type="radio" name={"q_" + id} value={item.v} onChange={  (e) => onChange(id, e.target.checked,e.target.value) } /> {item.caption}
+              </label>
+              )
+            )
+          }
         </div>
 
       </div>

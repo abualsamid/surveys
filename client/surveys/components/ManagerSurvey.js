@@ -97,7 +97,10 @@ export default class ManagerSurvey extends Component {
           </div>
           <div>
             <div>
-              please feel free to review as many managers as you wish
+              {
+                languageHelper.tr("Please feel free to review as many managers as you wish.", language)
+              }
+
               <br/>
             </div>
               <article className="survey-page survey-page-white">
@@ -187,11 +190,11 @@ export default class ManagerSurvey extends Component {
             <h3>{languageHelper.tr("Manager Survey", language)}</h3>
             <br/>
             <div>
-              please feel free to review as many managers as you wish
+              {languageHelper.tr("Please feel free to review as many managers as you wish.", language)}
             </div>
 
               <div className="card" >
-                <ManagerDropDown storeId={storeId}  managers={managers}
+                <ManagerDropDown storeId={storeId}  managers={managers} language={language}
                   caption={languageHelper.tr("Manager", language)}
                   setManagerId={this.setManagerId.bind(this)} showButton={true} />
               </div>

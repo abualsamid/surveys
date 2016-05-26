@@ -12,19 +12,10 @@ class Nav extends Component {
     if(isLoggedIn) {
       return (
         <ul className="nav navbar-nav navbar-right">
-          <li><Link to="/dashboard">Dashboard</Link></li>
+          <li><Link to="/admin/dashboard">Dashboard</Link></li>
 
           <li>
             <Link to="/logout">Log Out {email}</Link>
-          </li>
-        </ul>
-
-      )
-    } else {
-      return (
-        <ul className="nav navbar-nav navbar-right">
-          <li>
-              <Link to="/login" className="glyphicon glyphicon-log-in"> Admin </Link>
           </li>
         </ul>
 
@@ -42,7 +33,7 @@ class Nav extends Component {
               <span className="icon-bar"></span>
               <span className="icon-bar"></span>
             </button>
-            <Link to='/admin' activeClassName='active' className="navbar-brand">8o</Link>
+            <Link to='/admin' activeClassName='active' className="navbar-brand">leye</Link>
           </div>
           <div id="navbar" className="collapse navbar-collapse">
               {this.renderLoginSnippet()}

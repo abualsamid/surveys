@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" itemscope itemtype="http://schema.org/Article">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta http-equiv="cache-control" content="max-age=21600">
+    <meta keywords="surveys">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,400italic,700,900,100,300,700italic" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <title><%=htmlWebpackPlugin.options.title %></title>
+  </head>
+  <body class="modern-browser survey-body translate">
+
+    <div id="root" class="container">
+      <div class="row text-center">
+        <h3>loading the awesome...</h3>
+        <h4>made with love</h4>
+      </div>
+
+    </div>
+  </body>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <!-- jQuery -->
+  <script>window.jQuery || document.write('<script src="/js/jquery.min.js"><\/script>')</script>
+
+  <!-- Bootstrap -->
+  <script>window.jQuery.fn.modal || document.write('<script src="/js/bootstrap.min.js"><\/script>')</script>
+  <script>
+      (function($) {
+          $(function() {
+              if ($('body').css('color') !== 'rgb(51, 51, 51)') {
+                  $('head').prepend('<link rel="stylesheet" href="/css/bootstrap.min.css">');
+              }
+          });
+      })(window.jQuery);
+  </script>
+</html>

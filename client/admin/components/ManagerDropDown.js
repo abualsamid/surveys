@@ -15,9 +15,7 @@ export default class ManagerDropDown extends Component {
   handleChange() {
     try {
       const { setManagerId} = this.props
-      console.log('sup o ', this.managerId.value || this.managerId.options[0].value, this.managerId.options[this.managerId.selectedIndex||0].text)
       setManagerId(this.managerId.value || this.managerId.options[0].value, this.managerId.options[this.managerId.selectedIndex||0].text)
-      console.log('sup yo yo ', this.managerId)
 
     } catch(x) {
       console.log(x)
@@ -38,14 +36,12 @@ export default class ManagerDropDown extends Component {
               .map( m => (
                 <option key={m.id} value={m.id}>{m.lastName}, {m.firstName}</option>
               ))
-
             }
-
-
           </select>
           <br/>
-          <button type="submit" className="btn btn-primary"
-            onClick={ (e) => {  this.handleChange(); }} >Select Manager</button>
+          {
+            false &&  <button type="submit" className="btn btn-primary" onClick={ (e) => {  this.handleChange(); }} >Select Manager</button>
+          }
         </div>
 
     )

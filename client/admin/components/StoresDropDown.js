@@ -7,7 +7,12 @@ export default class StoresDropDown extends Component {
   componentDidMount() {
     const {setStoreId, stores } = this.props
     if (this.storeId) {
-      setStoreId(this.storeId.value||   "", this.storeId.options[this.storeId.selectedIndex || 0].text)
+      try {
+        setStoreId(this.storeId.value||   "", this.storeId.options[this.storeId.selectedIndex || 0].text)
+
+      } catch(x) {
+        console.log(x)
+      }
     } else {
       if (stores && stores.length) {
         setStoreId(stores[0].id, stores[0].name)

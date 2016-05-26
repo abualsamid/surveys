@@ -5,24 +5,29 @@ import { combineReducers } from 'redux'
 
 function login(state = { isLoggedIn: false, language: "en", email: "", token: ""}, action) {
 
-  switch(action.type) {
-    case ActionTypes.SUCCESS_LOGIN:
-      let g =  Object.assign({}, state, { isLoggedIn: true, email: action.profile.email, token: action.token })
-      return g
-    case ActionTypes.LOGOUT:
-      return Object.assign({}, state, {isLoggedIn: false, email: "", token: "", profile:{}})
-    case "CHOOSE_LANGUAGE":
-      return Object.assign({}, state, { language: action.language})
-    default:
-      return state;
+  try {
+    switch(action.type) {
+      case ActionTypes.SUCCESS_LOGIN:
+        return { ...state,isLoggedIn: true, email: action.profile.email, token: action.token}
+      case ActionTypes.LOGOUT:
+        return Object.assign({}, state, {isLoggedIn: false, email: "", token: "", profile:{}})
+      case "CHOOSE_LANGUAGE":
+        return { ...state, language: action.language }
+      default:
+        return state;
+    }
+  } catch(x) {
+    console.error("error in reducer: ", x )
   }
+
+
 }
 
 
 function survey(state={storeId:0, storeCaption:""}, action) {
   switch(action.type) {
     case "SELECT_STORE":
-      return Object.assign({},state, {storeId: action.storeId, storeCaption: action.storeCaption})
+      return { ...state, storeId: action.storeId, storeCaption: action.storeCaption}
     default:
       return state
   }
@@ -35,7 +40,7 @@ function admin(state = {areas: [], stores: [], managers:[], campaignId:0, custom
       case "ADD_STORE":
         return Object.assign({}, state, { stores: state.stores.concat([action.item]) } )
       case "ADD_MANAGER":
-        return Object.assign({}, state, { managers: state.managers.concat([action.item])})
+        return { ...state, managers: state.managers.concat([action.item]) }
       case "LOADED_AREAS":
         return Object.assign({}, state, {areas: action.areas ||[]})
       case "LOADED_STORES":
@@ -51,7 +56,8 @@ function admin(state = {areas: [], stores: [], managers:[], campaignId:0, custom
           campaignId: action.params.CampaignId,
           locationId: action.params.LocationId,
           code: action.params.Code,
-          surveyId: action.params.SurveyId
+          surveyId: action.params.SurveyId,
+          isSingleUse: action.params.IsSingleUse
         } )
 
       default:

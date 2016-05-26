@@ -56,7 +56,7 @@ class ChooseLanguage extends Component {
   handleClick(choice) {
     const {pickLanguage, dispatch} = this.props
     pickLanguage(choice)
-    browserHistory.push('/login')
+    browserHistory.push('/admin/login')
   }
   render() {
     return (

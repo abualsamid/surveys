@@ -40,7 +40,6 @@ class App extends Component {
     return (
       <div>
         <Nav />
-        <div><br/><br/></div>
         <div>
           <br/>
           {this.renderErrorMessage()}

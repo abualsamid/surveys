@@ -11,7 +11,6 @@ export default class DropDown extends Component  {
     try {
       this.select.selectedIndex=0
       this.setState({value:""})
-      console.log("set the selected index to 0 ")
     } catch(x) {console.log("in drop down: ", x)}
   }
   changeMe(e) {

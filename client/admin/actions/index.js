@@ -12,9 +12,10 @@ export function resetErrorMessage() {
   }
 }
 
+
+
 export function successfulLogin(token, profile) {
 
-  console.log('in successfulLogin , token is: ', token, ' profile is ', profile)
   try {
     return {
       type: SUCCESS_LOGIN,
@@ -28,7 +29,11 @@ export function successfulLogin(token, profile) {
 }
 
 export function logout() {
-  console.log('signing off folks')
+  try {
+    window.sessionStorage && window.sessionStorage.clear()
+  } catch(x) {
+    console.error("crap... ", x)
+  }
   try {
     return {
       type: LOGOUT,

@@ -9,7 +9,7 @@ function mapStateToProps(state) {
   return {
     language:  "en",
     areas: state.admin.areas || [],
-    storesList: state.admin.stores || []
+    stores: state.admin.stores || []
   }
 }
 

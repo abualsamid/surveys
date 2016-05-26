@@ -71,11 +71,11 @@ export const languageText = {
     "es": "Excelente"
   },
   "6": {
-    "en": "Good",
-    "es": "Bueno"
+    "en": "Exceeds Expectations",
+    "es": "Cumple con las expectativas"
   },
   "7": {
-    "en": "Fair",
+    "en": "Meets Expectations",
     "es": "Mas o Menos"
   },
   "8": {
@@ -83,8 +83,8 @@ export const languageText = {
     "es": "Necesita Mejorar"
   },
   "9": {
-    "en": "Needs Significant Improvement",
-    "es": "Necesita Mejorar Mucho"
+    "en": "Unsatisfactory",
+    "es": "Insatisfactorio"
   },
   "Manager's Name": {
     "en": "Manager's Name",
@@ -137,6 +137,26 @@ export const languageText = {
   "Manager": {
     "en": "Manager",
     "es": "Gerente"
+  },
+  "Manager Survey": {
+    "en": "Manager Survey",
+    "es": "Encuesta gerente"
+  },
+  "Comments": {
+    "en": "Comments",
+    "es": "Comentarios"
+  },
+  "Select Manager": {
+    "en": "Select Manager",
+    "es": "Seleccione Gerente"
+  },
+  "Thank you for participating. Your feedback is appreciated.":{
+      "en": "Thank you for participating. Your feedback is appreciated.",
+      "es": "Gracias por participar. Su regeneración se aprecia."
+  },
+  "Please feel free to review as many managers as you wish.":{
+    "en":"Please feel free to review as many managers as you wish.",
+    "es":"Por favor, siéntase libre de revisar tantos gerentes como desee."
   },
   "Keeps us informed" : {
     "en": "Keeps us informed",
@@ -227,6 +247,15 @@ export const languageText = {
   "Submit - and review another manager": {
     "en": "Submit - and review another manager",
     "es": "Enviar - y revisar otro gestor"
+  },
+  "Yes": {
+    "en": "Yes", "es":"Sí"
+  },
+  "No": {
+    "en": "No", "es": "No"
+  },
+  "Sometimes": {
+    "en": "Sometimes", "es": "A veces"
   }
 
 };

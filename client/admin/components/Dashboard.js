@@ -1,9 +1,11 @@
 import React, { Component, PropTypes } from 'react'
+import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import * as api from '../../../common/middleware/botengine'
 import StoresDropDown from './StoresDropDown'
 import ManagerDropDown from './ManagerDropDown'
 import * as actions from '../actions'
+
 
 
 class Dashboard extends Component {
@@ -16,6 +18,8 @@ class Dashboard extends Component {
       this.refresh = this.refresh.bind(this)
       this.selectStore = this.selectStore.bind(this)
       this.addManager  = this.addManager.bind(this)
+      this.addArea  = this.addArea.bind(this)
+      this.addLocation  = this.addLocation.bind(this)
     }
 
     refresh() {
@@ -39,23 +43,68 @@ class Dashboard extends Component {
         console.log(x)
       }
     }
+    addArea() {
+      const self = this
+      const {addedItem, customerId} = this.props
+        try {
+          api.addArea(customerId, this.newAreaName.value)
+          .then(function(newArea) {
+            addedItem("ADD_AREA", newArea)
+            self.newAreaName.value=""
+          })
+          .catch(api.HandleError)
+
+        } catch(x) {
+          console.log(x)
+        }
+    }
+    addLocation() {
+      const self = this
+      const {addedItem, customerId, loadedStores} = this.props
+      try {
+        var areaId=this.state.selectedArea ||this.areaList.options[0].value
+        api.addStore(customerId,areaId, this.newLocationName.value)
+        .then(function(newLocation) {
+          addedItem("ADD_LOCATION", newLocation)
+          self.newLocationName.value = ""
+          // lazily load the new store list.
+          api.getStores("leye")
+          .then(function(stores) {
+            loadedStores(stores)
+          })
+          .catch(function(doh) {
+            console.log(doh)
+            // loadedStores([])
+          })
+        })
+        .catch(api.HandleError)
+      } catch(x) {
+        console.log(x)
+      }
+    }
+
     componentDidMount() {
       this.refresh.bind(this)()
+      console.log("current managers: ", this.props.managers)
+      this.areaName = this.areaList.options[this.areaList.selectedIndex || 0 ].text
     }
-    selectArea() {
 
+    selectArea(e) {
+      this.setState({selectedArea: e.target.value})
+      this.areaName = e.target.options[e.target.selectedIndex || 0 ].text
     }
-    selectStore(storeId) {
+    selectStore(storeId, storeName) {
       this.setState({selectedStore: storeId})
+      this.selectedStoreName = storeName
     }
+
     render() {
       const {email, token, managers} = this.props
       return (
         <div>
           <h2>
-            Dashboard <a href="#" onClick={this.refresh}><span className="glyphicon glyphicon-refresh"></span></a>
+            Admin
           </h2>
-
           <br/>
           <br/>
             <div className="form-group">
@@ -64,8 +113,28 @@ class Dashboard extends Component {
               </select>
             </div>
             <div className="form-group">
+              <input type="text" className="form-control" placeholder="area" ref={m=>this.newAreaName=m} />
+            </div>
+            <div>
+              <button className="btn btn-primary btn-lg" onClick={this.addArea}>Add Area</button>
+            </div>
+            <br/>
+            <div className="form-group">
               <StoresDropDown areas={this.props.areas} stores={this.props.stores} setStoreId={this.selectStore} />
             </div>
+            <div className="form-group">
+              <input type="text" className="form-control" placeholder="store" ref={m=>this.newLocationName=m} />
+            </div>
+            <div>
+              <button className="btn btn-primary btn-lg" onClick={this.addLocation} ref={m=>this.addStoreButton=m}>
+                Add Store {this.areaName}
+              </button>
+              {  }
+              <br/>
+              <br/>
+              <Link to={`/admin/dashboard/codes/${this.state.selectedStore}`}  className="btn btn-primary"> Manage Codes {this.selectedStoreName}</Link>
+            </div>
+            <br/>
             <div>
               <ManagerDropDown storeId={this.state.selectedStore}  managers={managers}
                 setManagerId={(managerId)=> this.setState({selectedManager: managerId})}
@@ -78,24 +147,13 @@ class Dashboard extends Component {
               <input type="text" className="form-control" placeholder="manager last name" ref={m=>this.managerLastName=m} />
             </div>
             <div>
-              <button className="btn btn-primary btn-lg" onClick={this.addManager}>Add Manager</button>
+              <button className="btn btn-primary btn-lg" onClick={this.addManager}>Add Manager  { this.selectedStoreName }</button>
             </div>
           <br/>
-          <div>
-              <span style={{fontWeight: "bold"}}>Legend: </span>
-              <span>
-                1: Our work environment is positive.
-                2: The communication is clear and effective.
-                3: We have the tools/supplies we need to do our job.
-                4: My training was thorough and effective.
-                5: I have opportunities to learn and grow at work.
-              </span>
-          </div>
-          <br/>
+
 
           <hr/>
           <div>
-            <br/>
             <br/>
           </div>
         </div>

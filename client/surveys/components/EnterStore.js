@@ -15,7 +15,7 @@ class EnterStore extends Component {
     this.setStoreId = this.setStoreId.bind(this)
     this.renderSelectStore = this.renderSelectStore.bind(this)
     this.renderSelectCode = this.renderSelectCode.bind(this)
-
+    this.handleClick = this.handleClick.bind(this)
     this.storeId=""
   }
   handleCode() {
@@ -25,7 +25,10 @@ class EnterStore extends Component {
       .then(function(variables) {
         if (variables) {
           self.props.setupSurveyVariables(variables)
-
+          if (variables.IsSingleUse) {
+            self.setStoreId(variables.LocationId, variables.LocationCaption)
+            self.handleClick()
+          }
         } else {
           browserHistory.push("/SurveyNotFound")
 
@@ -113,7 +116,6 @@ class EnterStore extends Component {
   }
   render() {
     const {language, areas, stores, handleCancel} = this.props
-    console.log("code is ", this.props.code)
     if (!this.props.code) {
       return (
         <div className="col-md-12 text-center">

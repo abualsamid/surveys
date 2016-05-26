@@ -1,4 +1,5 @@
 import settings from '../settings/configureSettings'
+import { browserHistory } from 'react-router'
 
 const API_ROOT  = "/" // settings.API_ROOT
 // const V1 = API_ROOT + "api/v1/"
@@ -11,9 +12,11 @@ const GET_CONFIG = {
       method: "GET",
       mode: "cors",
       redirect: "follow",
+      credentials: 'same-origin',
       headers: {
         'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + (window.sessionStorage? sessionStorage.getItem("token") : "")
       }
     }
 
@@ -22,9 +25,11 @@ const POST_CONFIG = {
       method: "POST",
       mode: "cors",
       redirect: "follow",
+      credentials: 'same-origin',
       headers: {
         'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + (window.sessionStorage? sessionStorage.getItem("token") : "")
       }
     }
 
@@ -32,53 +37,96 @@ const customer = {
   customerId: customerId,
   name: "leye"
 }
+
 function postConfig(data) {
   return {
     method: "POST",
     mode: "cors",
     redirect: "follow",
+    credentials: 'same-origin',
     headers: {
       'Accept': 'application/json',
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + (window.sessionStorage? sessionStorage.getItem("token") : "")
     },
     body: JSON.stringify(data)
   }
 }
+function getConfig() {
+  return {
+    method: "GET",
+    mode: "cors",
+    redirect: "follow",
+    credentials: 'same-origin',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + (window.sessionStorage? sessionStorage.getItem("token") : "")
+    }
+  }
+}
+
+function checkStatus(response) {
+  if (response.status >= 200 && response.status < 300) {
+    return response
+  } else {
+    var error = new Error(response.statusText)
+    error.response = response
+    console.error("Error making request: ", error )
+    throw error
+
+  }
+}
+
+function parseJSON(response) {
+  return response.json()
+}
+
+// handes API errors, such as 404, 401, and 403s.
+function handleError(doh) {
+  switch(doh.response.status) {
+    case 404:
+      alert("Cannot find resource.");
+      break;
+    case 401: // unauthorized
+    case 403: // forbidden.
+      alert("Your session expired, or you are unauthorized to access this action.");
+      break;
+    default:
+      alert("Unknown error. Please try again later.");
+      break;
+  }
+}
+
+
 export function login(loginInfo) {
   return fetch(V1 + "auth/login", postConfig(loginInfo))
-          .then(function(response) {
-            if (!response.ok) {
-              throw Error(response.statusText)
-              return response.statusText
-            }
-            return response.json()
-          }).then(function(json){
+          .then(checkStatus)
+          .then(parseJSON)
+          .then(function(json){
             return json
-          }).catch( doh => {console.log("failed to login: " + doh + " : " , loginInfo); return {token:"fake", profile:{}}})
+          })
+          .catch( doh => {console.log("failed to login: " + doh + " : " , loginInfo); return {token:"fake", profile:{}}})
 
 }
 
-export function addArea(name) {
-  return fetch(V1+ "admin/areas/" + customer.customerId,{
-      method: "POST",
-      mode: "cors",
-      redirect: "follow",
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({customerId: customer.customerId, name: name})
-    }).then(function(response) {
-      if (!response.ok) {
-        throw Error(response.statusText)
-        return response.statusText
-      }
-      return response.json()
-    }).then(function(json) {
+export function GetSurveyQuestions(customerId, campaignId, surveyId) {
+  return fetch(V1 + "survey/questions/" + customerId + "/" + campaignId + "/" + surveyId,getConfig())
+    .then(checkStatus)
+    .then(parseJSON)
+    .then(function(json) {
       return json
-    }).catch(function(ex) {
-      console.log("failed to post: ", ex)
-    });
+      })
+    .catch(function(ex) {
+      console.log("Error in GetSurveyQuestions... ", ex)
+    })
+}
+export function addArea(customerId, name) {
+  return fetch(V1 + "admin/areas/" + customerId,postConfig({customerId: customerId, name: name}))
+        .then(checkStatus)
+        .then(parseJSON)
+        .then(json=>json)
+        .catch(handleError)
 }
 
 export function ensureReview(reviewName, reviewPeriod) {
@@ -152,26 +200,6 @@ export function getStores(client) {
     });
 }
 
-export function addManager(customerId, locationId, lastName, firstName) {
-  var manager = { customerId: customerId, homeLocationId: locationId, firstName:firstName,lastName: lastName}
-
-  return fetch(V1 + "admin/manager/" + customerId + "/" + locationId, {
-    method: "POST",
-    mode: "cors",
-    redirect: "follow",
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(manager)
-  }).then(function(response) {
-    return response.json()
-  }).then(function(result) {
-    return result
-  }).catch(function(doh) {
-    console.log("error adding manager... ", doh)
-  });
-}
 
 export function bootSurvey(storeCode) {
   return fetch(V1 + "survey/parameters"
@@ -198,47 +226,64 @@ export function bootSurvey(storeCode) {
     console.log("doh... getting vars.")
   })
 }
-export function getManagers(customerId, locationId) {
-  return fetch(V1 + "admin/manager/"
-    + customerId
-    + "/" + locationId
-  , {
-     method: "GET",
-     mode: "cors",
-     redirect: "follow",
-     headers: {
-       'Accept': 'application/json',
-       'Content-Type': 'application/json'
-     }
-    }
-  ).then(function(response) {
-    return response.json()
-  }).then(function(managers) {
-    return managers
-  }).catch(function(doh) {
-    console.log("error getting managers.")
-  })
+
+export function genCodes(data) {
+  return fetch(V1 + "admin/survey/gencodes/" + data.campaignId +"/" + data.surveyId + "/" + data.locationId,postConfig(data))
+          .then(checkStatus)
+          .then(parseJSON)
+          .then(json=>json)
+
 }
 
-export function addStore(areaId, name) {
-  var store = { customerId: customer.customerId, areaId: areaId, name: name}
-  return fetch(V1 + "admin/stores/" + customer.customerId + "/" + areaId,{
-      method: "POST",
-      mode: "cors",
-      redirect: "follow",
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(store)
-    }).then(function(response) {
-      return response.json()
-    }).then(function(json) {
-      return json
-    }).catch(function(ex) {
-      console.log("failed to post: ", ex)
-    });
+export function getCodes(data) {
+  try {
+    return fetch(V1 + "admin/survey/getcodes",postConfig(data))
+            .then(checkStatus)
+            .then(parseJSON)
+            .then(json=>json)
+
+  } catch(x) {
+    console.log("failed to call getcodes with ", data )
+  }
+
 }
+
+export function getManagers() {
+  return fetch(V1 + "admin/manager/"+ customer.customerId+ "/" + 0,getConfig())
+          .then(checkStatus)
+          .then(parseJSON)
+          .then(json=>json)
+          .catch(function(x) {
+            console.error("Error getting managers: ", x)
+          })
+}
+
+export function addStore(customerId, areaId, name) {
+  var store = { customerId: customerId, parentId: parseInt(areaId), name: name}
+  try {
+    return fetch(V1 + "admin/stores/" + customerId + "/" + areaId,postConfig(store))
+          .then(checkStatus)
+          .then(parseJSON)
+          .then(json=>json)
+          .catch(handleError);
+
+
+  } catch(x) {
+    console.error(x)
+  }
+}
+
+export function addManager(customerId, locationId, lastName, firstName) {
+  var manager = { customerId: customerId, homeLocationId: locationId, firstName:firstName,lastName: lastName}
+  return fetch(V1 + "admin/manager/" + customerId + "/" + locationId, postConfig(manager))
+         .then(checkStatus)
+         .then(parseJSON)
+         .then(json=>json)
+         .catch(function(doh) {
+           console.log("error adding manager... ", doh)
+         });
+}
+
 
 export function getStoreReview(token) {
   return fetch(V1  + "survey/storeReview", {
@@ -250,13 +295,13 @@ export function getStoreReview(token) {
     method:"GET",
     mode: "cors",
     cache: "default",
-    credentials: true
+    credentials: 'same-origin'
   })
   .then(function(res) {
     if (!res.ok) {
       console.log("Network error in response: ", res)
-      throw Error(response.statusText);
-      return response.statusText;
+      throw Error(res.statusText);
+      return res.statusText;
     }
     return res.json();
   })
@@ -278,6 +323,7 @@ export function saveManagerReview(reviewId, storeId, data) {
         method: "POST",
         mode: "cors",
         redirect: "follow",
+        credentials: 'same-origin',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
@@ -299,6 +345,7 @@ export function downloadSurveyResults(customerId, campaignId,surveyId, storeId,m
     {
       method: "GET",
       mode: "cors",
+      credentials: 'same-origin',
       redirect: "follow",
       headers: {
         'Accept': 'application/json',
@@ -321,6 +368,7 @@ export function getSurveyResults(customerId, campaignId,surveyId, locationId,man
     {
       method: "GET",
       mode: "cors",
+      credentials: 'same-origin',
       redirect: "follow",
       headers: {
         'Accept': 'application/json',
@@ -347,6 +395,7 @@ export function saveStoreReview(customerId, campaignId,surveyId, storeId,manager
       ,{
         method: "POST",
         mode: "cors",
+        credentials: 'same-origin',
         redirect: "follow",
         headers: {
           'Accept': 'application/json',
@@ -367,6 +416,7 @@ export function getCombinedResults( reviewId) {
     {
      method: "GET",
      mode: "cors",
+     credentials: 'same-origin',
      redirect: "follow",
      headers: {
        'Accept': 'application/json',

@@ -7,8 +7,7 @@ function login(state = { isLoggedIn: false, language: "en", email: "", token: ""
 
   switch(action.type) {
     case ActionTypes.SUCCESS_LOGIN:
-      let g =  Object.assign({}, state, { isLoggedIn: true, email: action.profile.email, token: action.token })
-      return g
+      return { ...state, isLoggedIn: true, email: action.profile.email, token: action.token}
     case ActionTypes.LOGOUT:
       return Object.assign({}, state, {isLoggedIn: false, email: "", token: "", profile:{}})
     case "CHOOSE_LANGUAGE":
@@ -33,7 +32,9 @@ function admin(state = {areas: [], stores: [], managers:[], reviewId:""}, action
       case "ADD_AREA":
         return Object.assign({}, state, { areas: state.areas.concat([action.item]) } )
       case "ADD_STORE":
-        return Object.assign({}, state, { stores: state.stores.concat([action.item]) } )
+        return { ...state, stores: state.stores.concat([action.item]) }
+      case "ADD_LOCATION":
+        return { ...state, stores: state.stores.concat([action.item]) }
       case "ADD_MANAGER":
         return Object.assign({}, state, { managers: state.managers.concat([action.item])})
       case "LOADED_AREAS":

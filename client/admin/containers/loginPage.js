@@ -42,19 +42,39 @@ class LoginForm extends Component{
     super(props)
     this.handleClick = this.handleClick.bind(this)
   }
+
   handleClick() {
     if (this.email && this.email.value ) {
       const profile = {email: this.email.value}
       const self = this;
-      api.login({email: this.email.value, password: this.password.value})
+      api
+      .login({email: this.email.value, password: this.password.value})
       .then(function(res) {
-        console.log("successfully logged in. giddy up ", res)
-        self.props.success( res.token || "nocando", profile)
+        if (!res ||   !res.Token ||  !res.email) {
+          console.log("login failed.  ", res)
+          self.props.failure("",null)
+        } else {
+          if (window.sessionStorage) {
+            sessionStorage.setItem('token',res.Token)
+            sessionStorage.setItem('email',res.email)
+          }
+
+          self.props.success( res.Token || "nocando", res)
+        }
+      }).catch(function(doh) {
+        console.log("login issue: ", doh)
       })
     }
-
   }
-
+  renderGoogleLogin() {
+    return (
+      <div>
+        <GoogleLogin
+          clientId="789684712804-nr7p56u4grev55ct6lkujc7ih3pfpmeq.apps.googleusercontent.com"
+          callback={this.googleResponse} />
+      </div>
+    )
+  }
   render() {
     const { isLoggedIn, email } = this.props
     if (isLoggedIn) {
@@ -66,13 +86,6 @@ class LoginForm extends Component{
     } else {
         return (
           <div>
-            <div>
-              <GoogleLogin
-                clientId="789684712804-nr7p56u4grev55ct6lkujc7ih3pfpmeq.apps.googleusercontent.com"
-                callback={this.googleResponse} />
-
-            </div>
-
             <div className='form'>
               <div className="form-group">
                 <label>email</label>
@@ -85,7 +98,6 @@ class LoginForm extends Component{
               <button className="btn btn-primary btn-lg" onClick={this.handleClick}>Submit</button>
             </div>
           </div>
-
         )
     }
   }
@@ -106,8 +118,10 @@ class LoginPage extends Component {
   componentWillReceiveProps(nextProps) {
   }
 
-  processLogin(profile) {
 
+
+  // this called for the Google login button.
+  processLogin(profile) {
     console.log("In process login ...\n ");
     const { successfulLogin, failedLogin } = this.props
     const { router } = this.context
@@ -125,10 +139,11 @@ class LoginPage extends Component {
         return res.json();
       })
       .then(function(token) {
-        localStorage.setItem('token',token.token)
-        console.log("Going to dispatch ... ", JSON.stringify(token))
+        if (window.sessionStorage) {
+          sessionStorage.setItem('token',token.token)
+        }
         successfulLogin(token.token || "", profile)
-        browserHistory.push('/Dashboard')
+        browserHistory.push('/admin/dashboard')
       })
       .catch(function(err) {
         console.log("Error in process login:", err)
@@ -141,7 +156,6 @@ class LoginPage extends Component {
 
   googleResponse(googleUser) {
 
-    console.log("test me...")
     try {
       var profile = googleUser.getBasicProfile();
       var auth = googleUser.getAuthResponse();
@@ -172,14 +186,17 @@ class LoginPage extends Component {
     profile.token = token
     this.setState({isLoggedIn: true, email: profile.email})
     successfulLogin(token, profile)
-    browserHistory.push('/Dashboard')
+    browserHistory.push('/admin/dashboard')
 
+  }
+  onFailure() {
+    alert("failed to login.")
   }
 
   render() {
     return (
       <div className="container">
-        <LoginForm email={this.state.email} isLoggedIn={this.state.isLoggedIn} success={this.onSuccess} />
+        <LoginForm email={this.state.email} isLoggedIn={this.state.isLoggedIn} success={this.onSuccess} failure={this.onFailure} />
       </div>
     )
   }

@@ -44,13 +44,10 @@ class App extends Component {
     return (
       <div>
         <Nav/>
-        <div style={{marginTop:"80px"}}>
+        <div>
           {this.renderErrorMessage()}
           {children}
-
         </div>
-
-
       </div>
     )
   }

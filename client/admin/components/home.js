@@ -19,14 +19,13 @@ class Home extends Component {
     const self = this;
     const {loadedAreas, loadedStores, loadedManagers, setReviewId} = this.props;
 
-    console.log("loading admin state")
-    api.ensureReview("Manager Review","2016")
+    api.ensureReview("2016 Manager Survey","2016")
     .then(function(reviewId) {
       setReviewId(reviewId)
     })
     .catch(function(doh){
       console.log(doh)
-      setReviewId("")
+      setReviewId(0)
     })
 
     api.getAreas("")
@@ -47,14 +46,20 @@ class Home extends Component {
       loadedStores([])
     })
 
-    api.getManagers()
-    .then(function(managers) {
-      loadedManagers(managers)
-    })
-    .catch(function(doh) {
-      console.log(doh)
-      loadedManagers([])
-    })
+    try {
+      api.getManagers()
+      .then(function(managers) {
+        loadedManagers(managers)
+      })
+      .catch(function(doh) {
+        console.log(doh)
+        loadedManagers([])
+      })
+    } catch(x) {
+      console.error("failed to load managers: ", x)
+    }
+
+
   }
 
 

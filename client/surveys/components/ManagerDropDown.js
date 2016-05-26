@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react'
+import * as languageHelper  from '../../../common/helpers/language'
 
 export default class ManagerDropDown extends Component {
   constructor(props) {
@@ -17,10 +18,8 @@ export default class ManagerDropDown extends Component {
       const { setManagerId} = this.props
       const m = this.managerId.value || this.managerId.options[0].value
       const c = this.managerId.options[this.managerId.selectedIndex||0].text
-      console.log('sup o ', m, c)
 
       setManagerId(m, c)
-      console.log('sup yo yo ', this.managerId)
 
     } catch(x) {
       console.log(x)
@@ -29,11 +28,10 @@ export default class ManagerDropDown extends Component {
   }
 
   render() {
-    const { storeId, managers, caption } = this.props
+    const { storeId, managers, caption, language } = this.props
     return (
         <div className="form-group">
           <label>{caption}</label>
-
           <select className="form-control" ref={(managerId) => this.managerId=managerId} >
             {
               managers
@@ -41,14 +39,13 @@ export default class ManagerDropDown extends Component {
               .map( m => (
                 <option key={m.id} value={m.id}>{m.lastName}, {m.firstName}</option>
               ))
-
             }
-
-
           </select>
           <br/>
           <button type="submit" className="btn btn-primary"
-            onClick={ (e) => {  e.preventDefault(); this.handleChange(); }} >Select Manager</button>
+            onClick={ (e) => {  e.preventDefault(); this.handleChange(); }} >
+            {languageHelper.tr("Select Manager",language)}
+          </button>
         </div>
 
     )

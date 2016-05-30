@@ -68,6 +68,7 @@ function getConfig() {
 
 function checkStatus(response) {
   if (response.status >= 200 && response.status < 300) {
+    console.log("returned response is ", response )
     return response
   } else {
     var error = new Error(response.statusText)
@@ -83,18 +84,27 @@ function parseJSON(response) {
 }
 
 // handes API errors, such as 404, 401, and 403s.
-function handleError(doh) {
-  switch(doh.response.status) {
-    case 404:
-      alert("Cannot find resource.");
-      break;
-    case 401: // unauthorized
-    case 403: // forbidden.
-      alert("Your session expired, or you are unauthorized to access this action.");
-      break;
-    default:
-      alert("Unknown error. Please try again later.");
-      break;
+function handleError(t) {
+  return function(doh) {
+    console.log('processing ', t)
+    if (!doh) return;
+    console.log(doh);
+
+    if (!doh.response) return;
+
+    switch(doh.response.status) {
+      case 404:
+        alert("Well, this is embarrasing but I cannot find what you are looking for.");
+        break;
+      case 401: // unauthorized
+      case 403: // forbidden.
+        alert("Your session expired, or you are unauthorized to access this action.");
+        break;
+      default:
+        alert("Unknown error. Please try again later. " + doh.response.status);
+        break;
+    }
+
   }
 }
 
@@ -111,69 +121,38 @@ export function login(loginInfo) {
 }
 
 export function GetSurveyQuestions(customerId, campaignId, surveyId) {
-  return fetch(V1 + "survey/questions/" + customerId + "/" + campaignId + "/" + surveyId,getConfig())
-    .then(checkStatus)
-    .then(parseJSON)
-    .then(function(json) {
-      return json
-      })
-    .catch(function(ex) {
-      console.log("Error in GetSurveyQuestions... ", ex)
-    })
+
+  return getIt("survey/questions/" + customerId + "/" + campaignId + "/" + surveyId)
 }
 export function addArea(customerId, name) {
-  return fetch(V1 + "admin/areas/" + customerId,postConfig({customerId: customerId, name: name}))
+  return postIt("admin/areas/" + customerId,{customerId: customerId, name: name})
+}
+
+function postIt(url,data) {
+  var t=V1 + url;
+  var p=postConfig(data)
+
+  return fetch(t, p)
         .then(checkStatus)
         .then(parseJSON)
         .then(json=>json)
-        .catch(handleError)
+        .catch(handleError(url))
 }
-
+function getIt(url) {
+  var t= V1 + url;
+  return fetch(t, getConfig())
+        .then(checkStatus)
+        .then(parseJSON)
+        .then(json=>json)
+        .catch(handleError(url))
+}
 export function ensureReview(reviewName, reviewPeriod) {
-  return fetch(V1 + "survey/ensureReview/" + customer.customerId, {
-      method: "POST",
-      mode: "cors",
-      redirect: "follow",
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify( { name: reviewName, period: reviewPeriod } )
-  }).then(function(response) {
-    if(!response.ok) {
-      return ""
-    }
-    return response.json()
-  }).then(function(json) {
-    return json
-  }).catch(function(ex){
-    console.log("failed to ensureReview: " , reviewName)
-    return ""
-  });
+  return postIt("survey/ensureReview/" + customer.customerId,{name: reviewName, period: reviewPeriod})
 }
 
 
 export function getAreas(client) {
-  return fetch(V1 + "admin/areas/" + customer.customerId,{
-      method: "GET",
-      mode: "cors",
-      redirect: "follow",
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-    }).then(function(response) {
-      return response.json()
-    }).then(function(json) {
-      if (json == null) {
-        return []
-      }
-      json.sort()
-      return(json)
-    }).catch(function(ex) {
-      console.log("failed to post: ", ex)
-      return []
-    });
+  return getIt("admin/areas/" + customer.customerId)
 }
 
 
@@ -221,6 +200,7 @@ export function bootSurvey(storeCode) {
     return response.json()
   }).then(function(vars) {
     console.log("got back from bootSurvey: ", vars )
+    window.sessionStorage && vars && vars.SessionId && sessionStorage.setItem("token",vars.SessionId)
     return vars
   }).catch(function(doh) {
     console.log("doh... getting vars.")
@@ -259,18 +239,9 @@ export function getManagers() {
 }
 
 export function addStore(customerId, areaId, name) {
+
   var store = { customerId: customerId, parentId: parseInt(areaId), name: name}
-  try {
-    return fetch(V1 + "admin/stores/" + customerId + "/" + areaId,postConfig(store))
-          .then(checkStatus)
-          .then(parseJSON)
-          .then(json=>json)
-          .catch(handleError);
-
-
-  } catch(x) {
-    console.error(x)
-  }
+  return postIt("admin/stores/" + customerId + "/" + areaId,store)
 }
 
 export function addManager(customerId, locationId, lastName, firstName) {
@@ -286,7 +257,7 @@ export function addManager(customerId, locationId, lastName, firstName) {
 
 
 export function getStoreReview(token) {
-  return fetch(V1  + "survey/storeReview", {
+  return fetch(V1  + "survey/session/storeReview", {
     headers: {
      'Accept': 'application/json',
      'Content-Type': 'application/json' ,
@@ -315,7 +286,7 @@ export function getStoreReview(token) {
 }
 
 export function saveManagerReview(reviewId, storeId, data) {
-  return fetch(V1+ "survey/managerReview/" + customer.customerId
+  return fetch(V1+ "survey/session/managerReview/" + customer.customerId
         + "/" + reviewId
         + "/" + storeId
 
@@ -387,32 +358,16 @@ export function getSurveyResults(customerId, campaignId,surveyId, locationId,man
 }
 
 export function saveStoreReview(customerId, campaignId,surveyId, storeId,managerId, data) {
-  return fetch(V1 + "survey/storeReview/" + customerId
-      + "/" + campaignId
-      + "/" + surveyId
-      + "/" + storeId
-      + "/" + managerId
-      ,{
-        method: "POST",
-        mode: "cors",
-        credentials: 'same-origin',
-        redirect: "follow",
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    }).then(function(response) {
-      return response.json()
-    }).then(function(json) {
-      return json
-    }).catch(function(ex) {
-      console.log("failed to post: ", ex)
-    })
+  return postIt("survey/session/storeReview/" + customerId
+        + "/" + campaignId
+        + "/" + surveyId
+        + "/" + storeId
+        + "/" + managerId, data)
+
 }
 
 export function getCombinedResults( reviewId) {
-  return fetch(V1 + "survey/results/" + customer.customerId  + "/" + reviewId ,
+  return fetch(V1 + "survey/session/results/" + customer.customerId  + "/" + reviewId ,
     {
      method: "GET",
      mode: "cors",

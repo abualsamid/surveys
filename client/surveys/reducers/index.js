@@ -32,7 +32,8 @@ function survey(state={storeId:0, storeCaption:""}, action) {
       return state
   }
 }
-function admin(state = {areas: [], stores: [], managers:[], campaignId:0, customerId:0,locationId:0,code:"",surveyId:0}, action) {
+function admin(state = {areas: [], stores: [], managers:[], campaignId:0, customerId:0,locationId:0,code:"",surveyId:0,sessionId:""},
+      action) {
   try {
     switch(action.type) {
       case "ADD_AREA":
@@ -57,7 +58,8 @@ function admin(state = {areas: [], stores: [], managers:[], campaignId:0, custom
           locationId: action.params.LocationId,
           code: action.params.Code,
           surveyId: action.params.SurveyId,
-          isSingleUse: action.params.IsSingleUse
+          isSingleUse: action.params.IsSingleUse,
+          sessionId: action.params.SessionId 
         } )
 
       default:

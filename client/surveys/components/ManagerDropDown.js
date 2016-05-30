@@ -15,10 +15,14 @@ export default class ManagerDropDown extends Component {
   }
   handleChange() {
     try {
+
       const { setManagerId} = this.props
       const m = this.managerId.value || this.managerId.options[0].value
       const c = this.managerId.options[this.managerId.selectedIndex||0].text
 
+      if (!m) {
+        return false;
+      }
       setManagerId(m, c)
 
     } catch(x) {
@@ -33,6 +37,7 @@ export default class ManagerDropDown extends Component {
         <div className="form-group">
           <label>{caption}</label>
           <select className="form-control" ref={(managerId) => this.managerId=managerId} >
+            <option key={0} value="">{languageHelper.tr("Select Manager", language)}</option>
             {
               managers
               .filter( m => m.homeLocationId==storeId)

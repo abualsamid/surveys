@@ -25,7 +25,7 @@ class Home extends Component {
     const self = this;
     const {loadedAreas, loadedStores, loadedManagers, setReviewId} = this.props;
 
-    api.ensureReview("Manager Review","2016")
+    api.ensureReview("2016 Manager Survey","2016")
     .then(function(reviewId) {
       setReviewId(reviewId)
     })

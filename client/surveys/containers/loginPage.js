@@ -48,12 +48,12 @@ class LoginForm extends Component{
       const self = this;
       api.login({email: this.email.value, password: this.password.value})
       .then(function(res) {
-        if (!res ||   !res.Token ||  !res.email) {
+        if (!res ||   !res.email ||  !res.sessionId) {
           console.log("login failed.  ", res)
           self.props.failure("",null)
         } else {
           console.log("successfully logged in. giddy up ")
-          self.props.success( res.Token || "nocando", res)
+          self.props.success( res.sessionId || "nocando", res)
 
         }
       }).catch(function(doh) {

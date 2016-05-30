@@ -16,7 +16,7 @@ export default class RadioButton extends Component {
           {
             options.map(item => (
               <label className="radio-inline">
-                <input type="radio" name={"q_" + id} value={item.v} onChange={  (e) => onChange(id, e.target.checked,e.target.value) } /> {item.caption}
+                <input key={"q_" + id + item.v} type="radio" name={"q_" + id} value={item.v} onChange={  (e) => onChange(id, e.target.checked,e.target.value) } /> {item.caption}
               </label>
               )
             )

@@ -249,7 +249,7 @@ h2 {
     background-color: #2c7db7;
 }
 .survey-body {
-    background-image: url(//surveymonkey-assets.s3.amazonaws.com/smtheme/stock/7d00e426-ce61-5e7d-9106-a6e4e0311e0f.png);
+    background-image: url(/img/background.png);
 }
 @media only screen and (max-width: 480px) {
     .modern-browser .survey-page .question-matrix-table.reflow .question-matrix-row-odd td, .modern-browser .survey-page .question-matrix-table.reflow .menu-matrix-select-cell td {

@@ -52,6 +52,23 @@ function postConfig(data) {
     body: JSON.stringify(data)
   }
 }
+
+
+function deleteConfig(data) {
+  return {
+    method: "DELETE",
+    mode: "cors",
+    redirect: "follow",
+    credentials: 'same-origin',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + (window.sessionStorage? sessionStorage.getItem("token") : "")
+    },
+    body: JSON.stringify(data)
+  }
+}
+
 function getConfig() {
   return {
     method: "GET",
@@ -68,7 +85,6 @@ function getConfig() {
 
 function checkStatus(response) {
   if (response.status >= 200 && response.status < 300) {
-    console.log("returned response is ", response )
     return response
   } else {
     var error = new Error(response.statusText)
@@ -128,6 +144,25 @@ export function addArea(customerId, name) {
   return postIt("admin/areas/" + customerId,{customerId: customerId, name: name})
 }
 
+export function updateArea(customerId, areaId, name) {
+  return postIt("admin/area/" + customerId + "/" + areaId, {name: name})
+}
+
+export function deleteArea(customerId, areaId, name ) {
+  return deleteIt("admin/area/" + customerId + "/" + areaId, {name: name}  )
+}
+
+function deleteIt(url, data) {
+  var t=V1 + url;
+  var p=deleteConfig(data)
+
+  return fetch(t, p)
+        .then(checkStatus)
+        .then(parseJSON)
+        .then(json=>json)
+        .catch(handleError(url))
+
+}
 function postIt(url,data) {
   var t=V1 + url;
   var p=postConfig(data)
@@ -244,8 +279,21 @@ export function addStore(customerId, areaId, name) {
   return postIt("admin/stores/" + customerId + "/" + areaId,store)
 }
 
+export function deleteLocation(customerId, areaId, locationId, name) {
+  return deleteIt("admin/location/" + customerId + "/" + areaId + "/" + locationId , {name: name}  )
+}
+export function deleteManager(customerId, id) {
+  return deleteIt("admin/manager/" + customerId + "/" + id    )
+
+}
+export function updateLocation(customerId, areaId, locationId, name) {
+  var store = { customerId: customerId, parentId: parseInt(areaId), name: name}
+  return postIt("admin/location/" + customerId + "/" + areaId + "/" + locationId,store)
+
+}
+
 export function addManager(customerId, locationId, lastName, firstName) {
-  var manager = { customerId: customerId, homeLocationId: locationId, firstName:firstName,lastName: lastName}
+  var manager = { firstName:firstName,lastName: lastName}
   return fetch(V1 + "admin/manager/" + customerId + "/" + locationId, postConfig(manager))
          .then(checkStatus)
          .then(parseJSON)

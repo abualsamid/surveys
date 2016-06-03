@@ -6,7 +6,7 @@ export default class ManagerDropDown extends Component {
     this.handleChange=this.handleChange.bind(this)
   }
   componentDidMount() {
-
+    this.handleChange()
   }
 
   componentWillReceiveProps(nextProps) {
@@ -15,8 +15,9 @@ export default class ManagerDropDown extends Component {
   handleChange() {
     try {
       const { setManagerId} = this.props
-      setManagerId(this.managerId.value || this.managerId.options[0].value, this.managerId.options[this.managerId.selectedIndex||0].text)
-
+      if (this.managerId && this.managerId.options && this.managerId.options.length) {
+        setManagerId(this.managerId.value || this.managerId.options[0].value, this.managerId.options[this.managerId.selectedIndex||0].text)
+      }
     } catch(x) {
       console.log(x)
     }
@@ -24,12 +25,13 @@ export default class ManagerDropDown extends Component {
   }
 
   render() {
-    const { storeId, managers, caption } = this.props
+    const { storeId, managers, caption, selectedManager } = this.props
     return (
         <div className="form-group">
           <label>{caption}</label>
 
-          <select className="form-control" ref={(managerId) => this.managerId=managerId} >
+          <select className="form-control" value={selectedManager} 
+              ref={(managerId) => this.managerId=managerId} onChange={this.handleChange} >
             {
               managers
               .filter( m => m.homeLocationId==storeId)

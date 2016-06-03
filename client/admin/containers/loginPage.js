@@ -50,16 +50,16 @@ class LoginForm extends Component{
       api
       .login({email: this.email.value, password: this.password.value})
       .then(function(res) {
-        if (!res ||   !res.Token ||  !res.email) {
+        if (!res ||   !res.sessionId ||  !res.email) {
           console.log("login failed.  ", res)
           self.props.failure("",null)
         } else {
           if (window.sessionStorage) {
-            sessionStorage.setItem('token',res.Token)
+            sessionStorage.setItem('token',res.sessionId)
             sessionStorage.setItem('email',res.email)
           }
 
-          self.props.success( res.Token || "nocando", res)
+          self.props.success( res.sessionId || "nocando", res)
         }
       }).catch(function(doh) {
         console.log("login issue: ", doh)
@@ -74,6 +74,12 @@ class LoginForm extends Component{
           callback={this.googleResponse} />
       </div>
     )
+  }
+  componentDidMount() {
+    const { isLoggedIn, email } = this.props
+    if (isLoggedIn) {
+      browserHistory.push("/admin/dashboard")
+    }
   }
   render() {
     const { isLoggedIn, email } = this.props

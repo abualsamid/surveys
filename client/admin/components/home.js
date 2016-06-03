@@ -11,11 +11,14 @@ class Home extends Component {
 
   constructor(props) {
     super(props)
+    console.log('in home constructor')
     this.state = { step: 1, language: "" , answers: {}, storeCode: "", manager: "", period: "2016"}
   }
 
 
   componentDidMount() {
+    console.log('in home cdm')
+
     const self = this;
     const {loadedAreas, loadedStores, loadedManagers, setReviewId} = this.props;
 

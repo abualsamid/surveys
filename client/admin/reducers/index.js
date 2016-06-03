@@ -27,10 +27,28 @@ function survey(state={storeId:"", storeCaption:""}, action) {
   }
 }
 function admin(state = {areas: [], stores: [], managers:[], reviewId:""}, action) {
+  var compare=-1;
   try {
+    console.log("reducing ... ", action.type)
     switch(action.type) {
       case "ADD_AREA":
         return Object.assign({}, state, { areas: state.areas.concat([action.item]) } )
+      case "DELETED_AREA":
+        return Object.assign({}, state, { areas: state.areas.filter(e=>e.id!=action.item.id)  } )
+      case "UPDATED_AREA":
+        return Object.assign({}, state, { areas: state.areas.map(e=> e.id==action.item.id? {...e, name:action.item.name} :e)  } )
+      case "DELETED_LOCATION":
+        compare = parseInt(action.item.id)
+        return Object.assign({}, state, { stores: state.stores.filter(e=>e.id!=compare)  } );
+
+      case "DELETED_MANAGER":
+        console.log("reducing ... ", action, action.item)
+        compare = parseInt(action.item.id)
+        return Object.assign({}, state, { managers: state.managers.filter(e=>e.id!=compare)  } )
+
+      case "UPDATED_LOCATION":
+        compare = parseInt(action.item.id)
+        return Object.assign({}, state, { stores: state.stores.map(e=> e.id==compare ? { ...e, name:action.item.name} :e )  } )
       case "ADD_STORE":
         return { ...state, stores: state.stores.concat([action.item]) }
       case "ADD_LOCATION":
@@ -38,6 +56,7 @@ function admin(state = {areas: [], stores: [], managers:[], reviewId:""}, action
       case "ADD_MANAGER":
         return Object.assign({}, state, { managers: state.managers.concat([action.item])})
       case "LOADED_AREAS":
+
         return Object.assign({}, state, {areas: action.areas ||[]})
       case "LOADED_STORES":
         return Object.assign({}, state, {stores: action.stores || []})

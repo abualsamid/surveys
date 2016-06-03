@@ -62,14 +62,14 @@ var plugins= [
   //   index: true
   // }),
 
-  new ExtractTextPlugin("css/style.css"),
+  new ExtractTextPlugin("/css/style.css"),
   new webpack.DefinePlugin({
     "process.env": {
       NODE_ENV: JSON.stringify(nodeEnv)
     }
   }),
   new CommonsChunkPlugin({
-        filename: "js/common.js",
+        filename: "/js/common.js",
         name: "common"
     }),
 
@@ -89,7 +89,7 @@ module.exports = {
   },
   output: {
     path: path.join(__dirname, 'public'),
-    filename: 'js/[name].bundle.js'
+    filename: '/js/[name].bundle.js'
   },
   resolve: {
 	  alias: {

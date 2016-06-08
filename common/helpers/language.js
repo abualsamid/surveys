@@ -53,8 +53,8 @@ export const languageText = {
     "en":"Please select your store",
     "es":"Por favor seleccione su tienda"
   },
-  "EMPLOYEE SUREY FOR LEYE EMPLOYEES": {
-    "en": "EMPLOYEE SUREY FOR LEYE EMPLOYEES",
+  "EMPLOYEE SURVEY FOR LEYE EMPLOYEES": {
+    "en": "EMPLOYEE SURVEY FOR LEYE EMPLOYEES",
     "es":  "ENCUESTA PARA EMPLEADOS LEYE"
   },
   "3": {
@@ -114,8 +114,8 @@ export const languageText = {
     "en": "Listens to what we have to say",
     "es": "Escucha lo que tenemos que decir"
   },
-  "Cares about us personally and professionally appreciates us" : {
-    "en": "Cares about us personally and professionally appreciates us",
+  "Cares about us personally and professionally/appreciates us" : {
+    "en": "Cares about us personally and professionally/appreciates us",
     "es": "Le improto como persona y empleado, nos aprecia"
   },
   "Backs and supports us" : {
@@ -166,8 +166,8 @@ export const languageText = {
     "en": "Handles issues and people well",
     "es": "Sabe enfrentar situaciones y trabajar bien con personas"
   },
-  "Motivates us to go good job" : {
-    "en": "Motivates us to go good job",
+  "Motivates us to do a good job" : {
+    "en": "Motivates us to do a good job",
     "es": "Nos motiva a hacer un buen trabajo"
   },
   "Rewards good performance" : {

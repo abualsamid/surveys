@@ -22,6 +22,8 @@ class Container extends Component {
     browserHistory.push("/ThankYou")
   }
 
+
+
   render() {
 
     const {language, storeId, storeCaption} = this.props

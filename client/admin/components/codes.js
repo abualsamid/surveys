@@ -11,15 +11,15 @@ export default class Container extends Component {
     this.genCodes = this.genCodes.bind(this)
     this.selectStore = this.selectStore.bind(this)
     this.loadCodes = this.loadCodes.bind(this)
-    this.state = {"codes": []}
+    this.state = {"codes": [], locationId: this.props.locationId}
   }
 
-  loadCodes(storeId) {
+  loadCodes(locationId) {
     const self = this
     var data = {
       customerId: 1,
       campaignId: 1,
-      locationId: parseInt(storeId) || 1,
+      locationId: parseInt(locationId) || 1,
       surveyId: 1
     }
 
@@ -33,11 +33,10 @@ export default class Container extends Component {
         })
   }
 
-  selectStore(storeId) {
+  selectStore(locationId) {
     const self = this
-    this.storeId=storeId
-    console.log('stores...', storeId, this.storeId )
-    self.loadCodes(this.storeId)
+    this.setState({locationId: locationId})
+    self.loadCodes(locationId)
   }
 
   componentDidMount() {
@@ -60,30 +59,39 @@ export default class Container extends Component {
       api.getAreas("")
       .then(function(areas) {
         loadedAreas(areas)
+
+        api.getStores("leye")
+        .then(function(stores) {
+          loadedStores(stores)
+          self.loadCodes(self.state.locationId)
+        })
+        .catch(function(doh) {
+          console.log(doh)
+        })
+
       })
       .catch(function(doh) {
         console.log(doh)
       })
 
-      api.getStores("leye")
-      .then(function(stores) {
-        loadedStores(stores)
-        self.loadCodes(self.storeId)
-      })
-      .catch(function(doh) {
-        console.log(doh)
-      })
+
+    } else {
+      self.loadCodes(self.state.locationId)
     }
   }
   genCodes(e) {
     const self = this
     e.preventDefault()
+    if (!self.state.locationId) {
+      alert("Cannot locate store. Please select from drop down and try again.")
+      return false;
+    }
     var btn = e.target
     btn.disabled=true
     var data = {
       customerId: 1,
       campaignId: 1,
-      locationId: parseInt(this.storeId) || 1,
+      locationId: parseInt(self.state.locationId),
       surveyId: 1,
       startDate: new Date(this.startDate.value).toJSON(),
       endDate: new Date(this.endDate.value).toJSON(),
@@ -91,9 +99,7 @@ export default class Container extends Component {
     }
     api.genCodes(data )
       .then(function(result) {
-        self.loadCodes(self.storeId)
-
-
+        self.loadCodes(self.state.locationId)
         alert(result)
         try {
           btn.disabled=false
@@ -114,7 +120,7 @@ export default class Container extends Component {
 
       <div className="form-group">
         <label>Store</label>
-        <StoresDropDown areas={this.props.areas} stores={this.props.stores} setStoreId={this.selectStore} />
+        <StoresDropDown locationId={this.state.locationId} areas={this.props.areas} stores={this.props.stores} setStoreId={this.selectStore} />
       </div>
       <div className="form-group">
         <label>Start Date </label>

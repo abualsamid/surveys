@@ -25,15 +25,18 @@ class Header extends Component {
           <div className="col-md-12">
             <h2>
               {
-                languageHelper.tr("EMPLOYEE SUREY FOR LEYE EMPLOYEES",language)
+                languageHelper.tr("EMPLOYEE SURVEY FOR LEYE EMPLOYEES",language)
               }
             </h2>
             <br/>
             <br/>
             <div style={{whiteSpace: "pre-line"}}>
-              {
-                languageHelper.tr(3,language)
-              }
+              <h3>
+                {
+                  languageHelper.tr(3,language)
+                }
+              </h3>
+
             </div>
             <div>
               <br/>
@@ -66,9 +69,17 @@ class ChooseLanguage extends Component {
           <div className="row">
             <div className="col-md-12 text-center">
               <div>
-                <button className="btn btn-primary btn-lg" onClick={this.handleClick.bind(this,"en")}> English </button>
-                <span>&nbsp; &nbsp; &nbsp;</span>
-                <button className="btn btn-primary btn-lg" onClick={this.handleClick.bind(this,"es")}> Español </button>
+                <button className="btn btn-primary btn-lg btn-block" onClick={this.handleClick.bind(this,"en")}>
+                  <span style={{fontSize: "x-large", fontWeight: "bold"}}>
+                    English
+                  </span>
+                </button>
+                <br/>
+                <button className="btn btn-info btn-lg btn-block" onClick={this.handleClick.bind(this,"es")}>
+                  <span style={{fontSize: "x-large", fontWeight: "bold"}}>
+                    Español
+                  </span>
+                </button>
               </div>
             </div>
           </div>

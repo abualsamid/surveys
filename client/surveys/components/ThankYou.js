@@ -7,9 +7,12 @@ class Container extends Component {
       const {language} = this.props
       return   (
         <div>
-          {
-            languageHelper.tr("Thank you for participating. Your feedback is appreciated.", language)
-          }
+          <h3>
+            {
+              languageHelper.tr("Thank you for participating. Your feedback is appreciated.", language)
+            }  
+          </h3>
+
         </div>
       )
     }

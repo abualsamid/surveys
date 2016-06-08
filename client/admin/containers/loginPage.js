@@ -101,7 +101,7 @@ class LoginForm extends Component{
                 <label>password</label>
                 <input className="form-control" type="password" ref={(ref) => this.password = ref }></input>
               </div>
-              <button className="btn btn-primary btn-lg" onClick={this.handleClick}>Submit</button>
+              <button className="btn btn-primary btn-lg btn-block" onClick={this.handleClick}>Submit</button>
             </div>
           </div>
         )

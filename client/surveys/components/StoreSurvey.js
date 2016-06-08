@@ -94,7 +94,7 @@ export default class StoreSurvey extends Component {
           <header className="survey-page-header">
             <div className="survey-title-container clearfix survey-title-align-left has-survey-title">
               <div className="survey-title-table-wrapper text-center">
-                <h3>{languageHelper.tr("In General", language)}</h3>
+                <h3 style={{ fontWeight: "bold", color: "white" }}>{languageHelper.tr("In General", language)}</h3>
               </div>
 
             </div>
@@ -103,15 +103,19 @@ export default class StoreSurvey extends Component {
             <div>
               <br/>
 
-                  <div className="card">
+                  <div>
                     {
                       this.state.questions
                         .filter(function(q) { return q.SectionId==1 })
                         .map(function(v,index,arr){
                           self.answers[v.id]={ customerId:self.customerId, surveyId: self.surveyId, choice: 0, checked: false, value: ""}
                           return (
-                            <Radio id={v.id} key={v.id} onChange={this.handleRadio}
-                              question={v.Caption} options={yes_no_sometimes} />
+
+                            <div className="card"  style={{margin:"1em"}}>
+                              <Radio id={v.id} key={v.id} onChange={this.handleRadio}
+                                question={v.Caption} options={yes_no_sometimes} />
+                            </div>
+
                           )
                       },this)
                     }
@@ -120,7 +124,11 @@ export default class StoreSurvey extends Component {
             <hr/>
             <div>
               <div>
-                Please use appropriate language when answering the following questions.
+                <h3>
+                  {languageHelper.tr("Please use appropriate language when answering the following questions.", language)}
+
+
+                </h3>
                 <br/>
                 <br/>
 
@@ -146,18 +154,14 @@ export default class StoreSurvey extends Component {
           </section>
           <footer className="survey-footer">
             <div className="clearfix">
-              <span style={{padding:'2em'}}>
-                <button type="submit" className="btn btn-primary btn-lg"
+                <button type="submit" className="btn btn-primary btn-lg btn-block"
                   onClick={ (e) => { e.preventDefault(); handleSubmit(this.answers)} }>
                   {languageHelper.tr("Submit Answers", language)}
                 </button>
-              </span>
-              {    }
-              <span>
-                <button type="submit" className="btn btn-lg btn-danger" onClick={handleCancel}>
+                <br/>
+                <button type="submit" className="btn btn-lg btn-danger btn-block" onClick={handleCancel}>
                   {languageHelper.tr("Cancel", language)}
                 </button>
-              </span>
             </div>
             <div><br/></div>
             <div><br/></div>

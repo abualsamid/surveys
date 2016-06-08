@@ -47,7 +47,7 @@ export default class ManagerDropDown extends Component {
             }
           </select>
           <br/>
-          <button type="submit" className="btn btn-primary"
+          <button type="submit" className="btn btn-primary btn-block btn-lg"
             onClick={ (e) => {  e.preventDefault(); this.handleChange(); }} >
             {languageHelper.tr("Select Manager",language)}
           </button>

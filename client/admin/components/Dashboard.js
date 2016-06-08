@@ -115,17 +115,26 @@ class Dashboard extends Component {
     }
 
     deleteManager() {
-      if (!confirm("Confirm Delete?")) {
-        return false
-      }
       const self = this
       const {addedItem, customerId} = this.props
+      let managerId=self.state.selectedManager
+
+      if(!self.state.selectedManager) {
+        managerId = self.props.managers.filter(m=>m.homeLocationId==self.state.selectedStore)[0].id
+        if (!managerId) {
+          alert("sorry, could not delete manager. Can you please try to reselect from the drop down and try again.")
+          return false;
+        }
+      }
+      const {lastName, firstName} = self.props.managers.filter(m=>m.id==managerId)[0]
+      if (!confirm("Confirm Deleting " + firstName + " " + lastName + "?")) {
+        return false
+      }
       try {
-          if (!self.state.selectedManager) {
-            alert("sorry, could not delete: " + self.state.selectedManager)
+          if (!managerId) {
+            alert("sorry, could not delete: " + managerId)
             return false
           }
-          const managerId=self.state.selectedManager
           api.deleteManager(customerId, managerId)
           .then(function(manager) {
             addedItem("DELETED_MANAGER",{id: managerId} )
@@ -239,7 +248,7 @@ class Dashboard extends Component {
           api.getStores("")
           .then(function(stores) {
             loadedStores(stores)
-            var parentId = self.areas[0].id || 0;
+            var parentId = self.props.areas[0].id || 0;
             var storeId=stores.filter(s=>s.parentId==parentId)[0].id
             self.setState({selectedStore: storeId})
           })
@@ -284,11 +293,11 @@ class Dashboard extends Component {
     }
 
     componentWillReceiveProps(newProps) {
-      const self = this
-      self.setState({selectedArea: newProps.areas[0].id})
-      var parentId = newProps.areas[0].id || 0;
-      var storeId=newProps.stores.filter(s=>s.parentId==parentId)[0].id
-      self.setState({selectedStore: storeId})
+      // const self = this
+      // self.setState({selectedArea: newProps.areas[0].id})
+      // var parentId = newProps.areas[0].id || 0;
+      // var storeId=newProps.stores.filter(s=>s.parentId==parentId)[0].id
+      // self.setState({selectedStore: storeId})
     }
 
     selectArea(e) {

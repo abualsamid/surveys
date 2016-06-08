@@ -47,16 +47,16 @@ export default class ManagerSurvey extends Component {
     ]
     this.setState({
       questions: [
-          {id:"19", question: languageHelper.tr("Friendly and easy to approach", language), options: dropDownOptions },
-          {id:"20", question: languageHelper.tr("Treats all employees equally and fairly", language), options: dropDownOptions },
-          {id:"21", question: languageHelper.tr("Listens to what we have to say", language), options: dropDownOptions },
-          {id:"22", question: languageHelper.tr("Cares about us personally and professionally appreciates us", language), options: dropDownOptions},
-          {id:"23", question: languageHelper.tr("Backs and supports us", language), options: dropDownOptions },
-          {id:"24", question: languageHelper.tr("Treats us with dignity and respect", language), options: dropDownOptions },
-          {id:"25", question: languageHelper.tr("Is an effective teacher, coach and manager", language), options: dropDownOptions },
-          {id:"26", question: languageHelper.tr("Motivates us to go good job", language), options: dropDownOptions },
-          {id:"27", question: languageHelper.tr("Handles issues and people well", language), options: dropDownOptions },
-          {id:"28", question: languageHelper.tr("Follows through on promises/requests", language), options: dropDownOptions }
+          {id:"15", question: languageHelper.tr("Friendly and easy to approach", language), options: dropDownOptions },
+          {id:"16", question: languageHelper.tr("Treats all employees equally and fairly", language), options: dropDownOptions },
+          {id:"17", question: languageHelper.tr("Listens to what we have to say", language), options: dropDownOptions },
+          {id:"18", question: languageHelper.tr("Cares about us personally and professionally/appreciates us", language), options: dropDownOptions},
+          {id:"19", question: languageHelper.tr("Backs and supports us", language), options: dropDownOptions },
+          {id:"20", question: languageHelper.tr("Treats us with dignity and respect", language), options: dropDownOptions },
+          {id:"21", question: languageHelper.tr("Is an effective teacher, coach and manager", language), options: dropDownOptions },
+          {id:"22", question: languageHelper.tr("Motivates us to do a good job", language), options: dropDownOptions },
+          {id:"23", question: languageHelper.tr("Handles issues and people well", language), options: dropDownOptions },
+          {id:"24", question: languageHelper.tr("Follows through on promises/requests", language), options: dropDownOptions }
         ]
     })
   }
@@ -95,20 +95,21 @@ export default class ManagerSurvey extends Component {
             <h2>{storeCaption}</h2>
             <h3>{this.state.managerCaption}</h3>
           </div>
+          <br/>
           <div>
             <div>
-              {
-                languageHelper.tr("Please feel free to review as many managers as you wish.", language)
-              }
-
-              <br/>
+              <h3>
+                {
+                  languageHelper.tr("Please feel free to review as many managers as you wish.", language)
+                }
+              </h3>
             </div>
               <article className="survey-page survey-page-white">
 
                 <header className="survey-page-header">
                   <div className="survey-title-container clearfix survey-title-align-left has-survey-title">
                     <div className="survey-title-table-wrapper text-center">
-                        <h3>{languageHelper.tr("Manager Survey", language)}</h3>
+                        <h2>{languageHelper.tr("Manager Survey", language)}</h2>
                         <br/>
                       </div>
                   </div>
@@ -136,37 +137,36 @@ export default class ManagerSurvey extends Component {
                 </section>
                 <footer className="survey-footer">
                   <div>
-                    <span style={{padding: "1em"}}>
                       <button type="submit"
                           onClick={(e) => { e.preventDefault(); this.handleSubmit.bind(this)(false) }}
-                          className="btn-lg btn-primary btn">
+                          className="btn-lg btn-primary btn btn-block">
                         {
                           languageHelper.tr("Submit - I am done",language)
                         }
                       </button>
-                    </span>
-                    <span style={{padding: "1em"}}>
                       <button type="submit"
                         onClick={(e) => { e.preventDefault(); this.handleSubmit.bind(this)(true) }}
-                        className="btn-lg btn-info btn">
+                        className="btn-block btn-lg btn-info btn">
                         {
                           languageHelper.tr("Submit - I want to review another manager", language)
                         }
 
                       </button>
-                    </span>
-                    <span style={{padding: "1em"}}>
-                      <button type="submit" className="btn-lg btn-danger btn"
+                      <button type="submit" className="btn-lg btn-danger btn btn-block"
                         onClick={(e)=>{e.preventDefault();handleCancel()}}>
                         {
                           languageHelper.tr("Cancel", language)
                         }
                       </button>
-                    </span>
                   </div>
                     <div className="text-center">
                       <br/>
-                      please feel free to review as many managers as you wish
+                      <h3>
+                        {
+                          languageHelper.tr("please feel free to review as many managers as you wish", language)
+                        }
+                      </h3>
+
                     </div>
 
                   <br/>
@@ -190,7 +190,9 @@ export default class ManagerSurvey extends Component {
             <h3>{languageHelper.tr("Manager Survey", language)}</h3>
             <br/>
             <div>
-              {languageHelper.tr("Please feel free to review as many managers as you wish.", language)}
+              <h3>
+                {languageHelper.tr("Please feel free to review as many managers as you wish.", language)}
+              </h3>
             </div>
 
               <div className="card" >

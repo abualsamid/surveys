@@ -234,8 +234,13 @@ export function bootSurvey(storeCode) {
     }
     return response.json()
   }).then(function(vars) {
+    try {
+      window.sessionStorage && vars && vars.SessionId && sessionStorage.setItem("token",vars.SessionId)
+
+    } catch(x) {
+      console.log('error setting session storage ', x)
+    }
     console.log("got back from bootSurvey: ", vars )
-    window.sessionStorage && vars && vars.SessionId && sessionStorage.setItem("token",vars.SessionId)
     return vars
   }).catch(function(doh) {
     console.log("doh... getting vars.")
@@ -263,8 +268,8 @@ export function getCodes(data) {
 
 }
 
-export function getManagers() {
-  return fetch(V1 + "admin/manager/"+ customer.customerId+ "/" + 0,getConfig())
+export function getManagers(customerId, locationId ) {
+  return fetch(V1 + "admin/manager/"+ (customerId || customer.customerId) + "/" + (locationId||0) ,getConfig())
           .then(checkStatus)
           .then(parseJSON)
           .then(json=>json)

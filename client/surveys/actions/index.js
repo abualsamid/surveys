@@ -37,10 +37,14 @@ export function successfulLogin(token, profile) {
 }
 
 export function setupSurveyVariables(params) {
-  return {
-    type: "RECEIVED_PARAMS",
-    params: params
-  }
+  console.log('in dispatching setupSurveyVariables, ', params)
+  try {
+    return {
+      type: "RECEIVED_PARAMS",
+      params: params
+    }  
+  } catch(x) {console.log(x)}
+
 }
 
 export function selectStore(storeId, storeCaption) {

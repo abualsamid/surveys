@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { browserHistory } from 'react-router'
 import  ManagerSurvey from '../components/ManagerSurvey'
 import { submitStoreAnswers } from '../actions'
+import * as api from '../../../common/middleware/botengine'
 
 class Container extends Component {
   constructor(props) {
@@ -16,7 +17,17 @@ class Container extends Component {
     browserHistory.push("/ThankYou")
   }
 
+  componentDidMount() {
+    const self = this;
+    api.getManagers(this.props.customerId, this.props.storeId)
+    .then(function(managers) {
+      self.setState({managers: managers})
+    })
+    .catch(function(doh) {
+      console.log(doh)
+    })
 
+  }
 
   handleDone(managerId, answers, stayInPlace) {
 
@@ -26,6 +37,7 @@ class Container extends Component {
 
     if (stayInPlace) {
       let m = this.state.managers.filter( one => one.id != managerId)
+      console.log('filtered managers and now have: ', m)
       if (m.length==0) {
         setTimeout(this.handleCancel, 10)
       } else {
@@ -61,6 +73,7 @@ export default connect(
   (state) => ({
     language: state.login.language,
     managers: state.admin.managers ||[],
+    customerId: state.admin.customerId,
     campaignId: state.admin.campaignId,
     storeId : state.survey.storeId ||0 ,
     storeCaption: state.survey.storeCaption ||""

@@ -23,18 +23,32 @@ class EnterStore extends Component {
     if (this.storeCode.value) {
       api.bootSurvey(this.storeCode.value)
       .then(function(variables) {
+        console.log('and back in enter store ', variables )
         if (variables) {
-          self.props.setupSurveyVariables(variables)
-          if (variables.IsSingleUse) {
-            self.setStoreId(variables.LocationId, variables.LocationCaption)
-            self.handleClick()
+          try {
+            try {
+              self.props.setupSurveyVariables(variables)
+            } catch(x2) {console.log('error in dispatch ', x2)}
+            if (variables.IsSingleUse) {
+              // dispatch so that the store has the info
+              self.props.selectStore(variables.LocationId, variables.LocationCaption)
+
+              setTimeout(
+                browserHistory.push("/StoreSurvey/" + variables.LocationId)  , 10
+              )
+
+            }
+          } catch(x) {
+            console.log('hmmm ', x)
+            alert('An accidental error happened, can you please try again? ' + x)
           }
+
         } else {
           browserHistory.push("/SurveyNotFound")
-
         }
       })
       .catch(function(doh) {
+        alert('An accidental error happened, can you please try again? ', doh)
         console.log("error getting system variables.", doh)
         browserHistory.push("/SurveyNotFound")
       })
@@ -43,6 +57,7 @@ class EnterStore extends Component {
       console.log("missing code.")
     }
   }
+
   handleClick() {
     self = this
     this.props.selectStore(this.storeId, this.storeCaption)
@@ -69,6 +84,11 @@ class EnterStore extends Component {
   setStoreId(id, caption) {
     this.storeId = id
     this.storeCaption=caption
+    try {
+      // dispatch it.
+      this.props.selectStore(id,caption)
+
+    } catch(x) {console.log(x)}
   }
 
   renderSelectStore() {
@@ -97,18 +117,15 @@ class EnterStore extends Component {
           <div>
             <br/>
             <br/>
-            <span className="btn">
-              <button className="btn btn-primary btn-lg" onClick={this.handleCode.bind(this)}>
+              <button className="btn btn-primary btn-lg btn-block" onClick={this.handleCode.bind(this)}>
                 { languageHelper.tr("4",language)}
               </button>
 
-            </span>
-            <span className="btn">
-              <button className="btn btn-lg btn-danger" onClick={this.handleCancel.bind(this)}>
+            <br/>
+            <br/>
+              <button className="btn btn-lg btn-danger btn-block" onClick={this.handleCancel.bind(this)}>
                 { languageHelper.tr("Cancel", language)}
               </button>
-            </span>
-
           </div>
       </div>
 

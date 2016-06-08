@@ -26,7 +26,8 @@ export default class StoresDropDown extends Component {
   render() {
     const {areas, stores} = this.props
     return (
-      <select className="form-control" ref={(ref)=>this.storeId=ref} onChange={this.handleChange.bind(this)}  >
+      <select value={this.props.locationId} className="form-control" ref={(ref)=>this.storeId=ref}
+        onChange={this.handleChange.bind(this)}  >
         {
           areas.map( one => (
             <optgroup label={one.name} key={one.id}>

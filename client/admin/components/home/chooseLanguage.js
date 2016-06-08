@@ -66,7 +66,11 @@ class ChooseLanguage extends Component {
           <div className="row">
             <div className="col-md-12 text-center">
               <div>
-                <button className="btn btn-primary btn-lg" onClick={this.handleClick.bind(this,"en")}> English </button>
+                <button className="btn btn-primary btn-lg" onClick={this.handleClick.bind(this,"en")}>
+                  <span style={{fontWeight: "bold", fontSize: "large"}}>
+                    English
+                  </span>
+                </button>
                 <span>&nbsp; &nbsp; &nbsp;</span>
                 <button className="btn btn-primary btn-lg" onClick={this.handleClick.bind(this,"es")}> Español </button>
               </div>

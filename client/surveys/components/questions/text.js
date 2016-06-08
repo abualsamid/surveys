@@ -12,11 +12,11 @@ export default class TextBox extends Component  {
     }
     return (
       <div className="form-group">
-        <label>
+        <p className="lead">
           {prefix(i)}
           {question}
-        </label>
-        <textarea className="form-control"
+        </p>
+        <textarea className="form-control" rows="6"
           defaultValue=""
           onChange={ (e) => onChange(id, e.target.value)}></textarea>
       </div>

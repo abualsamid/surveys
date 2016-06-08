@@ -28,9 +28,6 @@ class ManagerChoices extends Component {
               <th>Assessment</th>
               <th>Count</th>
               <th>Percent</th>
-              <th>Store - All</th>
-              <th>Store - Others</th>
-              <th>Company</th>
             </tr>
           </thead>
           <tbody>
@@ -48,15 +45,7 @@ class ManagerChoices extends Component {
                     <td>
                       { percentage(v[value]|| 0, total )}
                     </td>
-                    <td>
-                      { others.everyone[value] }
-                    </td>
-                    <td>
-                      { others.butme[value] }
-                    </td>
-                    <td>
-                      { c[value] }
-                    </td>
+
                   </tr>
                 )
               })
@@ -104,7 +93,6 @@ class Choices extends Component {
               <th>Assessment</th>
               <th>Count</th>
               <th>Percent</th>
-              <th>Company</th>
             </tr>
           </thead>
           <tbody>
@@ -121,9 +109,6 @@ class Choices extends Component {
                     </td>
                     <td>
                       { percentage(v[value]|| 0, total )}
-                    </td>
-                    <td>
-                      { c[value] }
                     </td>
                   </tr>
                 )
@@ -182,12 +167,16 @@ class ManagerDash extends Component {
       let everyone={}
       let butme = {}
       data.map(function(r,i) {
-        if (r.QuestionId==questionId) {
+        if (r.QuestionId==questionId && r.LocationId!=0) {
           Object.keys(r.Choice).map(function(value,index) {
-            everyone[value] = (everyone[value]||0) + (r.Choice[value]||0)
             if (!butme[value]) {
               butme[value]=0
             }
+            if (!everyone[value]) {
+              everyone[value]=0
+            }
+            everyone[value] = (everyone[value]||0) + (r.Choice[value]||0)
+
             if (r.ManagerId!=managerId) {
               butme[value] = (butme[value]||0) + (r.Choice[value]||0)
             }

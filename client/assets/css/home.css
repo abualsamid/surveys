@@ -57,8 +57,10 @@ div.card {
     margin: 2em;
 }*/
 
+
 div.minorcard {
-    background-color: lightyellow;
+    /*background-color: lightyellow;*/
+    background-color: #7AA3CC;
     box-shadow: 10px 10px 5px #888888;
     padding: 2em;
     margin: 2em;

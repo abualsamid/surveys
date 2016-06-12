@@ -3,7 +3,7 @@ import Checkbox from './questions/checkbox'
 import TextQuestion from './questions/text'
 import Radio from './questions/radio'
 import * as languageHelper  from '../../../common/helpers/language'
-import * as api from '../../../common/middleware/botengine'
+import {GetSurveyQuestions}from '../../../common/middleware/botengine'
 
 export default class StoreSurvey extends Component {
   constructor(props) {
@@ -40,7 +40,7 @@ export default class StoreSurvey extends Component {
     const {customerId, surveyId, campaignId, language} = this.props
     const self = this
     let qs = []
-    api.GetSurveyQuestions(customerId,campaignId, surveyId)
+    GetSurveyQuestions(customerId,campaignId, surveyId)
     .then(function(questions) {
       for(var i=0;i<questions.length;i++) {
         const q = questions[i]

@@ -138,8 +138,16 @@ export function login(loginInfo) {
 
 export function GetSurveyQuestions(customerId, campaignId, surveyId) {
 
-  return getIt("survey/questions/" + customerId + "/" + campaignId + "/" + surveyId)
+  return getIt("survey/questions/" + (customerId || 1) + "/" + (campaignId || 1) + "/" + (surveyId || 1) )
 }
+
+export function GetSurveyQuestionTranslation(customerId, campaignId, surveyId) {
+  return getIt("admin/questions/" + customerId + "/" + campaignId + "/" + surveyId)
+}
+export function SaveSurveyQuestionTranslation(customerId, campaignId, surveyId, questions) {
+  return postIt("admin/questions/" + customerId + "/" + campaignId + "/" + surveyId, questions)
+}
+
 export function addArea(customerId, name) {
   return postIt("admin/areas/" + customerId,{customerId: customerId, name: name})
 }

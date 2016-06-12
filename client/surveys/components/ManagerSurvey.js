@@ -4,6 +4,7 @@ import TextQuestion from './questions/text'
 import DropDown from './questions/dropDown.js'
 import ManagerDropDown from './ManagerDropDown'
 import * as languageHelper  from '../../../common/helpers/language'
+import {GetSurveyQuestions}from '../../../common/middleware/botengine'
 
 class managerQuestions extends Component {
   render() {
@@ -17,7 +18,15 @@ class managerQuestions extends Component {
 export default class ManagerSurvey extends Component {
   constructor(props) {
     super(props)
-    this.state = {questions:[], managerId:0, managerCaption:"" }
+      const dropDownOptions = [
+        { key: "5", value: languageHelper.tr("5",props.language)},
+        { key: "4", value: languageHelper.tr("6",props.language)},
+        { key: "3", value: languageHelper.tr("7",props.language)},
+        { key: "2", value: languageHelper.tr("8",props.language)},
+        { key: "1", value: languageHelper.tr("9",props.language)}
+      ]
+
+    this.state = {questions:[], managerId:0, managerCaption:"" , dropDownOptions: dropDownOptions}
 
     this.answers = {}
     let a = {}
@@ -37,29 +46,46 @@ export default class ManagerSurvey extends Component {
   }
 
   componentDidMount() {
-    const {language} = this.props
-    const dropDownOptions = [
-      { key: "5", value: languageHelper.tr("5",language)},
-      { key: "4", value: languageHelper.tr("6",language)},
-      { key: "3", value: languageHelper.tr("7",language)},
-      { key: "2", value: languageHelper.tr("8",language)},
-      { key: "1", value: languageHelper.tr("9",language)}
-    ]
-    this.setState({
-      questions: [
-          {id:"15", question: languageHelper.tr("Friendly and easy to approach", language), options: dropDownOptions },
-          {id:"16", question: languageHelper.tr("Treats all employees equally and fairly", language), options: dropDownOptions },
-          {id:"17", question: languageHelper.tr("Listens to what we have to say", language), options: dropDownOptions },
-          {id:"18", question: languageHelper.tr("Cares about us personally and professionally/appreciates us", language), options: dropDownOptions},
-          {id:"19", question: languageHelper.tr("Backs and supports us", language), options: dropDownOptions },
-          {id:"20", question: languageHelper.tr("Treats us with dignity and respect", language), options: dropDownOptions },
-          {id:"21", question: languageHelper.tr("Is an effective teacher, coach and manager", language), options: dropDownOptions },
-          {id:"22", question: languageHelper.tr("Motivates us to do a good job", language), options: dropDownOptions },
-          {id:"23", question: languageHelper.tr("Handles issues and people well", language), options: dropDownOptions },
-          {id:"24", question: languageHelper.tr("Follows through on promises/requests", language), options: dropDownOptions }
-        ]
+    const {customerId, surveyId, campaignId, language} = this.props
+    const self = this
+    let qs = []
+    GetSurveyQuestions(customerId,campaignId, surveyId)
+    .then(function(questions) {
+      console.log('received the following qs ',customerId,campaignId, surveyId, questions)
+      for(var i=0;i<questions.length;i++) {
+        const q = questions[i]
+        if (q.Language==language && q.SectionId==3) {
+          qs.push(q)
+        }
+      }
+      self.setState({questions: qs})
     })
   }
+
+  // componentDidMount() {
+  //   const {language} = this.props
+  //   const dropDownOptions = [
+  //     { key: "5", value: languageHelper.tr("5",language)},
+  //     { key: "4", value: languageHelper.tr("6",language)},
+  //     { key: "3", value: languageHelper.tr("7",language)},
+  //     { key: "2", value: languageHelper.tr("8",language)},
+  //     { key: "1", value: languageHelper.tr("9",language)}
+  //   ]
+  //   this.setState({
+  //     questions: [
+  //         {id:"15", question: languageHelper.tr("Friendly and easy to approach", language), options: dropDownOptions },
+  //         {id:"16", question: languageHelper.tr("Treats all employees equally and fairly", language), options: dropDownOptions },
+  //         {id:"17", question: languageHelper.tr("Listens to what we have to say", language), options: dropDownOptions },
+  //         {id:"18", question: languageHelper.tr("Cares about us personally and professionally/appreciates us", language), options: dropDownOptions},
+  //         {id:"19", question: languageHelper.tr("Backs and supports us", language), options: dropDownOptions },
+  //         {id:"20", question: languageHelper.tr("Treats us with dignity and respect", language), options: dropDownOptions },
+  //         {id:"21", question: languageHelper.tr("Is an effective teacher, coach and manager", language), options: dropDownOptions },
+  //         {id:"22", question: languageHelper.tr("Motivates us to do a good job", language), options: dropDownOptions },
+  //         {id:"23", question: languageHelper.tr("Handles issues and people well", language), options: dropDownOptions },
+  //         {id:"24", question: languageHelper.tr("Follows through on promises/requests", language), options: dropDownOptions }
+  //       ]
+  //   })
+  // }
 
   handleAnswer(id, value) {
     this.answers[id]={customerId:1, surveyId: 1, choice: parseInt(value)}
@@ -120,19 +146,30 @@ export default class ManagerSurvey extends Component {
                       (one) => {
                         return (
                           <div className="minorcard" key={one.id}>
-                            <DropDown id={one.id} question={one.question}
-                            key={one.id}
-                            pleaseSelect={languageHelper.tr("Please Select", language)}
-                            options={one.options} onChange={this.handleAnswer.bind(this)} />
+                            <br/>
+
+                            {
+                              one.QuestionTypeId==3 &&
+                              <DropDown id={one.id} question={one.Caption || one.Name}
+                              key={one.id}
+                              pleaseSelect={languageHelper.tr("Please Select", language)}
+                              options={this.state.dropDownOptions}
+                              onChange={this.handleAnswer.bind(this)} />
+                            }
+                            {
+                              one.QuestionTypeId==5 &&
+                                  <TextQuestion id={one.id} key={one.id} i={""}
+                                    onChange={this.handleTextChange}
+                                    question={one.Caption || one.Name} />
+                            }
+                            <br/>
+
                           </div>
                         )
                       }
                     )
                   }
-                  <div className="minorcard" key={"comments"}>
-                      <TextQuestion id={"29"} key={"29"} i={""} onChange={this.handleTextChange}
-                        question={languageHelper.tr("Comments", language)} />
-                  </div>
+
 
                 </section>
                 <footer className="survey-footer">

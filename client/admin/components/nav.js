@@ -13,6 +13,7 @@ class Nav extends Component {
       return (
         <ul className="nav navbar-nav navbar-right">
           <li><Link to="/admin/dashboard">Dashboard</Link></li>
+            <li><Link to="/admin/questions">Questions</Link></li>
 
           <li>
             <Link to="/logout">Log Out {email}</Link>

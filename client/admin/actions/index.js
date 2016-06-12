@@ -28,6 +28,13 @@ export function successfulLogin(token, profile) {
   }
 }
 
+export function loadedQuestions(questions) {
+  console.log('in action createor ', questions )
+  return {
+    type: "LOADED_QUESTIONS",
+    questions: questions
+  }
+}
 export function logout() {
   try {
     window.sessionStorage && window.sessionStorage.clear()

@@ -56,9 +56,7 @@ class Container extends Component {
           handleCancel={this.handleCancel}
           handleDone={this.handleDone}
           managers = {this.state.managers}
-          storeId = {this.props.storeId}
-          storeCaption = {this.props.storeCaption}
-          language={this.props.language}
+          {...this.props}
            />
          <div>
            <br/>

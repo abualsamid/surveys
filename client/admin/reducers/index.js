@@ -18,10 +18,12 @@ function login(state = { isLoggedIn: false, language: "en", email: "", token: ""
 }
 
 
-function survey(state={storeId:"", storeCaption:""}, action) {
+function survey(state={storeId:"", storeCaption:"", questions: []}, action) {
   switch(action.type) {
     case "SELECT_STORE":
       return Object.assign({},state, {storeId: action.storeId, storeCaption: action.storeCaption})
+    case "LOADED_QUESTIONS":
+      return { ...state, questions: action.questions }
     default:
       return state
   }
@@ -29,7 +31,6 @@ function survey(state={storeId:"", storeCaption:""}, action) {
 function admin(state = {areas: [], stores: [], managers:[], reviewId:""}, action) {
   var compare=-1;
   try {
-    console.log("reducing ... ", action.type)
     switch(action.type) {
       case "ADD_AREA":
         return Object.assign({}, state, { areas: state.areas.concat([action.item]) } )
@@ -42,7 +43,6 @@ function admin(state = {areas: [], stores: [], managers:[], reviewId:""}, action
         return Object.assign({}, state, { stores: state.stores.filter(e=>e.id!=compare)  } );
 
       case "DELETED_MANAGER":
-        console.log("reducing ... ", action, action.item)
         compare = parseInt(action.item.id)
         return Object.assign({}, state, { managers: state.managers.filter(e=>e.id!=compare)  } )
 

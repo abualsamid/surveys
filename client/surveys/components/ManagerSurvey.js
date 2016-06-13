@@ -141,6 +141,11 @@ export default class ManagerSurvey extends Component {
                   </div>
                 </header>
                 <section className="survey-page-body">
+                  <h3>
+                    {languageHelper.tr("Manager is ...", language)}
+                  </h3>
+                </section>
+                <section className="survey-page-body">
                   {
                     this.state.questions.map(
                       (one) => {
@@ -173,6 +178,16 @@ export default class ManagerSurvey extends Component {
 
                 </section>
                 <footer className="survey-footer">
+                  <div className="text-center">
+                    <br/>
+                    <h3>
+                      {
+                        languageHelper.tr("please feel free to review as many managers as you wish", language)
+                      }
+                    </h3>
+
+                  </div>
+
                   <div>
                       <button type="submit"
                           onClick={(e) => { e.preventDefault(); this.handleSubmit.bind(this)(false) }}
@@ -196,15 +211,6 @@ export default class ManagerSurvey extends Component {
                         }
                       </button>
                   </div>
-                    <div className="text-center">
-                      <br/>
-                      <h3>
-                        {
-                          languageHelper.tr("please feel free to review as many managers as you wish", language)
-                        }
-                      </h3>
-
-                    </div>
 
                   <br/>
                   <br/>

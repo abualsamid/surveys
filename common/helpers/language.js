@@ -258,7 +258,11 @@ export const languageText = {
     "en": "Sometimes", "es": "A veces"
   },
   "Please use appropriate language when answering the following questions.": {
-    "en": "Please use appropriate language when answering the following questions.",
+    "en": "Please use professional language when answering the following questions.",
     "es": "Por favor use un lenguaje apropiado en sus respuestas a las preguntas siguientes."
+  },
+  "Manager is ...": {
+    "en": "Manager is ...",
+    "es": "Manager es ..."
   }
 };

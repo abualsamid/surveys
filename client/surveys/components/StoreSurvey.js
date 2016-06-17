@@ -24,16 +24,18 @@ export default class StoreSurvey extends Component {
   }
   handleCheckboxChange(id, value) {
     const {customerId, surveyId} = this.props
+    console.log('setting checkbox answer ', id , ' to checked: ', checked , ' and value: ', value, parseInt(value));
 
     this.answers[id]={customerId: customerId, surveyId: surveyId, checked: value}
   }
   handleTextChange(id, value ) {
     const {customerId, surveyId} = this.props
+    console.log('setting text answer ', id , ' to value: ', value, parseInt(value));
     this.answers[id]={customerId: customerId, surveyId: surveyId, value: value}
   }
-  handleRadio(id, checked, value) {
+  handleRadio(id, value) {
     const {customerId, surveyId} = this.props
-
+    console.log('setting radio answer ', id , ' to  value: ', value);
     this.answers[id]={customerId: customerId, surveyId: surveyId, choice: parseInt(value)}
   }
   componentDidMount() {
@@ -77,9 +79,11 @@ export default class StoreSurvey extends Component {
       ];
 
     const yes_no_sometimes = [
-      { v:1, caption: languageHelper.tr("Yes", language)},
-      { v:2, caption: languageHelper.tr("No", language)},
-      { v:3, caption: languageHelper.tr("Sometimes", language)}
+      { v:1, caption: languageHelper.tr("Yes", language), checked: false, className: "btn",
+        checkedClassName: "btn btn-primary active" },
+      { v:2, caption: languageHelper.tr("No", language), checked: false, className: "btn",  checkedClassName: "btn btn-danger active" },
+      { v:3, caption: languageHelper.tr("Sometimes", language), checked: false, className: "btn",
+        checkedClassName:"btn btn-info active"  }
     ]
     let counter = 1
 
@@ -110,7 +114,6 @@ export default class StoreSurvey extends Component {
                         .map(function(v,index,arr){
                           self.answers[v.id]={ customerId:self.customerId, surveyId: self.surveyId, choice: 0, checked: false, value: ""}
                           return (
-
                             <div className="card"  style={{margin:"1em"}}>
                               <Radio id={v.id} key={v.id} onChange={this.handleRadio}
                                 question={v.Caption} options={yes_no_sometimes} />

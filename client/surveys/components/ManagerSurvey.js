@@ -51,7 +51,7 @@ export default class ManagerSurvey extends Component {
     let qs = []
     GetSurveyQuestions(customerId,campaignId, surveyId)
     .then(function(questions) {
-      console.log('received the following qs ',customerId,campaignId, surveyId, questions)
+      // console.log('received the following qs ',customerId,campaignId, surveyId, questions)
       for(var i=0;i<questions.length;i++) {
         const q = questions[i]
         if (q.Language==language && q.SectionId==3) {
@@ -113,7 +113,7 @@ export default class ManagerSurvey extends Component {
 
   render() {
     const {language, handleCancel, handleDone, handleSubmit, storeId, managers,storeCaption }  = this.props
-
+    const self = this
     if (this.state.managerId  ) {
       return (
         <div className="col-md-12">
@@ -149,6 +149,8 @@ export default class ManagerSurvey extends Component {
                   {
                     this.state.questions.map(
                       (one) => {
+                        self.answers[one.id]={ customerId:self.props.customerId, surveyId: self.props.surveyId, choice: 0, checked: false, value: ""}
+
                         return (
                           <div className="minorcard" key={one.id}>
                             <br/>

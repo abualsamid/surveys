@@ -8,13 +8,15 @@ export default class TextBox extends Component  {
   render() {
     const {i, id, question, onChange} = this.props
     function prefix(i) {
-      return i ? <strong>{i}. </strong> : ""
+      return i ? `${i}.`  : ""
     }
     return (
       <div className="form-group">
         <p className="lead">
-          {prefix(i)}
-          {question}
+          <strong>
+            {prefix(i)}
+            {question}
+          </strong>
         </p>
         <textarea className="form-control" rows="6"
           defaultValue=""

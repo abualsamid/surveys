@@ -25,6 +25,10 @@ export function successfulLogin(token, profile) {
 
   console.log('in successfulLogin , token is: ', token, ' profile is ', profile)
   try {
+    localStorage.setItem("profile", profile)
+  } catch(x) {console.log(x)}
+  
+  try {
     return {
       type: SUCCESS_LOGIN,
       token: token,
@@ -42,7 +46,7 @@ export function setupSurveyVariables(params) {
     return {
       type: "RECEIVED_PARAMS",
       params: params
-    }  
+    }
   } catch(x) {console.log(x)}
 
 }

@@ -8,7 +8,7 @@
     "build": "env NODE_ENV=production rm -rf public && webpack --config webpack.config.js --progress --colors -p",
     "watch": "env NODE_ENV=development webpack --watch --progress --colors",
     "server": "env NODE_ENV=production node server.js",
-    "deploy": "env NODE_ENV=production npm run build  && scp -r public/ fq:/home/ubuntu/api && cd public && aws s3 sync --exclude '.gitignore' .  s3://leye-survey"
+    "deploy": "env NODE_ENV=production npm run build  && scp -r public/ leye:/home/ubuntu/api && cd public && aws s3 sync --exclude '.gitignore' .  s3://leye-survey"
   },
   "repository": {
     "type": "git",

@@ -12,14 +12,54 @@ class ManagerChoices extends Component {
     function percentage(v,total) {
       return !total||!v ? 0: (100*v / total).toFixed(2)
     }
+    function weight(value) {
+      switch(value) {
+        case "Excellent":
+          return 5;
+
+        case "Exceeds Expectations":
+          return 4;
+        case "Meets Expectations":
+          return 3;
+        case "Needs Improvement":
+          return 2;
+        case "Unsatisfactory":
+          return 1;
+        default:
+          return 0;
+      }
+    }
     const v = this.props.v || {}
     const c = this.props.c || {}
-    const others = this.props.others
+    const {storeSummary} = this.props
     let total = 0
-    for(var o in v) {
-      total+= (v[o] || 0)
+    let countme = 0;
+    let storeTotal = 0;
+    let storeCount = 0;
+    ["Excellent","Exceeds Expectations","Meets Expectations","Needs Improvement","Unsatisfactory"].map(function(value,index) {
+      if (v[value]) {
+        total+= v[value]*weight(value)
+        countme+= v[value];
+      }
+      if(storeSummary[value]) {
+        storeTotal+=storeSummary[value]*weight(value)
+        storeCount+= storeSummary[value]
+      }
+    });
+
+    const avg = countme==0 ? 0 : total/countme;
+    const storeAvg = storeCount ? storeTotal/storeCount : 0
+    const positive = {color: "green"}
+    const negative = {color: "red"}
+    const neutral = {color:"black"}
+    let   style = neutral
+    if (avg.toFixed(2) > storeAvg.toFixed(2) ) {
+      style = positive
+    } else {
+      if (avg.toFixed(2) <storeAvg.toFixed(2)) {
+        style = negative
+      }
     }
-    console.log("others are ", others)
     return (
       <div>
         <table>
@@ -27,13 +67,15 @@ class ManagerChoices extends Component {
             <tr>
               <th>Assessment</th>
               <th>Count</th>
-              <th>Percent</th>
+              <th>Score</th>
+              <th>Store Total</th>
             </tr>
           </thead>
           <tbody>
 
             {
-              Object.keys(v).map(function(value,index) {
+              ["Excellent","Exceeds Expectations","Meets Expectations","Needs Improvement","Unsatisfactory",
+              "No Answer"].map(function(value,index) {
                 return (
                   <tr key={value}>
                     <th>
@@ -43,7 +85,10 @@ class ManagerChoices extends Component {
                       { v[value] }
                     </td>
                     <td>
-                      { percentage(v[value]|| 0, total )}
+                      { v[value || "No Answer"]*weight(value) }
+                    </td>
+                    <td>
+                      { storeSummary[value] * weight(value)}
                     </td>
 
                   </tr>
@@ -57,10 +102,15 @@ class ManagerChoices extends Component {
                 Total
               </th>
               <th>
-                {total}
+                {countme.toFixed(0)}
               </th>
               <th>
-                100%
+                <span style={style}>
+                  {avg.toFixed(2)}
+                </span>
+              </th>
+              <th>
+                {storeAvg.toFixed(2)}
               </th>
             </tr>
           </tfoot>
@@ -98,7 +148,7 @@ class Choices extends Component {
           <tbody>
 
             {
-              Object.keys(v).map(function(value,index) {
+              ["Yes","No","Sometimes","No Answer"].map(function(value,index) {
                 return (
                   <tr key={value}>
                     <th>
@@ -156,6 +206,92 @@ class Checkboxes extends Component {
   }
 }
 class ManagerDash extends Component {
+
+  constructor(props) {
+    super(props)
+    this.state={myavg: {}, overallAverage: {}}
+    this._myOverallAvg  = this._myOverallAvg.bind(this)
+    this._overallAvg  = this._overallAvg.bind(this)
+  }
+
+  _overallAvg(data) {
+    return data
+      .filter(i=> (i.ManagerId>0  && (i.QuestionTypeId == 2 || i.QuestionTypeId==3)) )
+      .reduce(function(summary, oneItem) {
+      if (summary) {
+        summary["Excellent"]=(summary["Excellent"] || 0) +  oneItem.Choice["Excellent"]
+        summary["Exceeds Expectations"]=(summary["Exceeds Expectations"] || 0) +  oneItem.Choice["Exceeds Expectations"]
+
+        summary["Meets Expectations"]=(summary["Meets Expectations"] || 0) +  oneItem.Choice["Meets Expectations"]
+        summary["Needs Improvement"]=(summary["Needs Improvement"] || 0) +  oneItem.Choice["Needs Improvement"]
+
+        summary["Unsatisfactory"]=(summary["Unsatisfactory"] || 0) +  oneItem.Choice["Unsatisfactory"]
+        summary["No Answer"]=(summary["No Answer"] || 0) +  oneItem.Choice["No Answer"]
+
+      } else {
+        summary = {
+          "Excellent": oneItem.Choice["Excellent"] || 0,
+          "Exceeds Expectations": oneItem.Choice["Exceeds Expectations"] || 0,
+          "Meets Expectations": oneItem.Choice["Meets Expectations"] || 0,
+          "Needs Improvement": oneItem.Choice["Needs Improvement"] || 0,
+          "Unsatisfactory": oneItem.Choice["Unsatisfactory"] || 0,
+          "No Answer": oneItem.Choice["No Answer"] || 0
+        }
+
+      }
+      return summary
+    },{})
+
+  }
+
+  _myOverallAvg(data, managerId) {
+    let summary = null
+    data
+    .filter(i=>i.ManagerId == managerId && (i.QuestionTypeId == 2 || i.QuestionTypeId==3))
+    .forEach( (oneItem, i, arr) => {
+      if (summary) {
+        summary["Excellent"]+=  (oneItem.Choice["Excellent"] || 0)
+        summary["Exceeds Expectations"]+=  (oneItem.Choice["Exceeds Expectations"]|| 0)
+        summary["Meets Expectations"]+=  (oneItem.Choice["Meets Expectations"]|| 0)
+        summary["Needs Improvement"]+= (oneItem.Choice["Needs Improvement"]|| 0)
+        summary["Unsatisfactory"]+=  (oneItem.Choice["Unsatisfactory"]|| 0)
+        summary["No Answer"]+=  (oneItem.Choice["No Answer"]|| 0)
+        console.log('dig yp ', summary)
+      } else {
+        summary = {
+          "Excellent": oneItem.Choice["Excellent"] || 0,
+          "Exceeds Expectations": oneItem.Choice["Exceeds Expectations"] || 0,
+          "Meets Expectations": oneItem.Choice["Meets Expectations"] || 0,
+          "Needs Improvement": oneItem.Choice["Needs Improvement"] || 0,
+          "Unsatisfactory": oneItem.Choice["Unsatisfactory"] || 0,
+          "No Answer": oneItem.Choice["No Answer"] || 0
+        }
+        console.log('sup you ', oneItem.Choice, summary)
+
+      }
+    })
+
+    return summary
+  }
+
+  componentWillMount() {
+    const {data, managerId } = this.props
+    this.setState({myavg:{}, overallAverage: {}})
+
+    const myavg = this._myOverallAvg(data, managerId)
+    const overallAverage=this._overallAvg(data)
+    this.setState({myavg: myavg, overallAverage:overallAverage})
+  }
+
+  componentWillReceiveProps(props) {
+    const {data, managerId } = props
+    this.setState({myavg:{}, overallAverage: {}})
+
+    const myavg = this._myOverallAvg(data, managerId)
+    const overallAverage=this._overallAvg(data)
+    this.setState({myavg: myavg, overallAverage:overallAverage})
+  }
+
   render() {
     const {data, managerId } = this.props
     if (!managerId) {
@@ -163,31 +299,31 @@ class ManagerDash extends Component {
         <div/>
       )
     }
-    function others(data, questionId) {
-      let everyone={}
-      let butme = {}
-      data.map(function(r,i) {
-        if (r.QuestionId==questionId && r.LocationId!=0) {
-          Object.keys(r.Choice).map(function(value,index) {
-            if (!butme[value]) {
-              butme[value]=0
-            }
-            if (!everyone[value]) {
-              everyone[value]=0
-            }
-            everyone[value] = (everyone[value]||0) + (r.Choice[value]||0)
-
-            if (r.ManagerId!=managerId) {
-              butme[value] = (butme[value]||0) + (r.Choice[value]||0)
-            }
-          })
+    function _storeSummary(data) {
+      return data.reduce(function(summary, oneItem) {
+        if (summary[oneItem.QuestionId]) {
+          summary[oneItem.QuestionId]["Exceeds Expectations"]+=oneItem.Choice["Exceeds Expectations"]
+          summary[oneItem.QuestionId]["Excellent"]+=oneItem.Choice["Excellent"]
+          summary[oneItem.QuestionId]["Meets Expectations"]+=oneItem.Choice["Meets Expectations"]
+          summary[oneItem.QuestionId]["Needs Improvement"]+=oneItem.Choice["Needs Improvement"]
+          summary[oneItem.QuestionId]["No Answer"]+=oneItem.Choice["No Answer"]
+          summary[oneItem.QuestionId]["Unsatisfactory"]+=oneItem.Choice["Unsatisfactory"]
+        } else {
+          summary[oneItem.QuestionId]["Exceeds Expectations"]=oneItem.Choice["Exceeds Expectations"] ||0
+          summary[oneItem.QuestionId]["Excellent"]=oneItem.Choice["Excellent"] ||0
+          summary[oneItem.QuestionId]["Meets Expectations"]=oneItem.Choice["Meets Expectations"] || 0
+          summary[oneItem.QuestionId]["Needs Improvement"]=oneItem.Choice["Needs Improvement"] || 0
+          summary[oneItem.QuestionId]["No Answer"]=oneItem.Choice["No Answer"] ||0
+          summary[oneItem.QuestionId]["Unsatisfactory"]=oneItem.Choice["Unsatisfactory"] || 0
         }
-      })
-      return {
-        everyone: everyone,
-        butme: butme
-      }
+        return summary
+      },null)
     }
+
+
+
+
+    const storeSummary=_storeSummary(data)
     return (
       <div>
           {
@@ -202,11 +338,11 @@ class ManagerDash extends Component {
                         { r.QuestionTypeId == 1 && <Checkboxes v={r.Checked} /> }
                         {
                           r.QuestionTypeId == 2 && <ManagerChoices v={r.Choice}  c={r.CompanyChoice}
-                            others={others(data,r.QuestionId)} />
+                             storeSummary={storeSummary[r.QuestionId]} />
                         }
                         {
                           r.QuestionTypeId == 3 && <ManagerChoices v={r.Choice} c={r.CompanyChoice}
-                            others={others(data,r.QuestionId)} />
+                              storeSummary={storeSummary[r.QuestionId]} />
                         }
                         { r.QuestionTypeId == 4 && <Values v={r.Value} /> }
                         { r.QuestionTypeId == 5 && <Values v={r.Value} /> }
@@ -214,6 +350,15 @@ class ManagerDash extends Component {
                       </div>
                     )
                 })
+          }
+          <hr/>
+          { managerId &&
+            <div className="minorcard" style={{margin:"2em"}}>
+              <h2>Overall Average</h2>
+              <br/>
+              <ManagerChoices v={this.state.myavg}
+                       storeSummary={this.state.overallAverage} />
+            </div>
           }
       </div>
     )
@@ -223,7 +368,6 @@ class StoreDash extends Component {
 
   render() {
     const {data, managerId } = this.props
-    console.log('rendering sotre dash for manager: ', managerId, ' and data: ', data)
     return (
       <div>
         {
@@ -270,7 +414,6 @@ class Dashboard extends Component {
     refresh() {
       let self = this
       try {
-        console.debug("refreshin...")
         this.getData(this.state.selectedStore)
         console.debug("refreshed...")
       } catch(x) {

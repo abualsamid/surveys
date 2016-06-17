@@ -3,8 +3,11 @@ import  { Component, PropTypes } from 'react'
 import { Provider } from 'react-redux'
 import routes from '../routes'
 import { Router } from 'react-router'
+import { throttle } from 'lodash/throttle'
 
 export default class Root extends Component {
+
+
   render() {
     const { store, history } = this.props
     return (
@@ -14,6 +17,9 @@ export default class Root extends Component {
     )
   }
 }
+
+
+
 
 Root.propTypes = {
   store: PropTypes.object.isRequired,

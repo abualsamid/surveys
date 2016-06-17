@@ -46,7 +46,7 @@ div.card {
 
     border: 2px solid #a1a1a1;
     padding: 2em;
-    background: #dddddd;
+    background: #eeeeee;
     border-radius: 25px;
 }
 
@@ -60,7 +60,8 @@ div.card {
 
 div.minorcard {
     /*background-color: lightyellow;*/
-    background-color: #7AA3CC;
+    /*background-color: #7AA3CC;*/
+    background-color: #8BB4DD;
     box-shadow: 10px 10px 5px #888888;
     padding: 2em;
     margin: 2em;

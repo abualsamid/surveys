@@ -14,6 +14,7 @@ class Container extends Component {
   }
   handleSubmit(answers) {
     const { dispatch, storeId } = this.props
+    console.log('submitting store answers ', answers)
     dispatch(submitStoreAnswers( storeId,0, answers))
     this.handleSkip()
   }

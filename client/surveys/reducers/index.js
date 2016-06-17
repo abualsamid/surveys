@@ -52,7 +52,6 @@ function admin(state = {areas: [], stores: [], managers:[], campaignId:0, custom
       case "LOADED_MANAGERS":
         return Object.assign({}, state, {managers: action.managers ||[]})
       case "RECEIVED_PARAMS":
-        console.log("reducing ... RECEIVED_PARAMS")
         try {
           return Object.assign({}, state, {
             customerId: action.params.CustomerId,

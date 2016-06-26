@@ -21,13 +21,39 @@ export function failedLogin(token, profile) {
   }
 }
 
+export function logout() {
+  try {
+    window.sessionStorage && window.sessionStorage.clear()
+  } catch(x) {
+    console.error("crap... ", x)
+  }
+
+  try {
+    window.localStorage && window.localStorage.clear()
+  } catch(x) {
+    console.error('doh... ', x)
+  }
+  try {
+    return {
+      type: LOGOUT,
+      token: "",
+      profile: {},
+      email: "",
+      isLoggedIn: false,
+      receivedAt: Date.now()
+    }
+  } catch(x) {
+    console.log("in logout: ", x)
+  }
+}
+
 export function successfulLogin(token, profile) {
 
   console.log('in successfulLogin , token is: ', token, ' profile is ', profile)
   try {
     localStorage.setItem("profile", profile)
   } catch(x) {console.log(x)}
-  
+
   try {
     return {
       type: SUCCESS_LOGIN,

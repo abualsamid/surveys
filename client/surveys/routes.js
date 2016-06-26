@@ -7,6 +7,7 @@ import Home from './components/home'
 import EnterStore from './components/EnterStore'
 import ThankYou from './components/ThankYou'
 import Login from './containers/loginPage'
+import Logout from './containers/logoutPage'
 import Dashboard from './containers/dashboard'
 import Notfound from './containers/notFound'
 
@@ -19,6 +20,7 @@ export default (
     <Route path="/StoreSurvey/:storeId" component={StoreSurvey} />
     <Route path="/ThankYou" component={ThankYou} />
     <Route path="/login" component={Login} />
+    <Route path="/logout" component={Logout} />
     <Route path="/dashboard" component={Dashboard} />
     <Route path="/SurveyNotFound" component={Notfound} />
   </Route>

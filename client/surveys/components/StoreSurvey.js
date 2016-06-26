@@ -4,6 +4,9 @@ import TextQuestion from './questions/text'
 import Radio from './questions/radio'
 import * as languageHelper  from '../../../common/helpers/language'
 import {GetSurveyQuestions}from '../../../common/middleware/botengine'
+import DropDown from './questions/dropDown.js'
+import ManagerDropDown from './ManagerDropDown'
+
 
 export default class StoreSurvey extends Component {
   constructor(props) {
@@ -12,22 +15,35 @@ export default class StoreSurvey extends Component {
     this.state = {
       questions: []
     }
-    let a = {}
-    for (var i=1;i<15;i++) {
-      a[i]={ customerId:0, surveyId: 0, choice: 0, checked: false, value: ""}
-    }
-    this.answers = a
+
+    this.answers = {}
 
     this.handleCheckboxChange=this.handleCheckboxChange.bind(this)
     this.handleTextChange=this.handleTextChange.bind(this)
     this.handleRadio=this.handleRadio.bind(this)
+    this.handleAnswer=this.handleAnswer.bind(this)
   }
   handleCheckboxChange(id, value) {
     const {customerId, surveyId} = this.props
     console.log('setting checkbox answer ', id , ' to checked: ', checked , ' and value: ', value, parseInt(value));
 
-    this.answers[id]={customerId: customerId, surveyId: surveyId, checked: value}
+    this.answers[id]={customerId: customerId||1, surveyId: surveyId||1, checked: value}
   }
+  handleAnswer(id, value) {
+    if (!this.answers) {
+      this.answers={}
+    }
+    const {customerId, surveyId} = this.props
+
+    if (!this.answers[id]) {
+      this.answers[id]={customerId:customerId, surveyId: surveyId, choice: parseInt(value), value: ""}
+    } else {
+      const a = this.answers[id]
+      this.answers[id] = { ...a, choice: parseInt(value) }
+    }
+    console.log('Answers after handling ', id, value, ' are ', this.answers)
+  }
+
   handleTextChange(id, value ) {
     const {customerId, surveyId} = this.props
     console.log('setting text answer ', id , ' to value: ', value, parseInt(value));
@@ -49,6 +65,7 @@ export default class StoreSurvey extends Component {
         if (q.Language==language) {
           qs[i] = q
         }
+        self.answers[q.id]={ customerId:1, surveyId: 1, choice: 0, checked: false, value: ""}
       }
       self.setState({questions: qs})
     })
@@ -86,7 +103,6 @@ export default class StoreSurvey extends Component {
         checkedClassName:"btn btn-info active"  }
     ]
     let counter = 1
-
     return (
       <div className="col-md-12">
         <div className="text-center" style={{color: "#B80000", fontWeight: "bold"}}>
@@ -112,9 +128,12 @@ export default class StoreSurvey extends Component {
                       this.state.questions
                         .filter(function(q) { return q.SectionId==1 })
                         .map(function(v,index,arr){
-                          self.answers[v.id]={ customerId:self.customerId, surveyId: self.surveyId, choice: 0, checked: false, value: ""}
+                          self.answers[v.id]={
+                                    customerId:self.props.customerId,
+                                    surveyId: self.props.surveyId, choice: 0, checked: false, value: ""
+                                }
                           return (
-                            <div className="card"  style={{margin:"1em"}}>
+                            <div className="card"  style={{margin:"1em"}} key={v.id + '_' + index}>
                               <Radio id={v.id} key={v.id} onChange={this.handleRadio}
                                 question={v.Caption} options={yes_no_sometimes} />
                             </div>
@@ -129,8 +148,6 @@ export default class StoreSurvey extends Component {
               <div>
                 <h3>
                   {languageHelper.tr("Please use appropriate language when answering the following questions.", language)}
-
-
                 </h3>
                 <br/>
                 <br/>
@@ -141,12 +158,41 @@ export default class StoreSurvey extends Component {
                   this.state.questions
                     .filter(function(q) { return q.SectionId==2 })
                     .map(function(v,index,arr){
-                      self.answers[v.id]={ customerId:self.customerId, surveyId: self.surveyId, choice: 0, checked: false, value: ""}
+                      function prefix(i) {
+                        return i ? `${i}.`  : ""
+                      }
+                      self.answers[v.id]={ customerId:self.props.customerId, surveyId: self.props.surveyId, choice: 0, checked: false, value: ""}
                       return (
                         <div className="minorcard" key={v.id}>
-                          <TextQuestion id={v.id} key={v.id} i={counter++} onChange={this.handleTextChange}
-                            question={v.Caption} />
+                        {
+                          v.QuestionTypeId==3 &&
+
+                          <div className="form-group">
+                            <p className="lead">
+                              <strong>
+                                {prefix(counter++)}
+                                {v.Caption}
+                              </strong>
+                            </p>
+
+                            <ManagerDropDown storeId={storeId}
+                              managers={this.props.managers}
+                              language={language}
+                              selectText={"Any Manager"}
+                              caption={languageHelper.tr("Manager", language)}
+                              setManagerId={
+                              (value,caption) => self.handleAnswer(v.id,value ) } showButton={false} />
+                          </div>
+
+                        }
+                        {
+                          (v.QuestionTypeId==4 || v.QuestionTypeId==5 || v.QuestionTypeId==6)
+                          &&
+                            <TextQuestion id={v.id} key={v.id} i={counter++} onChange={this.handleTextChange}
+                              question={v.Caption} />
+                        }
                         </div>
+
                       )
                   },this)
                 }

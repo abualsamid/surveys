@@ -41,6 +41,12 @@ export function logout() {
   } catch(x) {
     console.error("crap... ", x)
   }
+
+  try {
+    window.localStorage && window.localStorage.clear()
+  } catch(x) {
+    console.error('doh... ', x)
+  }
   try {
     return {
       type: LOGOUT,

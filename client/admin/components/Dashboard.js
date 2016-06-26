@@ -326,6 +326,7 @@ class Dashboard extends Component {
             Admin
           </h2>
           <br/>
+          <h3>Manage Areas</h3>
           <br/>
             <div className="form-group">
               <select className="form-control" value={this.state.selectedArea} ref={ a => this.areaList = a}  onChange={this.selectArea}>
@@ -337,18 +338,19 @@ class Dashboard extends Component {
             </div>
             <div>
               <span style={{margin: "1em"}}>
-                <button className="btn btn-primary btn-lg" onClick={this.addArea}>Add Area</button>
+                <button className="btn btn-primary btn-lg btn-block" onClick={this.addArea}>Add New Area</button>
               </span>
 
               <span style={{margin: "1em"}}>
-                <button className="btn btn-lg btn-info" onClick={this.updateArea}>Update Area</button>
+                <button className="btn btn-lg btn-info btn-block" onClick={this.updateArea}>Update Selected Area</button>
               </span>
               <span style={{margin: "1em"}}>
-                <button className="btn btn-lg btn-danger" onClick={this.deleteArea}>Delete Area</button>
+                <button className="btn btn-lg btn-danger btn-block" onClick={this.deleteArea}>Delete Selected Area</button>
               </span>
 
             </div>
             <br/>
+            <h3>Manage Locations</h3>
             <div className="form-group">
               <StoresDropDown areas={this.props.areas.filter(e=>e.id==this.state.selectedArea)} stores={this.props.stores} setStoreId={this.selectStore} />
             </div>
@@ -357,15 +359,15 @@ class Dashboard extends Component {
             </div>
             <div>
               <span style={{margin: "1em"}}>
-                <button className="btn btn-primary btn-lg" onClick={this.addLocation} ref={m=>this.addStoreButton=m}>
+                <button className="btn btn-primary btn-lg btn-block" onClick={this.addLocation} ref={m=>this.addStoreButton=m}>
                   Add Store {this.areaName}
                 </button>
               </span>
               <span style={{margin: "1em"}}>
-                <button className="btn btn-lg btn-info" onClick={this.updateLocation} >Update Location</button>
+                <button className="btn btn-lg btn-info btn-block" onClick={this.updateLocation} >Update Selected Location</button>
               </span>
               <span style={{margin: "1em"}}>
-                <button className="btn btn-lg btn-danger" onClick={this.deleteLocation} >Delete Location</button>
+                <button className="btn btn-lg btn-danger btn-block" onClick={this.deleteLocation} >Delete Selected Location</button>
               </span>
 
               {  }
@@ -373,9 +375,11 @@ class Dashboard extends Component {
               <br/>
             </div>
             <div>
-              <Link to={`/admin/dashboard/codes/${this.state.selectedStore}`}  className="btn btn-primary"> Manage Codes {this.selectedStoreName}</Link>
+              <Link to={`/admin/dashboard/codes/${this.state.selectedStore}`}  className="btn btn-primary btn-block"> Manage Codes For Location {this.selectedStoreName}</Link>
             </div>
             <br/>
+            <hr/>
+            <h3>Manage Managers</h3>
             <div>
               <ManagerDropDown storeId={this.state.selectedStore}  managers={managers} selectedManager={this.state.selectedManager}
                 setManagerId={(managerId)=> this.setState({selectedManager: managerId})}
@@ -389,10 +393,10 @@ class Dashboard extends Component {
             </div>
             <div>
               <span style={{margin:"1em"}}>
-                <button className="btn btn-primary btn-lg" onClick={this.addManager}>Add Manager  { this.selectedStoreName }</button>
+                <button className="btn btn-primary btn-lg btn-block" onClick={this.addManager}>Add Manager  { this.selectedStoreName }</button>
               </span>
               <span style={{margin:"1em"}}>
-                <button className="btn btn-lg btn-danger" onClick={this.deleteManager}>Delete Manager</button>
+                <button className="btn btn-lg btn-danger btn-block" onClick={this.deleteManager}>Delete Selected Manager</button>
               </span>
             </div>
           <br/>

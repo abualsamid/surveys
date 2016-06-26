@@ -66,12 +66,12 @@ export default class RadioButton extends Component {
         </label>
         <div className="btn-group" >
           {
-            this.state.options.map(choice => {
+            this.state.options.map( (choice,index) => {
               const {v, caption, checked,className, checkedClassName} = choice
               let c = checked ? checkedClassName :  className
               let s = checked ? {fontWeight: "bold"} : {}
               return (
-                <div style={{margin: "0.25em"}} className="btn-group">
+                <div style={{margin: "0.25em"}} className="btn-group" key={id + '_' + index}>
                   <button className={c} onClick={ (e)=> this._onChange(id,v) }>
                     <span style={s}>
                       {caption}

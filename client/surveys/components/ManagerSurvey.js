@@ -23,17 +23,18 @@ export default class ManagerSurvey extends Component {
         { key: "4", value: languageHelper.tr("6",props.language)},
         { key: "3", value: languageHelper.tr("7",props.language)},
         { key: "2", value: languageHelper.tr("8",props.language)},
-        { key: "1", value: languageHelper.tr("9",props.language)}
+        { key: "1", value: languageHelper.tr("9",props.language)},
+        { key: "0", value: languageHelper.tr("N/A", props.language)}
       ]
 
     this.state = {questions:[], managerId:0, managerCaption:"" , dropDownOptions: dropDownOptions}
 
     this.answers = {}
-    let a = {}
-    for (var i=19;i<30;i++) {
-      a[i]={ customerId:0, surveyId: 0, choice: 0, checked: false, value: ""}
-    }
-    this.answers = a
+    // let a = {}
+    // for (var i=19;i<30;i++) {
+    //   a[i]={ customerId:0, surveyId: 0, choice: 0, checked: false, value: ""}
+    // }
+    // this.answers = a
 
     this.handleCheckboxChange=this.handleCheckboxChange.bind(this)
     this.handleTextChange=this.handleTextChange.bind(this)
@@ -88,16 +89,16 @@ export default class ManagerSurvey extends Component {
   // }
 
   handleAnswer(id, value) {
-    this.answers[id]={customerId:1, surveyId: 1, choice: parseInt(value)}
+    this.answers[id]={customerId:1, surveyId: 1, choice: parseInt(value), value: ""}
   }
   handleCheckboxChange(id, value) {
-    this.answers[id]={customerId: 1, surveyId: 1, checked: value}
+    this.answers[id]={customerId: 1, surveyId: 1, checked: value, choice: 0, value: ""}
   }
   handleTextChange(id, value ) {
-    this.answers[id]={customerId:1, surveyId: 1, value: value}
+    this.answers[id]={customerId:1, surveyId: 1, value: value, choice: 0, checked: false }
   }
   handleRadio(id, checked, value) {
-    this.answers[id]={customerId: 1, surveyId: 1, choice: parseInt(value)}
+    this.answers[id]={customerId: 1, surveyId: 1, choice: parseInt(value), checked: false, value: ""}
   }
 
 
@@ -107,12 +108,31 @@ export default class ManagerSurvey extends Component {
   }
 
   handleSubmit(stayInPlace) {
+    try {
+      console.log('answers are: ', this.answers)
+    } catch(x) {
+      console.log(x)
+    }
+    let allGood=true;
+    for(var key in this.answers) {
+      let one = this.answers[key]
+      console.log('checking ', one)
+      if (!one.value && one.choice==-1) {
+        allGood = false
+      }
+    }
+
+    if(!allGood) {
+      alert("Please answer all ratings questions to continue.")
+      return false;
+
+    }
     this.props.handleDone(this.state.managerId, this.answers, stayInPlace)
     this.setState({managerId: 0, managerCaption: ""})
   }
 
   render() {
-    const {language, handleCancel, handleDone, handleSubmit, storeId, managers,storeCaption }  = this.props
+    const {language, handleCancel, handleSubmit, storeId, managers,storeCaption }  = this.props
     const self = this
     if (this.state.managerId  ) {
       return (
@@ -142,14 +162,18 @@ export default class ManagerSurvey extends Component {
                 </header>
                 <section className="survey-page-body">
                   <h3>
-                    {languageHelper.tr("Manager is ...", language)}
+                    {this.state.managerCaption}
+                    { "  " }
+                    {languageHelper.tr("is", language)}
+                    { " ... "}
                   </h3>
                 </section>
                 <section className="survey-page-body">
                   {
                     this.state.questions.map(
                       (one) => {
-                        self.answers[one.id]={ customerId:self.props.customerId, surveyId: self.props.surveyId, choice: 0, checked: false, value: ""}
+                        self.answers[one.id]={ customerId:self.props.customerId ||1, surveyId: self.props.surveyId || 1,
+                        choice: one.QuestionTypeId==3?-1:0, checked: false, value: ""}
 
                         return (
                           <div className="minorcard" key={one.id}>

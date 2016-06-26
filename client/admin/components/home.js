@@ -66,8 +66,6 @@ class Home extends Component {
   }
 
 
-
-
   Done(next) {
     console.log("Submitting ", this.state)
     const self = this

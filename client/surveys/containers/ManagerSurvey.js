@@ -19,13 +19,15 @@ class Container extends Component {
 
   componentDidMount() {
     const self = this;
-    api.getManagers(this.props.customerId, this.props.storeId)
-    .then(function(managers) {
-      self.setState({managers: managers})
-    })
-    .catch(function(doh) {
-      console.log(doh)
-    })
+    if (!this.state.managers || !this.state.managers.length) {
+      api.getManagers(this.props.customerId, this.props.storeId)
+      .then(function(managers) {
+        self.setState({managers: managers})
+      })
+      .catch(function(doh) {
+        console.log(doh)
+      })
+    }
 
   }
 

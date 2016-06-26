@@ -15,7 +15,7 @@ export default class ManagerDropDown extends Component {
   }
   handleChange() {
     try {
-
+      console.log('handling change...')
       const { setManagerId} = this.props
       const m = this.managerId.value || this.managerId.options[0].value
       const c = this.managerId.options[this.managerId.selectedIndex||0].text
@@ -32,12 +32,14 @@ export default class ManagerDropDown extends Component {
   }
 
   render() {
-    const { storeId, managers, caption, language } = this.props
+    const { storeId, managers, caption, language, showButton, selectText } = this.props
     return (
         <div className="form-group">
           <label>{caption}</label>
-          <select className="form-control" ref={(managerId) => this.managerId=managerId} >
-            <option key={0} value="">{languageHelper.tr("Select Manager", language)}</option>
+          <select className="form-control" ref={(managerId) => this.managerId=managerId} 
+                  onChange={this.handleChange}
+          >
+            <option key={0} value="0">{languageHelper.tr( selectText || "Select Manager", language)}</option>
             {
               managers
               .filter( m => m.homeLocationId==storeId)
@@ -47,10 +49,14 @@ export default class ManagerDropDown extends Component {
             }
           </select>
           <br/>
-          <button type="submit" className="btn btn-primary btn-block btn-lg"
-            onClick={ (e) => {  e.preventDefault(); this.handleChange(); }} >
-            {languageHelper.tr("Select Manager",language)}
-          </button>
+          {
+            showButton &&
+            <button type="submit" className="btn btn-primary btn-block btn-lg"
+              onClick={ (e) => {  e.preventDefault(); this.handleChange(); }} >
+              {languageHelper.tr("Select Manager",language)}
+            </button>
+          }
+
         </div>
 
     )

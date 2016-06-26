@@ -28,11 +28,10 @@ class EnterStore extends Component {
           try {
             try {
               self.props.setupSurveyVariables(variables)
-            } catch(x2) {console.log('error in dispatch ', x2)}
+            } catch(x2) {console.log('error in dispatch ', x2, variables )}
             if (variables.IsSingleUse) {
               // dispatch so that the store has the info
               self.props.selectStore(variables.LocationId, variables.LocationCaption)
-
               setTimeout(
                 browserHistory.push("/StoreSurvey/" + variables.LocationId)  , 10
               )
@@ -59,28 +58,25 @@ class EnterStore extends Component {
   }
 
   handleClick() {
-    self = this
-    this.props.selectStore(this.storeId, this.storeCaption)
+    const self = this
 
+    this.props.selectStore(this.storeId, this.storeCaption)
     api.getManagers(this.props.customerId, this.storeId)
     .then(function(managers) {
       self.props.loadedManagers(managers)
+      setTimeout(browserHistory.push("/StoreSurvey/" + self.storeId),10)
     })
     .catch(function(doh) {
       console.log(doh)
       self.props.loadedManagers([])
+      setTimeout(browserHistory.push("/StoreSurvey/" + self.storeId),10)
     })
-
-    setTimeout(
-      browserHistory.push("/StoreSurvey/" + this.storeId),
-      10
-    )
-
   }
 
   handleCancel() {
     browserHistory.push("/surveys")
   }
+
   setStoreId(id, caption) {
     this.storeId = id
     this.storeCaption=caption

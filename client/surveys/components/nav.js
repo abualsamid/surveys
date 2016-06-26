@@ -12,7 +12,7 @@ class Nav extends Component {
     return (
       <ul className="nav navbar-nav navbar-right">
         <li>
-            { isLoggedIn && <Link to="/Dashboard"> {email} </Link> }
+            { isLoggedIn && <Link to="/Dashboard">  {email} </Link> }
             { !isLoggedIn && <Link to="/login" className="glyphicon glyphicon-log-in"> Admin </Link> }
 
         </li>
@@ -33,7 +33,6 @@ class Nav extends Component {
             </button>
             <a href='/surveys'><img src="/img/leye-logo-white.png"></img></a>
           </div>
-          { this.renderLoginSnippet.bind(this)() }
         </div>
       </nav>
     )

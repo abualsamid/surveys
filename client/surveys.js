@@ -16,7 +16,7 @@ const styles = require( './assets/css/home.css' );
 
 const loadStoreState = () => {
   try {
-    const serializedState = localStorage.getItem('state')
+    const serializedState = localStorage.getItem('survey_state')
     if (serializedState == null ) {
       return undefined
     }
@@ -29,7 +29,7 @@ const loadStoreState = () => {
 
 const store = createStore(
   rootReducer,
-  loadStoreState(),
+  // loadStoreState(),
   applyMiddleware(thunk.withExtraArgument(api),  routerMiddleware(browserHistory))
 )
 
@@ -45,7 +45,7 @@ store.subscribe(throttle(
 const saveStoreState = (state) => {
   try {
     const serializedState= JSON.stringify(state)
-    localStorage.setItem('state',serializedState)
+    localStorage.setItem('survey_state',serializedState)
   } catch(x) {
     console.log('error saving state to storage... ', x)
 

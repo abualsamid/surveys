@@ -3,6 +3,8 @@ import { connect } from 'react-redux'
 import  StoreSurvey from '../components/StoreSurvey'
 import { submitStoreAnswers } from '../actions'
 import { browserHistory } from 'react-router'
+import * as api from '../../../common/middleware/botengine'
+import * as actions  from '../actions'
 
 class Container extends Component {
   constructor(props) {
@@ -13,12 +15,30 @@ class Container extends Component {
     browserHistory.push("/ManagerSurvey")
   }
   handleSubmit(answers) {
-    const { dispatch, storeId } = this.props
+    const {  submitStoreAnswers, storeId } = this.props
     console.log('submitting store answers ', answers)
-    dispatch(submitStoreAnswers( storeId,0, answers))
+    submitStoreAnswers( storeId,0, answers)
     this.handleSkip()
   }
 
+  componentDidMount() {
+    const self = this
+    try {
+      if (!this.props.managers || !this.props.managers.length) {
+        api.getManagers(this.props.customerId, this.props.storeId)
+        .then(function(managers) {
+          self.props.loadedManagers(managers)
+        })
+        .catch(function(doh) {
+          console.log(doh)
+        })
+      }
+    } catch(x) {
+      console.log('x...', x)
+    }
+
+
+  }
   handleCancel() {
     browserHistory.push("/ThankYou")
   }
@@ -41,13 +61,16 @@ class Container extends Component {
 
 
 export default connect(
-  (state) => ({
-    language: state.login.language,
-    campaignId: state.admin.campaignId,
-    customerId: state.admin.customerId,
-    storeId: state.admin.locationId || state.survey.storeId || 0,
-    storeCaption: state.survey.storeCaption || ("hmmm " + state.survey.storeId),
+  (state, ownProps ) => ({
+    language: state.login.language || "en",
+    campaignId: state.admin.campaignId || 1,
+    customerId: state.admin.customerId || 1,
+    storeId: state.admin.locationId || state.survey.storeId || ownProps.params.storeId,
+    storeCaption: state.survey.storeCaption || state.admin.locationId || state.survey.storeId || ownProps.params.storeId,
     code: state.admin.Code,
-    surveyId: state.admin.surveyId
-  })
+    surveyId: state.admin.surveyId,
+    managers: state.admin.managers
+  }),
+  actions
+
 )(Container)

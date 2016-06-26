@@ -7,6 +7,7 @@ import Login from './containers/loginPage'
 import Logout from './containers/logoutPage'
 import Codes from './containers/codes'
 import Questions from './containers/questions'
+import Results from './containers/results'
 
 export default (
   <Route path="/admin" component={App}>
@@ -17,6 +18,8 @@ export default (
     <Route path="/admin/login" component={Login} />
     <Route path="/admin/logout" component={Logout} />
     <Route path="/logout" component={Logout} />
+    <Route path="/login" component={Login} />
+    <Route path="/admin/results" component={Results} />
     <Route path="*" component={Home} />
   </Route>
 )

@@ -6,29 +6,129 @@ import ManagerDropDown from './ManagerDropDown'
 import * as actions  from '../actions'
 
 
+class OverAllManagerAverage extends Component {
+  render() {
+      const choices = [ { value:5, caption: "Excellent" },
+        { value: 4, caption: "Exceeds Expectations"},
+        { value: 3, caption: "Meets Expectations"},
+        { value: 2, caption: "Needs Improvement"},
+        { value: 1, caption: "Unsatisfactory"},
+        { value: 0, caption: "N/A"}
+      ]
+
+      const v = this.props.v || {}
+      const c = this.props.c || {}
+      const {storeSummary} = this.props
+      let total = 0
+      let countme = 0;
+      let storeTotal = 0;
+      let storeCount = 0;
+      console.log('Overall Managers Choices: ', c, v)
+      choices.map((row, index) => {
+        let current = row.value
+        try {
+          if (v[current]) {
+            total+= v[current]*current
+            countme+= v[current];
+          }
+        } catch(x) {
+          console.log(x);
+        }
+
+        try {
+          if(storeSummary[current]) {
+            storeTotal+=storeSummary[current]*current
+            storeCount+= storeSummary[current]
+          }
+        } catch(x) {console.log(x)}
+
+      })
+
+
+      const avg = countme==0 ? 0 : total/countme;
+      const storeAvg = storeCount ? storeTotal/storeCount : 0
+      const positive = {color: "green"}
+      const negative = {color: "red"}
+      const neutral = {color:"black"}
+      let   style = neutral
+      if (avg.toFixed(2) > storeAvg.toFixed(2) ) {
+        style = positive
+      } else {
+        if (avg.toFixed(2) <storeAvg.toFixed(2)) {
+          style = negative
+        }
+      }
+      return (
+        <div>
+          <table>
+            <thead>
+              <tr>
+                <th>Assessment</th>
+                <th>Count</th>
+                <th>Manager Score</th>
+                <th>Store Score</th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                choices.map((row,index) => {
+                  return (
+                    <tr key={index}>
+                      <th>{row.caption}</th>
+                      <td>
+                        { v[row.value] || 0 }
+                      </td>
+                      <td>
+                        { (v[row.value]*row.value)  || 0}
+                      </td>
+                      <td>
+                        {(storeSummary[row.value] * row.value) || 0 }
+                      </td>
+                    </tr>
+                  )
+                })
+              }
+
+            </tbody>
+            <tfoot>
+              <tr>
+                <th>
+                  Total
+                </th>
+                <th>
+                  {countme.toFixed(0)}
+                </th>
+                <th>
+                  <span style={style}>
+                    {avg.toFixed(2)}
+                  </span>
+                </th>
+                <th>
+                  {storeAvg.toFixed(2)}
+                </th>
+              </tr>
+            </tfoot>
+          </table>
+
+        </div>
+      )
+    }
+}
 class ManagerChoices extends Component {
 
   render() {
     function percentage(v,total) {
       return !total||!v ? 0: (100*v / total).toFixed(2)
     }
-    function weight(value) {
-      switch(value) {
-        case "Excellent":
-          return 5;
 
-        case "Exceeds Expectations":
-          return 4;
-        case "Meets Expectations":
-          return 3;
-        case "Needs Improvement":
-          return 2;
-        case "Unsatisfactory":
-          return 1;
-        default:
-          return 0;
-      }
-    }
+    const choices = [ { value:5, caption: "Excellent" },
+      { value: 4, caption: "Exceeds Expectations"},
+      { value: 3, caption: "Meets Expectations"},
+      { value: 2, caption: "Needs Improvement"},
+      { value: 1, caption: "Unsatisfactory"},
+      { value: 0, caption: "N/A"}
+    ]
+
     const v = this.props.v || {}
     const c = this.props.c || {}
     const {storeSummary} = this.props
@@ -36,24 +136,26 @@ class ManagerChoices extends Component {
     let countme = 0;
     let storeTotal = 0;
     let storeCount = 0;
-    ["Excellent","Exceeds Expectations","Meets Expectations","Needs Improvement","Unsatisfactory"].map(function(value,index) {
+    choices.map((row, index) => {
+      let current = row.value
       try {
-        if (v[value]) {
-          total+= v[value]*weight(value)
-          countme+= v[value];
+        if (v[current]) {
+          total+= v[current]*current
+          countme+= v[current];
         }
       } catch(x) {
         console.log(x);
       }
 
       try {
-        if(storeSummary[value]) {
-          storeTotal+=storeSummary[value]*weight(value)
-          storeCount+= storeSummary[value]
+        if(storeSummary[current]) {
+          storeTotal+=storeSummary[current]*current
+          storeCount+= storeSummary[current]
         }
       } catch(x) {console.log(x)}
 
-    });
+    })
+
 
     const avg = countme==0 ? 0 : total/countme;
     const storeAvg = storeCount ? storeTotal/storeCount : 0
@@ -75,34 +177,30 @@ class ManagerChoices extends Component {
             <tr>
               <th>Assessment</th>
               <th>Count</th>
-              <th>Score</th>
-              <th>Store Total</th>
+              <th>Manager Score</th>
+              <th>Store Score</th>
             </tr>
           </thead>
           <tbody>
-
             {
-              ["Excellent","Exceeds Expectations","Meets Expectations","Needs Improvement","Unsatisfactory",
-              "No Answer"].map(function(value,index) {
+              choices.map((row,index) => {
                 return (
-                  <tr key={value}>
-                    <th>
-                      {value || "No Answer"}
-                    </th>
+                  <tr key={index}>
+                    <th>{row.caption}</th>
                     <td>
-                      { v[value] }
+                      { v[row.value] || 0 }
                     </td>
                     <td>
-                      { v[value || "No Answer"]*weight(value) }
+                      { (v[row.value]*row.value)  || 0}
                     </td>
                     <td>
-                      { storeSummary[value] * weight(value)}
+                      {(storeSummary[row.value] * row.value) || 0 }
                     </td>
-
                   </tr>
                 )
               })
             }
+
           </tbody>
           <tfoot>
             <tr>
@@ -142,35 +240,52 @@ class Choices extends Component {
     for(var o in v) {
       total+= (v[o] || 0)
     }
-
+    const props = this.props
+    const choices = [ { value:1, caption: "Yes" }, { value: 2, caption: "No"}, { value: 3, caption: "Sometimes"},
+                    { value: 0, caption: "No Answer"} ]
     return (
       <div>
         <table>
           <thead>
             <tr>
-              <th>Assessment</th>
+              <th>{ this.props.dataSourceTypeId==1 ? "Choice" :  "Assessment" }</th>
               <th>Count</th>
               <th>Percent</th>
             </tr>
           </thead>
           <tbody>
 
-            {
-              ["Yes","No","Sometimes","No Answer"].map(function(value,index) {
+            { this.props.dataSourceTypeId==0 &&
+              choices.map( (choice, index) => {
+                let value = choice["value"]
+                let caption = choice["caption"]
                 return (
-                  <tr key={value}>
+                  <tr key={index}>
                     <th>
-                      {value || "No Answer"}
+                      { caption || "No Answer"}
                     </th>
                     <td>
-                      { v[value] }
+                      { v[value] || 0 }
                     </td>
                     <td>
                       { percentage(v[value]|| 0, total )}
                     </td>
                   </tr>
                 )
-              })
+              } )
+
+            }
+            {
+              this.props.dataSourceTypeId==1 &&
+              this.props.managers.map( (manager, index) => {
+                return (
+                  <tr key={index} >
+                    <th> { manager.lastName } , { manager.firstName}</th>
+                    <td> { v[manager.id] || 0 }</td>
+                    <td></td>
+                  </tr>
+                )
+              } )
             }
           </tbody>
           <tfoot>
@@ -192,17 +307,29 @@ class Choices extends Component {
     )
   }
 }
+
+Choices.propTypes = {
+  v: React.PropTypes.object,
+  c: React.PropTypes.object,
+  questionTypeId: React.PropTypes.number,
+  dataSourceTypeId: React.PropTypes.number
+}
+
 class Values extends Component {
   render() {
     const v = this.props.v || []
-    return (
-      <div>
-        {
-          v.map( (one,i) => <div key={i}>{one}</div>)
+    try {
+      return (
+        <div>
+          {
+            v.map( (one,i) => <div key={i}> <span className='badge'>{one.Count}</span> {one.Text} </div>)
+          }
+        </div>
+      )
+    } catch(x) {
+      console.log('render ', x)
+    }
 
-        }
-      </div>
-    )
   }
 }
 class Checkboxes extends Component {
@@ -223,60 +350,45 @@ class ManagerDash extends Component {
   }
 
   _overallAvg(data) {
+    console.log('overall avg ', data)
     return data
       .filter(i=> (i.ManagerId>0  && (i.QuestionTypeId == 2 || i.QuestionTypeId==3)) )
       .reduce(function(summary, oneItem) {
-      if (summary) {
-        summary["Excellent"]=(summary["Excellent"] || 0) +  oneItem.Choice["Excellent"]
-        summary["Exceeds Expectations"]=(summary["Exceeds Expectations"] || 0) +  oneItem.Choice["Exceeds Expectations"]
-
-        summary["Meets Expectations"]=(summary["Meets Expectations"] || 0) +  oneItem.Choice["Meets Expectations"]
-        summary["Needs Improvement"]=(summary["Needs Improvement"] || 0) +  oneItem.Choice["Needs Improvement"]
-
-        summary["Unsatisfactory"]=(summary["Unsatisfactory"] || 0) +  oneItem.Choice["Unsatisfactory"]
-        summary["No Answer"]=(summary["No Answer"] || 0) +  oneItem.Choice["No Answer"]
-
-      } else {
-        summary = {
-          "Excellent": oneItem.Choice["Excellent"] || 0,
-          "Exceeds Expectations": oneItem.Choice["Exceeds Expectations"] || 0,
-          "Meets Expectations": oneItem.Choice["Meets Expectations"] || 0,
-          "Needs Improvement": oneItem.Choice["Needs Improvement"] || 0,
-          "Unsatisfactory": oneItem.Choice["Unsatisfactory"] || 0,
-          "No Answer": oneItem.Choice["No Answer"] || 0
-        }
-
-      }
+        summary["5"] += oneItem.Choice["5"] || 0;
+        summary["4"] += oneItem.Choice["4"] || 0;
+        summary["3"] += oneItem.Choice["3"] || 0;
+        summary["2"] += oneItem.Choice["2"] || 0;
+        summary["1"] += oneItem.Choice["1"] || 0;
       return summary
-    },{})
+    },{ "5":0, "4":0, "3":0, "2":0, "1":0})
 
   }
 
   _myOverallAvg(data, managerId) {
+    console.log('_myOverallAvg ', data)
     let summary = null
     data
     .filter(i=>i.ManagerId == managerId && (i.QuestionTypeId == 2 || i.QuestionTypeId==3))
     .forEach( (oneItem, i, arr) => {
       if (summary) {
-        summary["Excellent"]+=  (oneItem.Choice["Excellent"] || 0)
-        summary["Exceeds Expectations"]+=  (oneItem.Choice["Exceeds Expectations"]|| 0)
-        summary["Meets Expectations"]+=  (oneItem.Choice["Meets Expectations"]|| 0)
-        summary["Needs Improvement"]+= (oneItem.Choice["Needs Improvement"]|| 0)
-        summary["Unsatisfactory"]+=  (oneItem.Choice["Unsatisfactory"]|| 0)
-        summary["No Answer"]+=  (oneItem.Choice["No Answer"]|| 0)
+        summary["5"]+=  (oneItem.Choice[5] || 0)
+        summary["4"]+=  (oneItem.Choice[4]|| 0)
+        summary["3"]+=  (oneItem.Choice[3]|| 0)
+        summary["2"]+= (oneItem.Choice[2]|| 0)
+        summary["1"]+=  (oneItem.Choice[1]|| 0)
+        summary["0"]+=  (oneItem.Choice[0]|| 0)
       } else {
         summary = {
-          "Excellent": oneItem.Choice["Excellent"] || 0,
-          "Exceeds Expectations": oneItem.Choice["Exceeds Expectations"] || 0,
-          "Meets Expectations": oneItem.Choice["Meets Expectations"] || 0,
-          "Needs Improvement": oneItem.Choice["Needs Improvement"] || 0,
-          "Unsatisfactory": oneItem.Choice["Unsatisfactory"] || 0,
-          "No Answer": oneItem.Choice["No Answer"] || 0
+          "5": oneItem.Choice[5] || 0,
+          "4": oneItem.Choice[4] || 0,
+          "3": oneItem.Choice[3] || 0,
+          "2": oneItem.Choice[2] || 0,
+          "1": oneItem.Choice[1] || 0,
+          "0": oneItem.Choice[0] || 0
         }
 
       }
     })
-
     return summary
   }
 
@@ -308,26 +420,25 @@ class ManagerDash extends Component {
     function _storeSummary(data) {
       return data.reduce(function(summary, oneItem) {
         if (summary && summary[oneItem.QuestionId]) {
-          summary[oneItem.QuestionId]["Exceeds Expectations"]+=oneItem.Choice["Exceeds Expectations"]
-          summary[oneItem.QuestionId]["Excellent"]+=oneItem.Choice["Excellent"]
-          summary[oneItem.QuestionId]["Meets Expectations"]+=oneItem.Choice["Meets Expectations"]
-          summary[oneItem.QuestionId]["Needs Improvement"]+=oneItem.Choice["Needs Improvement"]
-          summary[oneItem.QuestionId]["No Answer"]+=oneItem.Choice["No Answer"]
-          summary[oneItem.QuestionId]["Unsatisfactory"]+=oneItem.Choice["Unsatisfactory"]
+          summary[oneItem.QuestionId][5]+= (oneItem.Choice[5] || 0 )
+          summary[oneItem.QuestionId][4]+= (oneItem.Choice[4] || 0)
+          summary[oneItem.QuestionId][3]+=(oneItem.Choice[3] || 0 )
+          summary[oneItem.QuestionId][2]+=(oneItem.Choice[2] || 0 )
+          summary[oneItem.QuestionId][1]+=(oneItem.Choice[1] || 0 )
+          summary[oneItem.QuestionId][0]+=(oneItem.Choice[0] || 0 )
         } else {
           summary=summary || {}
           summary[oneItem.QuestionId]= summary[oneItem.QuestionId] || {}
-          summary[oneItem.QuestionId]["Exceeds Expectations"]=oneItem.Choice["Exceeds Expectations"] ||0
-          summary[oneItem.QuestionId]["Excellent"]=oneItem.Choice["Excellent"] ||0
-          summary[oneItem.QuestionId]["Meets Expectations"]=oneItem.Choice["Meets Expectations"] || 0
-          summary[oneItem.QuestionId]["Needs Improvement"]=oneItem.Choice["Needs Improvement"] || 0
-          summary[oneItem.QuestionId]["No Answer"]=oneItem.Choice["No Answer"] ||0
-          summary[oneItem.QuestionId]["Unsatisfactory"]=oneItem.Choice["Unsatisfactory"] || 0
+          summary[oneItem.QuestionId][4]=oneItem.Choice[4] ||0
+          summary[oneItem.QuestionId][5]=oneItem.Choice[5] ||0
+          summary[oneItem.QuestionId][3]=oneItem.Choice[3] || 0
+          summary[oneItem.QuestionId][2]=oneItem.Choice[2] || 0
+          summary[oneItem.QuestionId][1]=oneItem.Choice[1] || 0
+          summary[oneItem.QuestionId][0]=oneItem.Choice[0] ||0
         }
         return summary
       },{})
     }
-
 
 
 
@@ -353,8 +464,8 @@ class ManagerDash extends Component {
                               storeSummary={storeSummary[r.QuestionId]} />
                         }
                         { r.QuestionTypeId == 4 && <Values v={r.Value} /> }
-                        { r.QuestionTypeId == 5 && <Values v={r.Value} /> }
-                        { r.QuestionTypeId == 6 && <Values v={r.Value}/> }
+                        { r.QuestionTypeId == 5 && <Values v={r.Value}  /> }
+                        { r.QuestionTypeId == 6 && <Values v={r.Value} /> }
                       </div>
                     )
                 })
@@ -364,7 +475,7 @@ class ManagerDash extends Component {
             <div className="minorcard" style={{margin:"2em"}}>
               <h2>Overall Average</h2>
               <br/>
-              <ManagerChoices v={this.state.myavg}
+              <OverAllManagerAverage v={this.state.myavg}
                        storeSummary={this.state.overallAverage} />
             </div>
           }
@@ -375,7 +486,7 @@ class ManagerDash extends Component {
 class StoreDash extends Component {
 
   render() {
-    const {data, managerId } = this.props
+    const {data, managerId, managers } = this.props
     return (
       <div>
         {
@@ -389,12 +500,19 @@ class StoreDash extends Component {
                 </h3>
                 { r.QuestionTypeId == 1 && <Checkboxes v={r.Checked} /> }
 
-                { r.QuestionTypeId == 2 && <Choices v={r.Choice} c={r.CompanyChoice} /> }
-                { r.QuestionTypeId == 3 && <Choices v={r.Choice} c={r.CompanyChoice} /> }
+                { (r.QuestionTypeId == 3 || r.QuestionTypeId==2) &&
+                  <Choices
+                    v={r.Choice}
+                    c={r.CompanyChoice}
+                    questionTypeId={r.QuestionTypeId}
+                    dataSourceTypeId={r.DataSourceTypeId}
+                    managers = {managers}
+                  />
+                }
 
-                { r.QuestionTypeId == 4 && <Values v={r.Value} /> }
-                { r.QuestionTypeId == 5 && <Values v={r.Value} /> }
-                { r.QuestionTypeId == 6 && <Values v={r.Value}/> }
+                { r.QuestionTypeId == 4 && <Values  v={r.Value}  /> }
+                { r.QuestionTypeId == 5 && <Values  v={r.Value}   /> }
+                { r.QuestionTypeId == 6 && <Values  v={r.Value}  /> }
               </div>
             )
 
@@ -406,7 +524,7 @@ class StoreDash extends Component {
     )
   }
 }
-class Dashboard extends Component {
+class Results extends Component {
     constructor(props) {
       super(props)
       this.state = {
@@ -518,7 +636,7 @@ class Dashboard extends Component {
       return (
         <div>
           <h2>
-            Dashboard <a href="#" onClick={this.refresh.bind(this)}><span className="glyphicon glyphicon-refresh"></span></a>
+            Results <a href="#" onClick={this.refresh.bind(this)}><span className="glyphicon glyphicon-refresh"></span></a>
           </h2>
 
           <br/>
@@ -528,11 +646,15 @@ class Dashboard extends Component {
           <br/>
             <br/>
               <div className="form-group">
-                <StoresDropDown areas={this.props.areas} stores={this.props.stores} setStoreId={this.selectStore.bind(this)} />
+                <StoresDropDown areas={this.props.areas} stores={this.props.stores}
+                  setStoreId={this.selectStore.bind(this)}
+                />
               </div>
             <br/>
             <br/>
-            <StoreDash data={this.state.StoreData} managerId={this.state.managerId} />
+            <StoreDash data={this.state.StoreData} managerId={this.state.managerId}
+              managers = {managers.filter(m=>m.homeLocationId==this.state.selectedStore)}
+              />
             <hr/>
             <h3>Manager Review</h3>
 
@@ -569,4 +691,4 @@ export default connect(
   ),
   actions
 
-)(Dashboard)
+)(Results)

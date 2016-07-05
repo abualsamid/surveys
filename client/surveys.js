@@ -39,7 +39,11 @@ store.subscribe(throttle(
   }, 1000
 ))
 
-
+window.onbeforeunload = function(e) {
+  // var dialogText = 'Please do not use browser navigation buttons till you have completed the survey.';
+  // e.returnValue = dialogText;
+  // return dialogText;
+};
 
 
 const saveStoreState = (state) => {

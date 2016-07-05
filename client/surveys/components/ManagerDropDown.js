@@ -15,36 +15,47 @@ export default class ManagerDropDown extends Component {
   }
   handleChange() {
     try {
-      console.log('handling change...')
       const { setManagerId} = this.props
-      const m = this.managerId.value || this.managerId.options[0].value
-      const c = this.managerId.options[this.managerId.selectedIndex||0].text
-
-      if (!m) {
-        return false;
+      const managerId = this.managerId.value || this.managerId.options[0].value
+      const caption = this.managerId.options[this.managerId.selectedIndex||0].text
+      setManagerId(managerId, caption)
+    } catch(x) {
+      console.log(x)
+    }
+    return false; // do not submit the form.
+  }
+  handleSubmit() {
+    try {
+      const { setManagerId} = this.props
+      const managerId = this.managerId.value || this.managerId.options[0].value
+      const caption = this.managerId.options[this.managerId.selectedIndex||0].text
+      if(!managerId) {
+        return false
       }
-      setManagerId(m, c)
-
+      setManagerId(managerId, caption)
     } catch(x) {
       console.log(x)
     }
     return false; // do not submit the form.
   }
 
+
   render() {
-    const { storeId, managers, caption, language, showButton, selectText } = this.props
+    const { storeId, managers, caption, language, showButton, selectText, filterZero } = this.props
+    console.log('ManagerDropDown::render: ', storeId, managers)
     return (
         <div className="form-group">
           <label>{caption}</label>
-          <select className="form-control" ref={(managerId) => this.managerId=managerId} 
+          <select className="form-control" ref={(managerId) => this.managerId=managerId}
                   onChange={this.handleChange}
           >
-            <option key={0} value="0">{languageHelper.tr( selectText || "Select Manager", language)}</option>
+            <option key={0} value="">{languageHelper.tr( selectText || "Select Manager", language)}</option>
             {
               managers
-              .filter( m => m.homeLocationId==storeId)
+              .filter( (m => m.homeLocationId==storeId && (filterZero==false || m.id) ) )
+              .sort()
               .map( m => (
-                <option key={m.id} value={m.id}>{m.lastName}, {m.firstName}</option>
+                <option key={m.id} value={m.id}>{m.firstName} {m.lastName}</option>
               ))
             }
           </select>

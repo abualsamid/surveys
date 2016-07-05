@@ -440,8 +440,6 @@ class ManagerDash extends Component {
       },{})
     }
 
-
-
     const storeSummary=_storeSummary(data)
     return (
       <div>
@@ -574,12 +572,25 @@ class Results extends Component {
     _downloadData() {
       const self = this
       const {customerId, campaignId, surveyId } = this.props
-      api.downloadSurveyResults(customerId, campaignId,surveyId, 0,0)
+      api.downloadSurveyResults(customerId, campaignId,surveyId,self.state.selectedStore || 0,0)
       .then(function(data) {
         var mime="text/csv"
         var blob = new Blob([data], {type: mime})
         , url = URL.createObjectURL(blob)
         self.saveAs(url, "results.csv")
+      })
+
+    }
+
+    _downloadAllData() {
+      const self = this
+      const {customerId, campaignId, surveyId } = this.props
+      api.downloadSurveyResults(customerId, campaignId,surveyId, 0,0)
+      .then(function(data) {
+        var mime="text/csv"
+        var blob = new Blob([data], {type: mime})
+        , url = URL.createObjectURL(blob)
+        self.saveAs(url, "all_results.csv")
       })
 
     }
@@ -636,11 +647,9 @@ class Results extends Component {
       return (
         <div>
           <h2>
-            Results <a href="#" onClick={this.refresh.bind(this)}><span className="glyphicon glyphicon-refresh"></span></a>
+            Results
           </h2>
 
-          <br/>
-          <button className="btn btn-primary" onClick={this._downloadData.bind(this)}>Download All Results - CSV </button>
           <br/>
           <br/>
           <br/>
@@ -650,6 +659,11 @@ class Results extends Component {
                   setStoreId={this.selectStore.bind(this)}
                 />
               </div>
+            <br/>
+              <button className="btn btn-primary" onClick={this._downloadData.bind(this)}>Download Store Results - CSV </button>
+                <br/>
+              <br/>
+              <button className="btn btn-primary" onClick={this._downloadAllData.bind(this)}>Download All Results - CSV </button>
             <br/>
             <br/>
             <StoreDash data={this.state.StoreData} managerId={this.state.managerId}

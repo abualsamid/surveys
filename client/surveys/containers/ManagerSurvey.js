@@ -8,9 +8,10 @@ import * as api from '../../../common/middleware/botengine'
 class Container extends Component {
   constructor(props) {
     super(props)
+    console.log('incoming props are: ', props)
     this.handleDone = this.handleDone.bind(this)
     this.handleCancel = this.handleCancel.bind(this)
-    this.state = {managers: this.props.managers.filter( (m) => m.homeLocationId==props.storeId )}
+    this.state = {managers: this.props.managers }
   }
 
   handleCancel() {
@@ -22,12 +23,19 @@ class Container extends Component {
     if (!this.state.managers || !this.state.managers.length) {
       api.getManagers(this.props.customerId, this.props.storeId)
       .then(function(managers) {
-        self.setState({managers: managers})
+        self.setState({managers: managers.filter( (m) => (m.homeLocationId==props.storeId) && m.id )})
       })
       .catch(function(doh) {
         console.log(doh)
       })
     }
+
+    // window.onbeforeunload = function(e) {
+    //   console.log('triggering  the window unload event')
+    //   var dialogText = 'Please do not use browser navigation buttons till you have completed the survey.';
+    //   e.returnValue = dialogText;
+    //   return dialogText;
+    // };
 
   }
 
@@ -43,6 +51,7 @@ class Container extends Component {
       if (m.length==0) {
         setTimeout(this.handleCancel, 10)
       } else {
+        console.log('setting state managers to ', m)
         this.setState({managers: m})
         window.scrollTo(0, 0)
       }
@@ -58,7 +67,11 @@ class Container extends Component {
           handleCancel={this.handleCancel}
           handleDone={this.handleDone}
           managers = {this.state.managers}
-          {...this.props}
+          language= {this.props.language}
+          customerId= {this.props.customerId}
+          campaignId= {this.props.campaignId}
+          storeId = {this.props.storeId}
+          storeCaption= {this.props.storeCaption}
            />
          <div>
            <br/>

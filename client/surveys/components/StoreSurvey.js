@@ -25,34 +25,63 @@ export default class StoreSurvey extends Component {
   }
   handleCheckboxChange(id, value) {
     const {customerId, surveyId} = this.props
-    console.log('setting checkbox answer ', id , ' to checked: ', checked , ' and value: ', value, parseInt(value));
-
     this.answers[id]={customerId: customerId||1, surveyId: surveyId||1, checked: value}
+    try {
+      console.log('setting checkbox answer ', id ,  ' value: ', value, parseInt(value));
+
+    } catch(x) {}
   }
+
   handleAnswer(id, value) {
     if (!this.answers) {
       this.answers={}
     }
     const {customerId, surveyId} = this.props
+    let isAnswered = false
+    let choice=0
+    if (value!=="") {
+      isAnswered=true;
+      choice=parseInt(value)
+    }
 
     if (!this.answers[id]) {
-      this.answers[id]={customerId:customerId, surveyId: surveyId, choice: parseInt(value), value: ""}
+      this.answers[id]={customerId:customerId, surveyId: surveyId, choice: choice, value: "", isAnswered: isAnswered}
     } else {
       const a = this.answers[id]
-      this.answers[id] = { ...a, choice: parseInt(value) }
+      this.answers[id] = { ...a, choice: choice, isAnswered: isAnswered }
     }
-    console.log('Answers after handling ', id, value, ' are ', this.answers)
+    console.log('Answers after handling: ', id, value, isAnswered, choice, ' are ', this.answers[id])
   }
 
   handleTextChange(id, value ) {
+    if (!this.answers) {
+      this.answers={}
+    }
+
     const {customerId, surveyId} = this.props
-    console.log('setting text answer ', id , ' to value: ', value, parseInt(value));
-    this.answers[id]={customerId: customerId, surveyId: surveyId, value: value}
+    if (!this.answers[id]) {
+      this.answers[id]={customerId: customerId, surveyId: surveyId, value: value, isAnswered: value?true:false}
+    } else {
+      const a = this.answers[id]
+      this.answers[id] = { ...a, value: value, isAnswered: value?true:false }
+    }
   }
   handleRadio(id, value) {
     const {customerId, surveyId} = this.props
+    if (!this.answers) {
+      this.answers={}
+    }
+
     console.log('setting radio answer ', id , ' to  value: ', value);
-    this.answers[id]={customerId: customerId, surveyId: surveyId, choice: parseInt(value)}
+    // for radio buttons the blank answer is "" and the "any" answer is 0, so we need to treat "" as not answered
+    // and "0" as a proper answer
+    if (!this.answers[id]) {
+
+      this.answers[id]={customerId: customerId, surveyId: surveyId, choice: parseInt(value), isAnswered: value?true:false}
+    } else {
+      const a = this.answers[id]
+      this.answers[id]={ ...a, choice: parseInt(value), isAnswered: value?true:false }
+    }
   }
   componentDidMount() {
     const {customerId, surveyId, campaignId, language} = this.props
@@ -60,13 +89,24 @@ export default class StoreSurvey extends Component {
     let qs = []
     GetSurveyQuestions(customerId,campaignId, surveyId)
     .then(function(questions) {
-      for(var i=0;i<questions.length;i++) {
-        const q = questions[i]
+
+      questions
+      .filter(function(q) { return (q.SectionId==2 || q.SectionId==1) })
+      .map(function(q,i,arr){
         if (q.Language==language) {
           qs[i] = q
         }
-        self.answers[q.id]={ customerId:1, surveyId: 1, choice: 0, checked: false, value: ""}
-      }
+        self.answers[q.id]={ customerId:1, surveyId: 1, choice: 0, checked: false, value: "", isAnswered: false }
+      })
+
+      // for(var i=0;i<questions.length;i++) {
+      //   const q = questions[i]
+      //   if (q.Language==language) {
+      //     qs[i] = q
+      //   }
+      //   self.answers[q.id]={ customerId:1, surveyId: 1, choice: 0, checked: false, value: ""}
+      // }
+
       self.setState({questions: qs})
     })
   }
@@ -130,7 +170,11 @@ export default class StoreSurvey extends Component {
                         .map(function(v,index,arr){
                           self.answers[v.id]={
                                     customerId:self.props.customerId,
-                                    surveyId: self.props.surveyId, choice: 0, checked: false, value: ""
+                                    surveyId: self.props.surveyId,
+                                    choice: 0,
+                                    checked: false,
+                                    value: "",
+                                    isAnswered: false
                                 }
                           return (
                             <div className="card"  style={{margin:"1em"}} key={v.id + '_' + index}>
@@ -151,7 +195,6 @@ export default class StoreSurvey extends Component {
                 </h3>
                 <br/>
                 <br/>
-
               </div>
               <div>
                 {
@@ -178,7 +221,8 @@ export default class StoreSurvey extends Component {
                             <ManagerDropDown storeId={storeId}
                               managers={this.props.managers}
                               language={language}
-                              selectText={"Any Manager"}
+                              selectText={""}
+                              filterZero={false}
                               caption={languageHelper.tr("Manager", language)}
                               setManagerId={
                               (value,caption) => self.handleAnswer(v.id,value ) } showButton={false} />
@@ -214,7 +258,12 @@ export default class StoreSurvey extends Component {
             </div>
             <div><br/></div>
             <div><br/></div>
+            <div className="text-center">
 
+              {languageHelper.tr("Please answer all questions in order to proceed.", language)}
+
+            </div>
+            <div><br/></div>
           </footer>
         </article>
 

@@ -61,16 +61,7 @@ class EnterStore extends Component {
     const self = this
 
     this.props.selectStore(this.storeId, this.storeCaption)
-    api.getManagers(this.props.customerId, this.storeId)
-    .then(function(managers) {
-      self.props.loadedManagers(managers)
-      setTimeout(browserHistory.push("/StoreSurvey/" + self.storeId),10)
-    })
-    .catch(function(doh) {
-      console.log(doh)
-      self.props.loadedManagers([])
-      setTimeout(browserHistory.push("/StoreSurvey/" + self.storeId),10)
-    })
+    setTimeout(browserHistory.push("/StoreSurvey/" + self.storeId),10)
   }
 
   handleCancel() {

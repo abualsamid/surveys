@@ -277,6 +277,7 @@ export function getCodes(data) {
 }
 
 export function getManagers(customerId, locationId ) {
+  console.log('getting managers.')
   return fetch(V1 + "admin/manager/"+ (customerId || customer.customerId) + "/" + (locationId||0) ,getConfig())
           .then(checkStatus)
           .then(parseJSON)

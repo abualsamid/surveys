@@ -27,7 +27,7 @@ export default class ManagerSurvey extends Component {
         { key: "0", value: languageHelper.tr("N/A", props.language)}
       ]
 
-    this.state = {questions:[], managerId:0, managerCaption:"" , dropDownOptions: dropDownOptions}
+    this.state = {questions:[], managerId:0, managerCaption:"" , dropDownOptions: dropDownOptions, managers:props.managers}
 
     this.answers = {}
     // let a = {}
@@ -44,6 +44,8 @@ export default class ManagerSurvey extends Component {
 
   componentWillReceiveProps(nextProps) {
     this.answers = {}
+    console.log('receiving props ', nextProps.managers)
+    this.setState({managers: nextProps.managers})
   }
 
   componentDidMount() {
@@ -109,14 +111,13 @@ export default class ManagerSurvey extends Component {
 
   handleSubmit(stayInPlace) {
     try {
-      console.log('answers are: ', this.answers)
+      // console.log('answers are: ', this.answers)
     } catch(x) {
       console.log(x)
     }
     let allGood=true;
     for(var key in this.answers) {
       let one = this.answers[key]
-      console.log('checking ', one)
       if (!one.value && one.choice==-1) {
         allGood = false
       }
@@ -132,7 +133,8 @@ export default class ManagerSurvey extends Component {
   }
 
   render() {
-    const {language, handleCancel, handleSubmit, storeId, managers,storeCaption }  = this.props
+    const {language, handleCancel, handleSubmit, storeId, storeCaption }  = this.props
+    const { managers } = this.state
     const self = this
     if (this.state.managerId  ) {
       return (
@@ -267,7 +269,7 @@ export default class ManagerSurvey extends Component {
               <div className="card" >
                 <ManagerDropDown storeId={storeId}  managers={managers} language={language}
                   caption={languageHelper.tr("Manager", language)}
-                  setManagerId={this.setManagerId.bind(this)} showButton={true} />
+                  setManagerId={this.setManagerId.bind(this)} showButton={true} filterZero={true} />
               </div>
 
                 <div><br/></div>

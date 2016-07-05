@@ -50,6 +50,7 @@ function admin(state = {areas: [], stores: [], managers:[], campaignId:0, custom
         return Object.assign({}, state, {campaignId: action.id})
 
       case "LOADED_MANAGERS":
+        console.log('reducing managers ', action.managers)
         return Object.assign({}, state, {managers: action.managers ||[]})
       case "RECEIVED_PARAMS":
         try {

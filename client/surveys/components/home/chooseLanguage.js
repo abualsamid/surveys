@@ -83,7 +83,12 @@ class ChooseLanguage extends Component {
               </div>
             </div>
           </div>
-
+          <div className="row">
+            <div className="col-md-12 text-center">
+              <br/>
+              This survey works best in modern browsers such as chrome, safari or firefox.
+            </div>
+          </div>
         </div>
       </div>
     )

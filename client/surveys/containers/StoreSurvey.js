@@ -16,6 +16,14 @@ class Container extends Component {
   }
   handleSubmit(answers) {
     const {  submitStoreAnswers, storeId } = this.props
+    for(var index in answers) {
+      let a = answers[index]
+      if (!a.value && !a.choice && !a.isAnswered) {
+        alert("Please answer all questions in order to proceed.");
+        console.log('failed to validate ',index, a)
+        return false;
+      }
+    }
     console.log('submitting store answers ', answers)
     submitStoreAnswers( storeId,0, answers)
     this.handleSkip()
@@ -24,20 +32,18 @@ class Container extends Component {
   componentDidMount() {
     const self = this
     try {
-      if (!this.props.managers || !this.props.managers.length) {
-        api.getManagers(this.props.customerId, this.props.storeId)
-        .then(function(managers) {
-          self.props.loadedManagers(managers)
-        })
-        .catch(function(doh) {
-          console.log(doh)
-        })
-      }
+      const any = [{firstName:" -- Any ", lastName:" Manager -- ", id: 0, homeLocationId: self.props.storeId}]
+      api.getManagers(this.props.customerId, self.props.storeId)
+      .then(function(managers) {
+        self.props.loadedManagers(any.concat(managers.filter(m => m.homeLocationId==self.props.storeId)))
+      })
+      .catch(function(doh) {
+        console.log(doh)
+      })
+
     } catch(x) {
       console.log('x...', x)
     }
-
-
   }
   handleCancel() {
     browserHistory.push("/ThankYou")
@@ -69,7 +75,7 @@ export default connect(
     storeCaption: state.survey.storeCaption || state.admin.locationId || state.survey.storeId || ownProps.params.storeId,
     code: state.admin.Code,
     surveyId: state.admin.surveyId,
-    managers: state.admin.managers
+    managers: state.admin.managers || []
   }),
   actions
 

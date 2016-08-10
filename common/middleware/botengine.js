@@ -16,7 +16,7 @@ const GET_CONFIG = {
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + (window.sessionStorage? sessionStorage.getItem("token") : "")
+        'Authorization': 'Bearer ' + (window.localStorage? localStorage.getItem("token") : "")
       }
     }
 
@@ -29,7 +29,7 @@ const POST_CONFIG = {
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + (window.sessionStorage? sessionStorage.getItem("token") : "")
+        'Authorization': 'Bearer ' + (window.localStorage? localStorage.getItem("token") : "")
       }
     }
 
@@ -47,7 +47,7 @@ function postConfig(data) {
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + (window.sessionStorage? sessionStorage.getItem("token") : "")
+      'Authorization': 'Bearer ' + (window.localStorage? localStorage.getItem("token") : "")
     },
     body: JSON.stringify(data)
   }

@@ -210,7 +210,7 @@ export default class ManagerSurvey extends Component {
                     <br/>
                     <h3>
                       {
-                        languageHelper.tr("please feel free to review as many managers as you wish", language)
+                        languageHelper.tr("Please feel free to review as many managers as you wish.", language)
                       }
                     </h3>
 

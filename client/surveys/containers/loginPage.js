@@ -139,7 +139,6 @@ class LoginPage extends Component {
       })
       .then(function(token) {
         localStorage.setItem('token',token.token)
-        console.log("Going to dispatch ... ", JSON.stringify(token))
         successfulLogin(token.token || "", profile)
         browserHistory.push('/Dashboard')
       })

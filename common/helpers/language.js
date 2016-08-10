@@ -59,7 +59,7 @@ export const languageText = {
   },
   "3": {
     "en": "Please take a moment to fill this out. Your feedback is important to us. We welcome both positive feedback and areas where we can improve. Your response to this survey will be kept anonymous and confidential.",
-    "es": "Por favor, tome un momento para liener este documento. Su opinion es importante para nosotros. Queremos saber donde estamon bien y done podemos mejorar. La participacion en esta encuesta es anonima y confidential.",
+    "es": "Por favor, tome un momento para llener este documento. Su opinion es importante para nosotros. Queremos saber donde estamos bien y donde podemos mejorar. Su participacion en esta encuesta es anonima y confidencial.",
     "sep": "\n \n"
   },
   "4": {
@@ -140,7 +140,7 @@ export const languageText = {
   },
   "Manager Survey": {
     "en": "Manager Survey",
-    "es": "Encuesta gerente"
+    "es": "Sobre su gerente"
   },
   "Comments": {
     "en": "Comments",

@@ -54,9 +54,9 @@ class LoginForm extends Component{
           console.log("login failed.  ", res)
           self.props.failure("",null)
         } else {
-          if (window.sessionStorage) {
-            sessionStorage.setItem('token',res.sessionId)
-            sessionStorage.setItem('email',res.email)
+          if (window.localStorage) {
+            localStorage.setItem('token',res.sessionId)
+            localStorage.setItem('email',res.email)
           }
 
           self.props.success( res.sessionId || "nocando", res)
@@ -145,8 +145,8 @@ class LoginPage extends Component {
         return res.json();
       })
       .then(function(token) {
-        if (window.sessionStorage) {
-          sessionStorage.setItem('token',token.token)
+        if (window.localStorage) {
+          localStorage.setItem('token',token.token)
         }
         successfulLogin(token.token || "", profile)
         browserHistory.push('/admin/dashboard')

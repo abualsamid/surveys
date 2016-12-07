@@ -144,8 +144,13 @@ export function GetSurveyQuestions(customerId, campaignId, surveyId) {
 export function GetSurveyQuestionTranslation(customerId, campaignId, surveyId) {
   return getIt("admin/questions/" + customerId + "/" + campaignId + "/" + surveyId)
 }
+
 export function SaveSurveyQuestionTranslation(customerId, campaignId, surveyId, questions) {
   return postIt("admin/questions/" + customerId + "/" + campaignId + "/" + surveyId, questions)
+}
+
+export function SaveComment(customerId, campaignId, surveyId, comment) {
+  return postIt("admin/comments/" + customerId + "/" + campaignId + "/" + surveyId, comment)
 }
 
 export function addArea(customerId, name) {
@@ -411,7 +416,6 @@ export function getSurveyResults(customerId, campaignId,surveyId, locationId,man
       return response.json()
 
     }).then(function(json) {
-      console.log("survey results are ", json)
       return json
     }).catch(function(ex) {
       console.log("failed to get data ", ex)

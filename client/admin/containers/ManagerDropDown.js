@@ -24,7 +24,7 @@ export default class ManagerDropDown extends Component {
   }
 
   render() {
-    const { storeId, managers, caption, showButton, addEmpty } = this.props
+    const { storeId, managers, caption, showButton, addEmpty, addAll } = this.props
     return (
         <div className="form-group">
           <label>{caption}</label>
@@ -33,6 +33,10 @@ export default class ManagerDropDown extends Component {
             >
             {
               addEmpty && <option key="0" value="0"></option>
+            }
+            {
+              addAll &&
+                <option key={-1} value={-1} > Review All </option>
             }
             {
               managers

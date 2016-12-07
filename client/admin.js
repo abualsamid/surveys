@@ -16,6 +16,7 @@ import * as api from '../common/middleware/botengine'
 
 const styles = require( './assets/css/home.css' );
 
+
 const loadStoreState = () => {
   try {
     const serializedState = localStorage.getItem('redux_admin_state')

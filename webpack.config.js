@@ -73,7 +73,9 @@ var plugins= [
         name: "common"
     }),
 
-  new CopyWebpackPlugin([{from: 'client/static'}])
+  new CopyWebpackPlugin([
+    {from: 'client/static'},
+  ])
 
 ];
 
@@ -109,7 +111,7 @@ module.exports = {
           presets: [
             'babel-preset-es2015',
             'babel-preset-react',
-            'babel-preset-stage-0',
+            'babel-preset-stage-0'
           ].map(require.resolve),
         }
       },

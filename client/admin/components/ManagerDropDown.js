@@ -30,8 +30,9 @@ export default class ManagerDropDown extends Component {
         <div className="form-group">
           <label>{caption}</label>
 
-          <select className="form-control" value={selectedManager} 
+          <select className="form-control" value={selectedManager}
               ref={(managerId) => this.managerId=managerId} onChange={this.handleChange} >
+
             {
               managers
               .filter( m => m.homeLocationId==storeId)
@@ -42,7 +43,8 @@ export default class ManagerDropDown extends Component {
           </select>
           <br/>
           {
-            false &&  <button type="submit" className="btn btn-primary" onClick={ (e) => {  this.handleChange(); }} >Select Manager</button>
+            false &&  <button type="submit" className="btn btn-primary"
+              onClick={ (e) => {  this.handleChange(); }} >Select Manager</button>
           }
         </div>
 
